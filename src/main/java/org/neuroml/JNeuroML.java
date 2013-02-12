@@ -8,6 +8,6 @@ public class JNeuroML
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello from jNeuroML!" );
+        System.out.println( "Hello, from jNeuroML!" );
     }
 }

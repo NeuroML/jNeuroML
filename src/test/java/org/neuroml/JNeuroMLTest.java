@@ -33,6 +33,7 @@ public class JNeuroMLTest
      */
     public void testApp()
     {
+    	System.out.println("Running a simple test..");
         assertTrue( true );
     }
 }
