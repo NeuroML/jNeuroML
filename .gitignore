@@ -1,6 +1,4 @@
-*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
+target
+src/test/resources/tmp
+src/main/java/META-INF/MANIFEST.MF
+.DS_Store
