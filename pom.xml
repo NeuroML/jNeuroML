@@ -4,7 +4,7 @@
 
     <groupId>org.neuroml</groupId>
     <artifactId>jNeuroML</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <packaging>jar</packaging>
 
     <name>jNeuroML</name>
@@ -15,7 +15,7 @@
         <repository>
             <id>in-project</id>
             <name>In Project Repo</name>
-            <url>file://${project.basedir}/../org.neuroml.exportlibs</url>
+            <url>file://${project.basedir}/../org.neuroml.export/libs</url>
         </repository>
     </repositories>
 
