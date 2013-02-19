@@ -4,11 +4,12 @@
 
     <groupId>org.neuroml</groupId>
     <artifactId>jNeuroML</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
 
     <name>jNeuroML</name>
     <url>http://maven.apache.org</url>
+
     <repositories>
         <!-- HACK! Until jLEMS is in Maven... -->
         <repository>
@@ -17,6 +18,7 @@
             <url>file://${project.basedir}/../org.neuroml.exportlibs</url>
         </repository>
     </repositories>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,7 +34,35 @@
         <dependency>
             <groupId>org.neuroml.export</groupId>
             <artifactId>org.neuroml.export</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <!-- NOTE: We don't need a groupId specification because 
+                    the group is org.apache.maven.plugins ...which is assumed by default. -->
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
+
+
+
