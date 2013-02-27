@@ -48,6 +48,13 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    
+                      <archive>
+                        <manifest>
+                          <addClasspath>true</addClasspath>
+                          <mainClass>org.neuroml.JNeuroML</mainClass>
+                        </manifest>
+                      </archive>
                 </configuration>
                 <executions>
                     <execution>
