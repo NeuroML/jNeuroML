@@ -17,7 +17,6 @@ import org.lemsml.jlems.io.Main;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.util.FileUtil;
-import org.neuroml.export.AppTest;
 import org.neuroml.export.Utils;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.model.util.NeuroML2Validator;
