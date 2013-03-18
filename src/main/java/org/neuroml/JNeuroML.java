@@ -16,6 +16,7 @@ import org.lemsml.jlems.core.xml.XMLException;
 import org.lemsml.jlems.io.Main;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
+import org.lemsml.jlems.io.reader.FileInclusionReader;
 import org.lemsml.jlems.io.util.FileUtil;
 import org.neuroml.export.Utils;
 import org.neuroml.export.xpp.XppWriter;
@@ -83,6 +84,17 @@ public class JNeuroML {
 			    	FileResultWriterFactory.initialize();
 			    	SwingDataViewerFactory.initialize();
 					DefaultLogger.initialize();
+					
+					//TODO: add from jar instead!
+					String jnmlHome = System.getenv("JNML_HOME");
+			        if (jnmlHome!=null) {
+						File nmlCoreTypesDir = new File(jnmlHome+"/../NeuroML2/NeuroML2CoreTypes");
+						FileInclusionReader.addSearchPath(nmlCoreTypesDir);
+			        } else {
+						File nmlCoreTypesDir = new File(System.getenv("HOME")+"/NeuroML2/NeuroML2CoreTypes");
+						FileInclusionReader.addSearchPath(nmlCoreTypesDir);
+			        }
+			        
 					
 					Main.main(args);
 					
