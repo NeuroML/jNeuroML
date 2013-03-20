@@ -21,6 +21,7 @@ import org.lemsml.jlems.io.util.FileUtil;
 import org.neuroml.export.Utils;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.model.util.NeuroML2Validator;
+import org.neuroml1.model.util.NeuroML1Validator;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.xml.sax.SAXException;
 
@@ -37,6 +38,7 @@ public class JNeuroML {
 	public static String HELP_FLAG_SHORT_Q = "-?";
 
 	public static String VALIDATE_FLAG = "-validate";
+	public static String VALIDATE_V1_FLAG = "-validatev1";
 	
 	public static String XPP_FLAG = "-xpp";
 	
@@ -47,6 +49,8 @@ public class JNeuroML {
             "           Load LEMSFile.xml using jLEMS, and convert it to XPP format\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_FLAG+" NMLFile.nml\n" +
             "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n"+
+            "    "+JNML_SCRIPT+" "+VALIDATE_V1_FLAG+" NMLFile.nml\n" +
+            "           Validate NMLFile.nml against NeuroML v1.8.1 Schema \n\n"+
             "    "+JNML_SCRIPT+" "+HELP_FLAG+"\n" +
             "    "+JNML_SCRIPT+" "+HELP_FLAG_SHORT+"\n" +
             "    "+JNML_SCRIPT+" "+HELP_FLAG_SHORT_Q+"\n" +
@@ -62,7 +66,11 @@ public class JNeuroML {
 				System.err.println("Error, no arguments to "+JNML_SCRIPT);
 				showUsage();
 				System.exit(1);
+				
+		// One argument
+				
 			} else if (args.length == 1) {
+				
 				if (args[0].startsWith("-")) {
 					if (args[0].equals(HELP_FLAG) || args[0].equals(HELP_FLAG_SHORT) || args[0].equals(HELP_FLAG_SHORT_Q)) {
 						showUsage();
@@ -99,8 +107,11 @@ public class JNeuroML {
 					Main.main(args);
 					
 				}
+
+		// Two arguments
 				
 			} else if (args.length == 2) {
+				
 				if  (args[0].equals(VALIDATE_FLAG)) {
 					File xmlFile = new File(args[1]);
 					if (!xmlFile.exists()) {
@@ -109,6 +120,15 @@ public class JNeuroML {
 						System.exit(1);
 					}
 					NeuroML2Validator nmlv =  new NeuroML2Validator();
+					nmlv.validateWithTests(xmlFile);
+				} else if (args[0].equals(VALIDATE_V1_FLAG)) {
+					File xmlFile = new File(args[1]);
+					if (!xmlFile.exists()) {
+						System.err.println("File does not exist: "+args[1]);
+						showUsage();
+						System.exit(1);
+					}
+					NeuroML1Validator nmlv =  new NeuroML1Validator();
 					nmlv.validateWithTests(xmlFile);
 				} else if (args[1].equals(XPP_FLAG)) {
 					File lemsFile = new File(args[0]);
