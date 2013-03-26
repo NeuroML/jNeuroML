@@ -1,7 +1,9 @@
 package org.neuroml;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.xml.bind.JAXBException;
 
@@ -19,6 +21,8 @@ import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.reader.FileInclusionReader;
 import org.lemsml.jlems.io.util.FileUtil;
 import org.neuroml.export.Utils;
+import org.neuroml.export.brian.BrianWriter;
+import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.model.util.NeuroML2Validator;
 import org.neuroml1.model.util.NeuroML1Validator;
@@ -39,14 +43,20 @@ public class JNeuroML {
 
 	public static String VALIDATE_FLAG = "-validate";
 	public static String VALIDATE_V1_FLAG = "-validatev1";
-	
+
 	public static String XPP_FLAG = "-xpp";
+	
+	public static String BRIAN_FLAG = "-brian";
+	
+	public static String GRAPH_FLAG = "-graph";
 	
 	static String usage = "Usage: \n\n" +
             "    "+JNML_SCRIPT+" LEMSFile.xml\n" +
             "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_FLAG+"\n" +
-            "           Load LEMSFile.xml using jLEMS, and convert it to XPP format\n\n"+
+            "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+GRAPH_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_FLAG+" NMLFile.nml\n" +
             "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_V1_FLAG+" NMLFile.nml\n" +
@@ -59,8 +69,35 @@ public class JNeuroML {
 	public static void showUsage() {
 		System.out.println(usage);
 	}
+	
+	private static Lems loadLemsFile(String filename) throws ContentError, ParseError, ParseException, BuildException, XMLException {
+		File lemsFile = new File(filename);
+
+		return loadLemsFile(lemsFile);
+	}
+		
+	private static Lems loadLemsFile(File lemsFile) throws ContentError, ParseError, ParseException, BuildException, XMLException {
+
+		if (!lemsFile.exists()) {
+			System.err.println("File does not exist: "+lemsFile.getAbsolutePath());
+			showUsage();
+			System.exit(1);
+		}
+		return Utils.loadLemsFile(lemsFile);
+	}
 
 	public static void main(String[] args) {
+
+		//TODO: add from jar instead!
+		String jnmlHome = System.getenv("JNML_HOME");
+        if (jnmlHome!=null) {
+			File nmlCoreTypesDir = new File(jnmlHome+"/../NeuroML2/NeuroML2CoreTypes");
+			FileInclusionReader.addSearchPath(nmlCoreTypesDir);
+        } else {
+			File nmlCoreTypesDir = new File(System.getenv("HOME")+"/NeuroML2/NeuroML2CoreTypes");
+			FileInclusionReader.addSearchPath(nmlCoreTypesDir);
+        }
+        
 		try {
 			if (args.length == 0) {
 				System.err.println("Error, no arguments to "+JNML_SCRIPT);
@@ -92,17 +129,7 @@ public class JNeuroML {
 			    	FileResultWriterFactory.initialize();
 			    	SwingDataViewerFactory.initialize();
 					DefaultLogger.initialize();
-					
-					//TODO: add from jar instead!
-					String jnmlHome = System.getenv("JNML_HOME");
-			        if (jnmlHome!=null) {
-						File nmlCoreTypesDir = new File(jnmlHome+"/../NeuroML2/NeuroML2CoreTypes");
-						FileInclusionReader.addSearchPath(nmlCoreTypesDir);
-			        } else {
-						File nmlCoreTypesDir = new File(System.getenv("HOME")+"/NeuroML2/NeuroML2CoreTypes");
-						FileInclusionReader.addSearchPath(nmlCoreTypesDir);
-			        }
-			        
+							        
 					
 					Main.main(args);
 					
@@ -131,14 +158,9 @@ public class JNeuroML {
 					NeuroML1Validator nmlv =  new NeuroML1Validator();
 					nmlv.validateWithTests(xmlFile);
 				} else if (args[1].equals(XPP_FLAG)) {
+
 					File lemsFile = new File(args[0]);
-					if (!lemsFile.exists()) {
-						System.err.println("File does not exist: "+args[0]);
-						showUsage();
-						System.exit(1);
-					}
-			        
-					Lems lems = Utils.loadLemsFile(lemsFile);
+					Lems lems = loadLemsFile(lemsFile);
 	
 					XppWriter xppw = new XppWriter(lems);
 			        String ode = xppw.getMainScript();
@@ -147,6 +169,57 @@ public class JNeuroML {
 			        System.out.println("Writing to: "+odeFile.getAbsolutePath());
 			        
 			        FileUtil.writeStringToFile(ode, odeFile);
+					
+				} else if (args[1].equals(BRIAN_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+	
+					BrianWriter bw = new BrianWriter(lems);
+			        String br = bw.getMainScript();
+	
+			        File brFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", "_brian.py"));
+			        System.out.println("Writing to: "+brFile.getAbsolutePath());
+			        
+			        FileUtil.writeStringToFile(br, brFile);
+					
+				} else if (args[1].equals(GRAPH_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+
+					GraphWriter gw = new GraphWriter(lems);
+			        String gv = gw.getMainScript();
+	
+			        File gvFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".gv"));
+			        System.out.println("Writing to: "+gvFile.getAbsolutePath());
+			        
+			        
+			        FileUtil.writeStringToFile(gv, gvFile);
+			        String imgFile = gvFile.getAbsolutePath().replace(".gv", ".png");
+
+                    String cmd = "dot -Tpng  " + gvFile.getAbsolutePath() + " -o " + imgFile;
+                    String[] env = new String[]{};
+                    Runtime run = Runtime.getRuntime();
+                    Process pr = run.exec(cmd, env, gvFile.getParentFile());
+
+                    
+                    try {
+						pr.waitFor();
+
+	                    BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+	                    String line;
+	                    while ((line = buf.readLine()) != null) {
+	                        System.out.println("----" + line);
+	                    }
+	
+	                    System.out.println("Have successfully run command: " + cmd);
+	                    
+                    } catch (InterruptedException e) {
+
+	                    System.out.println("Error running command: " + cmd);
+						e.printStackTrace();
+					}
 					
 				} else {
 					System.err.println("Unrecognised arguments: "+args[0]+" "+args[1]);
