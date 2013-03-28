@@ -1,7 +1,13 @@
 import os
-
+import sys
 import os.path as op
 import subprocess
+
+
+mode = "update"
+if len(sys.argv) == 2 and sys.argv[1]=="clean":
+    print "Cleaning repos"
+    mode = "clean"
 
 neuroml2_spec_repo = ['NeuroML/NeuroML2']
 libneuroml_repo = ['NeuralEnsemble/libNeuroML']
@@ -41,41 +47,56 @@ def execute_command_in_dir(command, directory):
     return return_string
 
 for repo in all_repos:
-    print
-    print "------ Updating: %s -------"%repo
-
-    runMvnInstall = False
 
     local_dir = ".."+os.sep+repo.split("/")[1]
-    if not op.isdir(local_dir):
-        command = "git clone %s%s"%(pre_gh[github_pref], repo)
-        print "Creating a new directory: %s by cloning from GitHub"%(local_dir)
-        execute_command_in_dir(command, "..")
-        runMvnInstall = True
 
-    return_string = execute_command_in_dir("git pull", local_dir)
+    if mode is "clean":
+        print "------ Cleaning: %s -------"%repo
+        if repo in java_repos:
+            command = "mvn clean"
+            print "It's a Java repository, so cleaning using Maven..."
+            info = execute_command_in_dir(command, local_dir)
 
-    runMvnInstall = runMvnInstall or ("Already up-to-date" not in return_string) or not op.isdir(local_dir+os.sep+"target")
+    if mode is "update":
+        print
+        print "------ Updating: %s -------"%repo
 
-    if repo in java_repos and runMvnInstall:
-        command = "mvn install"
-        print "It's a Java repository, so installing using Maven..."
-        info = execute_command_in_dir(command, local_dir)
-        if "BUILD SUCCESS" in info:
-            print "Successful installation using : %s!"%command
-        else:
-            "Problem installing using : %s!"%command
-            print info
-            exit(1)
+        runMvnInstall = False
 
-print
-print "All repositories successfully updated & Java modules built!"
-print
-print "You should be able to run some examples straight away using jnml: "
-print
-print "  cd ../jNeuroML"
-print "  ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml"
-print
-print "  ./jnml ../NeuroML2/NeuroML2CoreTypes/LEMS_NML2_Ex8_AdEx.xml"
-print
+        if not op.isdir(local_dir):
+            command = "git clone %s%s"%(pre_gh[github_pref], repo)
+            print "Creating a new directory: %s by cloning from GitHub"%(local_dir)
+            execute_command_in_dir(command, "..")
+            runMvnInstall = True
 
+        return_string = execute_command_in_dir("git pull", local_dir)
+
+        runMvnInstall = runMvnInstall or ("Already up-to-date" not in return_string) or not op.isdir(local_dir+os.sep+"target")
+
+        if repo in java_repos and runMvnInstall:
+            command = "mvn install"
+            print "It's a Java repository, so installing using Maven..."
+            info = execute_command_in_dir(command, local_dir)
+            if "BUILD SUCCESS" in info:
+                print "Successful installation using : %s!"%command
+            else:
+                "Problem installing using : %s!"%command
+                print info
+                exit(1)
+
+if mode is "update":
+    print
+    print "All repositories successfully updated & Java modules built!"
+    print
+    print "You should be able to run some examples straight away using jnml: "
+    print
+    print "  cd ../jNeuroML"
+    print "  ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml"
+    print
+    print "  ./jnml ../NeuroML2/NeuroML2CoreTypes/LEMS_NML2_Ex8_AdEx.xml"
+    print
+
+if mode is "clean":
+    print
+    print "All repositories successfully cleaned!"
+    print
