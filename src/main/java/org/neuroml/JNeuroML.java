@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.run.ConnectionError;
@@ -20,10 +21,14 @@ import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.reader.FileInclusionReader;
 import org.lemsml.jlems.io.util.FileUtil;
+import org.lemsml.jlems.io.xmlio.XMLSerializer;
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.graph.GraphWriter;
+import org.neuroml.export.neuron.NeuronWriter;
+import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.xpp.XppWriter;
+import org.neuroml.importer.sbml.SBMLImporter;
 import org.neuroml.model.util.NeuroML2Validator;
 import org.neuroml1.model.util.NeuroML1Validator;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
@@ -44,19 +49,30 @@ public class JNeuroML {
 	public static String VALIDATE_FLAG = "-validate";
 	public static String VALIDATE_V1_FLAG = "-validatev1";
 
-	public static String XPP_FLAG = "-xpp";
+	public static String XPP_EXPORT_FLAG = "-xpp";
+
+	public static String BRIAN_EXPORT_FLAG = "-brian";
 	
-	public static String BRIAN_FLAG = "-brian";
+	public static String NEURON_EXPORT_FLAG = "-neuron";
+
+	public static String SBML_IMPORT_FLAG = "-sbml-import";
+	public static String SBML_EXPORT_FLAG = "-sbml";
 	
 	public static String GRAPH_FLAG = "-graph";
 	
 	static String usage = "Usage: \n\n" +
             "    "+JNML_SCRIPT+" LEMSFile.xml\n" +
             "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n"+
-            "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_FLAG+"\n" +
-            "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+GRAPH_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (**EXPERIMENTAL**)\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+BRIAN_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL**)\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+SBML_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL**)\n\n"+
+            "    "+JNML_SCRIPT+" "+SBML_IMPORT_FLAG+" SBMLFile.sbml duration dt\n" +
+            "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_FLAG+" NMLFile.nml\n" +
             "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_V1_FLAG+" NMLFile.nml\n" +
@@ -139,6 +155,8 @@ public class JNeuroML {
 				
 			} else if (args.length == 2) {
 				
+		    ///  Validation
+				
 				if  (args[0].equals(VALIDATE_FLAG)) {
 					File xmlFile = new File(args[1]);
 					if (!xmlFile.exists()) {
@@ -157,7 +175,24 @@ public class JNeuroML {
 					}
 					NeuroML1Validator nmlv =  new NeuroML1Validator();
 					nmlv.validateWithTests(xmlFile);
-				} else if (args[1].equals(XPP_FLAG)) {
+					
+
+			///  exporting formats
+					
+				} else if (args[1].equals(SBML_EXPORT_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+	
+					SBMLWriter sbmlw = new SBMLWriter(lems);
+			        String sbml = sbmlw.getMainScript();
+	
+			        File sbmlFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".sbml"));
+			        System.out.println("Writing to: "+sbmlFile.getAbsolutePath());
+			        
+			        FileUtil.writeStringToFile(sbml, sbmlFile);
+					
+				} else if (args[1].equals(XPP_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
@@ -170,7 +205,20 @@ public class JNeuroML {
 			        
 			        FileUtil.writeStringToFile(ode, odeFile);
 					
-				} else if (args[1].equals(BRIAN_FLAG)) {
+				} else if (args[1].equals(NEURON_EXPORT_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+	
+					NeuronWriter nw = new NeuronWriter(lems);
+			        String nrn = nw.getMainScript();
+	
+			        File nrnFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", "_nrn.py"));
+			        System.out.println("Writing to: "+nrnFile.getAbsolutePath());
+			        
+			        FileUtil.writeStringToFile(nrn, nrnFile);
+					
+				} else if (args[1].equals(BRIAN_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
@@ -227,6 +275,43 @@ public class JNeuroML {
 					System.exit(1);
 					
 				}
+			} else if (args.length == 4) {
+
+				///  importing formats
+				
+				if (args[0].equals(SBML_IMPORT_FLAG)) {
+					
+					File sbmlFile = new File(args[1]);
+					if (!sbmlFile.exists()) {
+						System.err.println("File does not exist: "+sbmlFile.getAbsolutePath());
+						showUsage();
+						System.exit(1);
+					}
+					float duration = Float.parseFloat(args[2]);
+					float dt = Float.parseFloat(args[3]);
+					Lems lems = SBMLImporter.convertSBMLToLEMS(sbmlFile, duration, dt);
+
+					String newName = sbmlFile.getName().replaceAll(".xml", "_LEMS.xml");
+					newName = newName.replaceAll(".sbml", "_LEMS.xml");
+			        File lemsFile = new File(sbmlFile.getParentFile(),newName);
+			        
+			        System.out.println("Writing to: "+lemsFile.getAbsolutePath());
+			        String lemsString  = XMLSerializer.serialize(lems);
+			        
+			        FileUtil.writeStringToFile(lemsString, lemsFile);
+					
+				} else {
+					System.err.println("Unrecognised arguments: "+args[0]+" "+args[1]+" "+args[2]+" "+args[3]);
+					showUsage();
+					System.exit(1);
+					
+				}
+						
+			} else {
+				System.err.println("Unrecognised arguments! ");
+				showUsage();
+				System.exit(1);
+				
 			}
 		
 		} catch (ConnectionError e) {
@@ -257,6 +342,9 @@ public class JNeuroML {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
