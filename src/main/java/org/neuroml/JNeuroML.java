@@ -31,6 +31,7 @@ import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.importer.sbml.SBMLImporter;
 import org.neuroml.model.util.NeuroML2Validator;
 import org.neuroml1.model.util.NeuroML1Validator;
+import org.sbml.jsbml.SBMLException;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.xml.sax.SAXException;
 
@@ -102,7 +103,7 @@ public class JNeuroML {
 		return Utils.loadLemsFile(lemsFile);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SBMLException, org.sbml.jsbml.text.parser.ParseException {
 
 		//TODO: add from jar instead!
 		String jnmlHome = System.getenv("JNML_HOME");
