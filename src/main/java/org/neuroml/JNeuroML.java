@@ -35,13 +35,12 @@ import org.sbml.jsbml.SBMLException;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.xml.sax.SAXException;
 
-/**
- * Hello world!
- * 
- */
+
 public class JNeuroML {
 
 	public static String JNML_SCRIPT = "jnml";
+	
+	public static String JNML_VERSION = "0.2.6";
 	
 	public static String HELP_FLAG = "-help";
 	public static String HELP_FLAG_SHORT = "-h";
@@ -87,11 +86,12 @@ public class JNeuroML {
 		System.out.println(usage);
 	}
 	
+	/*
 	private static Lems loadLemsFile(String filename) throws ContentError, ParseError, ParseException, BuildException, XMLException {
 		File lemsFile = new File(filename);
 
 		return loadLemsFile(lemsFile);
-	}
+	}*/
 		
 	private static Lems loadLemsFile(File lemsFile) throws ContentError, ParseError, ParseException, BuildException, XMLException {
 
@@ -105,6 +105,7 @@ public class JNeuroML {
 
 	public static void main(String[] args) throws SBMLException, org.sbml.jsbml.text.parser.ParseException {
 
+		System.out.println("Running jNeuroML v"+JNML_VERSION);
 		//TODO: add from jar instead!
 		String jnmlHome = System.getenv("JNML_HOME");
         if (jnmlHome!=null) {

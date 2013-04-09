@@ -1,5 +1,10 @@
 package org.neuroml;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.lemsml.jlems.io.util.FileUtil;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -28,12 +33,22 @@ public class JNeuroMLTest
         return new TestSuite( JNeuroMLTest.class );
     }
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
+
+    public void testVersions() throws IOException
     {
-    	System.out.println("Running a simple test..");
-        assertTrue( true );
+    	System.out.println("Running a test on version usage...");
+
+    	String jnmlScript = FileUtil.readStringFromFile(new File("jnml"));
+    	
+    	assert(jnmlScript.contains(JNeuroML.JNML_VERSION));
+    	
+    	String jnmlBat = FileUtil.readStringFromFile(new File("jnml.bat"));
+    	
+    	assert(jnmlBat.contains(JNeuroML.JNML_VERSION));
+    	
+    	String jnmlPom = FileUtil.readStringFromFile(new File("pom.xml"));
+    	
+    	assert(jnmlPom.contains(JNeuroML.JNML_VERSION));
+    	
     }
 }

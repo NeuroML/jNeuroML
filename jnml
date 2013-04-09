@@ -1,3 +1,5 @@
-export CLASSPATH=.:./target/jNeuroML-0.2.6-jar-with-dependencies.jar:$JNML_HOME/target/jNeuroML-0.2.6-jar-with-dependencies.jar
+export JNML_VERSION=0.2.6
+
+export CLASSPATH=.:./target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar:$JNML_HOME/target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar
 
 java -Xmx400M -classpath $CLASSPATH org.neuroml.JNeuroML $1 $2 $3 $4 $5 $6 $7

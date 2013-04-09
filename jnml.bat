@@ -1,3 +1,5 @@
-set CLASSPATH=*.jar;%JNML_HOME%\*.jar
+set JNML_VERSION=0.2.6
+
+set CLASSPATH=target\jNeuroML-%JNML_VERSION%-jar-with-dependencies.jar;%JNML_HOME%\jNeuroML-%JNML_VERSION%-jar-with-dependencies.jar
 
 java -Xmx400M -cp %CLASSPATH% org.neuroml.JNeuroML %1 %2 %3 %4 %5 %6
