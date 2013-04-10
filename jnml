@@ -1,4 +1,4 @@
-export JNML_VERSION=0.2.6
+export JNML_VERSION=0.2.7
 
 export CLASSPATH=.:./target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar:$JNML_HOME/target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar
 

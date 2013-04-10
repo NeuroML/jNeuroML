@@ -40,15 +40,15 @@ public class JNeuroMLTest
 
     	String jnmlScript = FileUtil.readStringFromFile(new File("jnml"));
     	
-    	assert(jnmlScript.contains(JNeuroML.JNML_VERSION));
+    	assert(jnmlScript.contains("JNML_VERSION="+JNeuroML.JNML_VERSION));
     	
     	String jnmlBat = FileUtil.readStringFromFile(new File("jnml.bat"));
     	
-    	assert(jnmlBat.contains(JNeuroML.JNML_VERSION));
+    	assert(jnmlBat.contains("JNML_VERSION="+JNeuroML.JNML_VERSION));
     	
     	String jnmlPom = FileUtil.readStringFromFile(new File("pom.xml"));
     	
-    	assert(jnmlPom.contains(JNeuroML.JNML_VERSION));
+    	assert(jnmlPom.contains("<version>"+JNeuroML.JNML_VERSION+"</version>"));
     	
     }
 }

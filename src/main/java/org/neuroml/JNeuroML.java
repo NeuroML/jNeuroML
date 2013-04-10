@@ -40,11 +40,13 @@ public class JNeuroML {
 
 	public static String JNML_SCRIPT = "jnml";
 	
-	public static String JNML_VERSION = "0.2.6";
+	public static String JNML_VERSION = "0.2.7";
 	
 	public static String HELP_FLAG = "-help";
 	public static String HELP_FLAG_SHORT = "-h";
 	public static String HELP_FLAG_SHORT_Q = "-?";
+
+	public static String NO_GUI_FLAG = "-nogui";
 
 	public static String VALIDATE_FLAG = "-validate";
 	public static String VALIDATE_V1_FLAG = "-validatev1";
@@ -63,6 +65,8 @@ public class JNeuroML {
 	static String usage = "Usage: \n\n" +
             "    "+JNML_SCRIPT+" LEMSFile.xml\n" +
             "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+NO_GUI_FLAG+"\n" +
+            "           As above, parse and execute the model and save results, but don't show GUI\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+GRAPH_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_EXPORT_FLAG+"\n" +
@@ -105,7 +109,7 @@ public class JNeuroML {
 
 	public static void main(String[] args) throws SBMLException, org.sbml.jsbml.text.parser.ParseException {
 
-		System.out.println("Running jNeuroML v"+JNML_VERSION);
+		System.out.println(" jNeuroML v"+JNML_VERSION);
 		//TODO: add from jar instead!
 		String jnmlHome = System.getenv("JNML_HOME");
         if (jnmlHome!=null) {
@@ -157,9 +161,27 @@ public class JNeuroML {
 				
 			} else if (args.length == 2) {
 				
-		    ///  Validation
+			    ///  Run LEMS with no gui
+
+				if  (args[1].equals(NO_GUI_FLAG)) {
+					
+					File lemsFile = new File(args[0]);
+					if (!lemsFile.exists()) {
+						System.err.println("File does not exist: "+args[0]);
+						showUsage();
+						System.exit(1);
+					}
+	
+					System.out.println("Loading: "+lemsFile.getAbsolutePath()+" with jLEMS, NO GUI mode...");
+			    	FileResultWriterFactory.initialize();
+					DefaultLogger.initialize();
+							        
+					
+					Main.main(args);
 				
-				if  (args[0].equals(VALIDATE_FLAG)) {
+			    ///  Validation
+				
+				} else if  (args[0].equals(VALIDATE_FLAG)) {
 					File xmlFile = new File(args[1]);
 					if (!xmlFile.exists()) {
 						System.err.println("File does not exist: "+args[1]);

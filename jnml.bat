@@ -1,4 +1,4 @@
-set JNML_VERSION=0.2.6
+set JNML_VERSION=0.2.7
 
 set CLASSPATH=target\jNeuroML-%JNML_VERSION%-jar-with-dependencies.jar;%JNML_HOME%\jNeuroML-%JNML_VERSION%-jar-with-dependencies.jar
 
