@@ -36,7 +36,7 @@ public class JNeuroMLTest
 
     public void testVersions() throws IOException
     {
-    	System.out.println("Running a test on version usage...");
+    	System.out.println("Running a test on version usage, making all references to versions are: v"+JNeuroML.JNML_VERSION+"...");
 
     	String jnmlScript = FileUtil.readStringFromFile(new File("jnml"));
     	
