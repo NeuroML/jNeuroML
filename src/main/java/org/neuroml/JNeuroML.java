@@ -39,9 +39,9 @@ import org.xml.sax.SAXException;
 public class JNeuroML {
 
 	public static String JNML_SCRIPT = "jnml";
-	
+
 	public static String JNML_VERSION = "0.2.7";
-	
+
 	public static String HELP_FLAG = "-help";
 	public static String HELP_FLAG_SHORT = "-h";
 	public static String HELP_FLAG_SHORT_Q = "-?";
@@ -54,14 +54,14 @@ public class JNeuroML {
 	public static String XPP_EXPORT_FLAG = "-xpp";
 
 	public static String BRIAN_EXPORT_FLAG = "-brian";
-	
+
 	public static String NEURON_EXPORT_FLAG = "-neuron";
 
 	public static String SBML_IMPORT_FLAG = "-sbml-import";
 	public static String SBML_EXPORT_FLAG = "-sbml";
-	
+
 	public static String GRAPH_FLAG = "-graph";
-	
+
 	static String usage = "Usage: \n\n" +
             "    "+JNML_SCRIPT+" LEMSFile.xml\n" +
             "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n"+
@@ -75,6 +75,8 @@ public class JNeuroML {
             "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+SBML_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL**)\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+NEURON_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" "+SBML_IMPORT_FLAG+" SBMLFile.sbml duration dt\n" +
             "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_FLAG+" NMLFile.nml\n" +
@@ -89,14 +91,14 @@ public class JNeuroML {
 	public static void showUsage() {
 		System.out.println(usage);
 	}
-	
+
 	/*
 	private static Lems loadLemsFile(String filename) throws ContentError, ParseError, ParseException, BuildException, XMLException {
 		File lemsFile = new File(filename);
 
 		return loadLemsFile(lemsFile);
 	}*/
-		
+
 	private static Lems loadLemsFile(File lemsFile) throws ContentError, ParseError, ParseException, BuildException, XMLException {
 
 		if (!lemsFile.exists()) {
@@ -119,17 +121,17 @@ public class JNeuroML {
 			File nmlCoreTypesDir = new File(System.getenv("HOME")+"/NeuroML2/NeuroML2CoreTypes");
 			FileInclusionReader.addSearchPath(nmlCoreTypesDir);
         }
-        
+
 		try {
 			if (args.length == 0) {
 				System.err.println("Error, no arguments to "+JNML_SCRIPT);
 				showUsage();
 				System.exit(1);
-				
+
 		// One argument
-				
+
 			} else if (args.length == 1) {
-				
+
 				if (args[0].startsWith("-")) {
 					if (args[0].equals(HELP_FLAG) || args[0].equals(HELP_FLAG_SHORT) || args[0].equals(HELP_FLAG_SHORT_Q)) {
 						showUsage();
@@ -146,41 +148,41 @@ public class JNeuroML {
 						showUsage();
 						System.exit(1);
 					}
-	
+
 					System.out.println("Loading: "+lemsFile.getAbsolutePath()+" with jLEMS...");
 			    	FileResultWriterFactory.initialize();
 			    	SwingDataViewerFactory.initialize();
 					DefaultLogger.initialize();
-							        
-					
+
+
 					Main.main(args);
-					
+
 				}
 
 		// Two arguments
-				
+
 			} else if (args.length == 2) {
-				
+
 			    ///  Run LEMS with no gui
 
 				if  (args[1].equals(NO_GUI_FLAG)) {
-					
+
 					File lemsFile = new File(args[0]);
 					if (!lemsFile.exists()) {
 						System.err.println("File does not exist: "+args[0]);
 						showUsage();
 						System.exit(1);
 					}
-	
+
 					System.out.println("Loading: "+lemsFile.getAbsolutePath()+" with jLEMS, NO GUI mode...");
 			    	FileResultWriterFactory.initialize();
 					DefaultLogger.initialize();
-							        
-					
+
+
 					Main.main(args);
-				
+
 			    ///  Validation
-				
+
 				} else if  (args[0].equals(VALIDATE_FLAG)) {
 					File xmlFile = new File(args[1]);
 					if (!xmlFile.exists()) {
@@ -199,62 +201,62 @@ public class JNeuroML {
 					}
 					NeuroML1Validator nmlv =  new NeuroML1Validator();
 					nmlv.validateWithTests(xmlFile);
-					
+
 
 			///  exporting formats
-					
+
 				} else if (args[1].equals(SBML_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
-	
+
 					SBMLWriter sbmlw = new SBMLWriter(lems);
 			        String sbml = sbmlw.getMainScript();
-	
+
 			        File sbmlFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".sbml"));
 			        System.out.println("Writing to: "+sbmlFile.getAbsolutePath());
-			        
+
 			        FileUtil.writeStringToFile(sbml, sbmlFile);
-					
+
 				} else if (args[1].equals(XPP_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
-	
+
 					XppWriter xppw = new XppWriter(lems);
 			        String ode = xppw.getMainScript();
-	
+
 			        File odeFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".ode"));
 			        System.out.println("Writing to: "+odeFile.getAbsolutePath());
-			        
+
 			        FileUtil.writeStringToFile(ode, odeFile);
-					
+
 				} else if (args[1].equals(NEURON_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
-	
+
 					NeuronWriter nw = new NeuronWriter(lems);
 			        String nrn = nw.getMainScript();
-	
+
 			        File nrnFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", "_nrn.py"));
 			        System.out.println("Writing to: "+nrnFile.getAbsolutePath());
-			        
+
 			        FileUtil.writeStringToFile(nrn, nrnFile);
-					
+
 				} else if (args[1].equals(BRIAN_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
-	
+
 					BrianWriter bw = new BrianWriter(lems);
 			        String br = bw.getMainScript();
-	
+
 			        File brFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", "_brian.py"));
 			        System.out.println("Writing to: "+brFile.getAbsolutePath());
-			        
+
 			        FileUtil.writeStringToFile(br, brFile);
-					
+
 				} else if (args[1].equals(GRAPH_FLAG)) {
 
 					File lemsFile = new File(args[0]);
@@ -262,11 +264,11 @@ public class JNeuroML {
 
 					GraphWriter gw = new GraphWriter(lems);
 			        String gv = gw.getMainScript();
-	
+
 			        File gvFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".gv"));
 			        System.out.println("Writing to: "+gvFile.getAbsolutePath());
-			        
-			        
+
+
 			        FileUtil.writeStringToFile(gv, gvFile);
 			        String imgFile = gvFile.getAbsolutePath().replace(".gv", ".png");
 
@@ -275,7 +277,7 @@ public class JNeuroML {
                     Runtime run = Runtime.getRuntime();
                     Process pr = run.exec(cmd, env, gvFile.getParentFile());
 
-                    
+
                     try {
 						pr.waitFor();
 
@@ -284,27 +286,27 @@ public class JNeuroML {
 	                    while ((line = buf.readLine()) != null) {
 	                        System.out.println("----" + line);
 	                    }
-	
+
 	                    System.out.println("Have successfully run command: " + cmd);
-	                    
+
                     } catch (InterruptedException e) {
 
 	                    System.out.println("Error running command: " + cmd);
 						e.printStackTrace();
 					}
-					
+
 				} else {
 					System.err.println("Unrecognised arguments: "+args[0]+" "+args[1]);
 					showUsage();
 					System.exit(1);
-					
+
 				}
 			} else if (args.length == 4) {
 
 				///  importing formats
-				
+
 				if (args[0].equals(SBML_IMPORT_FLAG)) {
-					
+
 					File sbmlFile = new File(args[1]);
 					if (!sbmlFile.exists()) {
 						System.err.println("File does not exist: "+sbmlFile.getAbsolutePath());
@@ -318,26 +320,26 @@ public class JNeuroML {
 					String newName = sbmlFile.getName().replaceAll(".xml", "_LEMS.xml");
 					newName = newName.replaceAll(".sbml", "_LEMS.xml");
 			        File lemsFile = new File(sbmlFile.getParentFile(),newName);
-			        
+
 			        System.out.println("Writing to: "+lemsFile.getAbsolutePath());
 			        String lemsString  = XMLSerializer.serialize(lems);
-			        
+
 			        FileUtil.writeStringToFile(lemsString, lemsFile);
-					
+
 				} else {
 					System.err.println("Unrecognised arguments: "+args[0]+" "+args[1]+" "+args[2]+" "+args[3]);
 					showUsage();
 					System.exit(1);
-					
+
 				}
-						
+
 			} else {
 				System.err.println("Unrecognised arguments! ");
 				showUsage();
 				System.exit(1);
-				
+
 			}
-		
+
 		} catch (ConnectionError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -371,7 +373,7 @@ public class JNeuroML {
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 	}
-	
+
 }
