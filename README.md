@@ -16,6 +16,8 @@ To get a precompiled binary for jNeuroML, type:
     git clone git://github.com/NeuroML/NeuroML2.git
     cd jNeuroMLJar
 
+and you have everything you need.
+
 Typing ./jnml (or jnml.bat on Windows) will list the options available. Some of the current options include:
 
     ./jnml -validate MyNeuroML.nml              (validate NeuroML 2 document against the current schema)
@@ -23,7 +25,10 @@ Typing ./jnml (or jnml.bat on Windows) will list the options available. Some of 
     ./jnml MyLEMS.xml                           (parse & simulate a LEMS model using jLEMS)
     ./jnml MyLEMS.xml -graph                    (generate png of structure of LEMS model using GraphViz)
 
-Export and import features for NEURON, SBML, Brian etc. are in development (https://github.com/NeuroML/org.neuroml.export and https://github.com/NeuroML/org.neuroml.import) and this functionality will be included in the jnml utility as it is developed.
+Export and import features for [NEURON](http://www.neuron.yale.edu/neuron/), [SBML](http://sbml.org), 
+[Brian](http://www.briansimulator.org/) etc. are in development (https://github.com/NeuroML/org.neuroml.export 
+and https://github.com/NeuroML/org.neuroml.import) and this functionality will be included in the jnml utility as 
+it is developed.
 
 Points to note:
 
@@ -53,7 +58,7 @@ in the jNeuroML folder will get the latest code for each repo & compile using Ma
 Use of Maven is a great way to manage versions of applications being developed in distributed repositories, 
 and will make it easy to use selected parts of this for different Java applications. For example, these packages 
 will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct](www.neuroConstruct.org) and for handling NeuroML on the 
-[Open Source Brian website](www.OpenSourceBrian.org).
+[Open Source Brain website](www.OpenSourceBrain.org).
 
 
 
