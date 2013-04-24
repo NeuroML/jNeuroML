@@ -42,9 +42,13 @@ pre_gh["Git Read-Only"]="git://github.com/"
 
 
 def execute_command_in_dir(command, directory):
-    print ">>>  Executing: (%s) in dir: %s"%(command, directory)
-    return_string = subprocess.check_output("cd %s; %s"%(directory, command), shell=True)
-    return return_string
+	sep = " ; "
+	if os.name == 'nt':
+		directory = directory.replace('/', '\\')
+		sep = " & "
+	print ">>>  Executing: (%s) in dir: %s"%(command, directory)
+	return_string = subprocess.check_output("cd %s %s%s"%(directory, sep, command), shell=True)
+	return return_string
 
 for repo in all_repos:
 
@@ -90,10 +94,14 @@ if mode is "update":
     print
     print "You should be able to run some examples straight away using jnml: "
     print
-    print "  cd ../jNeuroML"
-    print "  ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml"
-    print
-    print "  ./jnml ../NeuroML2/NeuroML2CoreTypes/LEMS_NML2_Ex8_AdEx.xml"
+    if os.name is not 'nt':
+        print "  ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml"
+        print
+        print "  ./jnml ../NeuroML2/NeuroML2CoreTypes/LEMS_NML2_Ex8_AdEx.xml"
+    else:
+        print "  jnml -validate ..\NeuroML2\examples\NML2_FullNeuroML.nml"
+        print
+        print "  jnml ..\NeuroML2\NeuroML2CoreTypes\LEMS_NML2_Ex8_AdEx.xml"
     print
 
 if mode is "clean":
