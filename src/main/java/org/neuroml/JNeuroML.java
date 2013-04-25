@@ -8,11 +8,14 @@ import java.io.InputStreamReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import org.lemsml.jlems.ResourceRoot;
 import org.lemsml.jlems.core.expression.ParseError;
+import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.run.ConnectionError;
 import org.lemsml.jlems.core.run.RuntimeError;
 import org.lemsml.jlems.core.sim.ContentError;
 import org.lemsml.jlems.core.sim.ParseException;
+import org.lemsml.jlems.core.sim.Sim;
 import org.lemsml.jlems.core.type.BuildException;
 import org.lemsml.jlems.core.type.Lems;
 import org.lemsml.jlems.core.xml.XMLException;
@@ -20,7 +23,10 @@ import org.lemsml.jlems.io.Main;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.reader.FileInclusionReader;
+import org.lemsml.jlems.io.reader.JarResourceInclusionReader;
+import org.lemsml.jlems.io.reader.PathInclusionReader;
 import org.lemsml.jlems.io.util.FileUtil;
+import org.lemsml.jlems.io.util.JUtil;
 import org.lemsml.jlems.io.xmlio.XMLSerializer;
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
@@ -40,7 +46,7 @@ public class JNeuroML {
 
 	public static String JNML_SCRIPT = "jnml";
 
-	public static String JNML_VERSION = "0.2.8";
+	public static String JNML_VERSION = "0.2.9";
 
 	public static String HELP_FLAG = "-help";
 	public static String HELP_FLAG_SHORT = "-h";
@@ -109,10 +115,14 @@ public class JNeuroML {
 		return Utils.loadLemsFile(lemsFile);
 	}
 
-	public static void main(String[] args) throws SBMLException, org.sbml.jsbml.text.parser.ParseException {
-
+	public static void main(String[] args) throws SBMLException, org.sbml.jsbml.text.parser.ParseException, RuntimeError {
 		System.out.println(" jNeuroML v"+JNML_VERSION);
-		//TODO: add from jar instead!
+		
+		
+
+		//System.out.println("File: "+JUtil.getRelativeResource("/NeuroML2CoreTypes/Cells.xml"));
+		
+		/*
 		String jnmlHome = System.getenv("JNML_HOME");
         if (jnmlHome!=null) {
 			File nmlCoreTypesDir = new File(jnmlHome+"/../NeuroML2/NeuroML2CoreTypes");
@@ -120,7 +130,7 @@ public class JNeuroML {
         } else {
 			File nmlCoreTypesDir = new File(System.getenv("HOME")+"/NeuroML2/NeuroML2CoreTypes");
 			FileInclusionReader.addSearchPath(nmlCoreTypesDir);
-        }
+        }*/
 
 		try {
 			if (args.length == 0) {
@@ -154,8 +164,8 @@ public class JNeuroML {
 			    	SwingDataViewerFactory.initialize();
 					DefaultLogger.initialize();
 
-
-					Main.main(args);
+					runLemsFile(lemsFile);
+					//Main.main(args);
 
 				}
 
@@ -178,8 +188,8 @@ public class JNeuroML {
 			    	FileResultWriterFactory.initialize();
 					DefaultLogger.initialize();
 
-
-					Main.main(args);
+					runLemsFile(lemsFile);
+					//Main.main(args);
 
 			    ///  Validation
 
@@ -346,9 +356,6 @@ public class JNeuroML {
 		} catch (ContentError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (RuntimeError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (ParseError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -375,5 +382,22 @@ public class JNeuroML {
 			e.printStackTrace();
 		}
 	}
+	
+	private static void runLemsFile(File f) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError{
+
+		JarResourceInclusionReader.addSearchPathInJar("/NeuroML2CoreTypes");
+		JarResourceInclusionReader.addSearchPath(f.getParentFile());
+		
+		JarResourceInclusionReader jrir = new JarResourceInclusionReader(f);
+		
+        Sim sim = new Sim(jrir.read());
+            
+        sim.readModel();
+        sim.build();
+    	sim.run();
+    	E.info("Finished reading, building, running & displaying LEMS model");
+		
+	}
+	
 
 }
