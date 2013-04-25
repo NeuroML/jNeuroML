@@ -71,7 +71,7 @@ for repo in all_repos:
 
         return_string = execute_command_in_dir("git pull", local_dir)
 
-        runMvnInstall = runMvnInstall or ("Already up-to-date" not in return_string) or not op.isdir(local_dir+os.sep+"target")
+        runMvnInstall = runMvnInstall or ("Already up-to-date" not in return_string) or not op.isdir(local_dir+os.sep+"target") or ("jNeuroML" in repo)
 
         if repo in java_repos and runMvnInstall:
             command = "mvn install"
