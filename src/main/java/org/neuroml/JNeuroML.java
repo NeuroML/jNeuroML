@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import org.lemsml.jlems.ResourceRoot;
 import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.run.ConnectionError;
@@ -19,15 +18,13 @@ import org.lemsml.jlems.core.sim.Sim;
 import org.lemsml.jlems.core.type.BuildException;
 import org.lemsml.jlems.core.type.Lems;
 import org.lemsml.jlems.core.xml.XMLException;
-import org.lemsml.jlems.io.Main;
+import org.lemsml.jlems.io.IOUtil;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
-import org.lemsml.jlems.io.reader.FileInclusionReader;
 import org.lemsml.jlems.io.reader.JarResourceInclusionReader;
-import org.lemsml.jlems.io.reader.PathInclusionReader;
 import org.lemsml.jlems.io.util.FileUtil;
-import org.lemsml.jlems.io.util.JUtil;
 import org.lemsml.jlems.io.xmlio.XMLSerializer;
+import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.graph.GraphWriter;
@@ -38,7 +35,6 @@ import org.neuroml.importer.sbml.SBMLImporter;
 import org.neuroml.model.util.NeuroML2Validator;
 import org.neuroml1.model.util.NeuroML1Validator;
 import org.sbml.jsbml.SBMLException;
-import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.xml.sax.SAXException;
 
 
@@ -46,7 +42,7 @@ public class JNeuroML {
 
 	public static String JNML_SCRIPT = "jnml";
 
-	public static String JNML_VERSION = "0.2.9";
+	public static String JNML_VERSION = "0.3.0";
 
 	public static String HELP_FLAG = "-help";
 	public static String HELP_FLAG_SHORT = "-h";
@@ -395,7 +391,9 @@ public class JNeuroML {
         sim.readModel();
         sim.build();
     	sim.run();
-    	E.info("Finished reading, building, running & displaying LEMS model");
+    	E.info("Finished reading, building, running and displaying LEMS model");
+
+        IOUtil.saveReportAndTimesFile(sim);
 		
 	}
 	
