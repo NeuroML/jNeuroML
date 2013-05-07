@@ -3,6 +3,7 @@ package org.neuroml;
 import java.io.File;
 import java.io.IOException;
 
+import org.lemsml.jlems.core.xml.XMLElementReader;
 import org.lemsml.jlems.io.util.FileUtil;
 
 import junit.framework.Test;
@@ -47,8 +48,9 @@ public class JNeuroMLTest
     	assert(jnmlBat.contains("JNML_VERSION="+JNeuroML.JNML_VERSION));
     	
     	String jnmlPom = FileUtil.readStringFromFile(new File("pom.xml"));
-    	
-    	assert(jnmlPom.contains("<version>"+JNeuroML.JNML_VERSION+"</version>"));
+
+    	XMLElementReader xer = new XMLElementReader(jnmlPom);
+    	assertEquals(JNeuroML.JNML_VERSION, xer.getRootElement().getElement("version").getBody());
     	
     }
 }

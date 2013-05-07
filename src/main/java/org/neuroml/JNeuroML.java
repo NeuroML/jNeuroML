@@ -42,7 +42,7 @@ public class JNeuroML {
 
 	public static String JNML_SCRIPT = "jnml";
 
-	public static String JNML_VERSION = "0.3.0";
+	public static String JNML_VERSION = "0.3.1";
 
 	public static String HELP_FLAG = "-help";
 	public static String HELP_FLAG_SHORT = "-h";
@@ -101,14 +101,14 @@ public class JNeuroML {
 		return loadLemsFile(lemsFile);
 	}*/
 
-	private static Lems loadLemsFile(File lemsFile) throws ContentError, ParseError, ParseException, BuildException, XMLException {
+	private static Lems loadLemsFile(File lemsFile) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
 
 		if (!lemsFile.exists()) {
 			System.err.println("File does not exist: "+lemsFile.getAbsolutePath());
 			showUsage();
 			System.exit(1);
 		}
-		return Utils.loadLemsFile(lemsFile);
+		return Utils.readLemsNeuroMLFile(lemsFile).getLems();
 	}
 
 	public static void main(String[] args) throws SBMLException, org.sbml.jsbml.text.parser.ParseException, RuntimeError {
@@ -321,16 +321,10 @@ public class JNeuroML {
 					}
 					float duration = Float.parseFloat(args[2]);
 					float dt = Float.parseFloat(args[3]);
-					Lems lems = SBMLImporter.convertSBMLToLEMS(sbmlFile, duration, dt);
+			
+			        File lemsFile = SBMLImporter.convertSBMLToLEMSFile(sbmlFile, duration, dt, true);
 
-					String newName = sbmlFile.getName().replaceAll(".xml", "_LEMS.xml");
-					newName = newName.replaceAll(".sbml", "_LEMS.xml");
-			        File lemsFile = new File(sbmlFile.getParentFile(),newName);
-
-			        System.out.println("Writing to: "+lemsFile.getAbsolutePath());
-			        String lemsString  = XMLSerializer.serialize(lems);
-
-			        FileUtil.writeStringToFile(lemsString, lemsFile);
+			        System.out.println("Written to: "+lemsFile.getAbsolutePath());
 
 				} else {
 					System.err.println("Unrecognised arguments: "+args[0]+" "+args[1]+" "+args[2]+" "+args[3]);
@@ -376,19 +370,18 @@ public class JNeuroML {
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-	
-	private static void runLemsFile(File f) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError{
 
-		JarResourceInclusionReader.addSearchPathInJar("/NeuroML2CoreTypes");
-		JarResourceInclusionReader.addSearchPath(f.getParentFile());
+
+	
+	public static void runLemsFile(File f) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
+
 		
-		JarResourceInclusionReader jrir = new JarResourceInclusionReader(f);
-		
-        Sim sim = new Sim(jrir.read());
-            
-        sim.readModel();
+        Sim sim = Utils.readLemsNeuroMLFile(f);
         sim.build();
     	sim.run();
     	E.info("Finished reading, building, running and displaying LEMS model");
