@@ -21,9 +21,7 @@ import org.lemsml.jlems.core.xml.XMLException;
 import org.lemsml.jlems.io.IOUtil;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
-import org.lemsml.jlems.io.reader.JarResourceInclusionReader;
 import org.lemsml.jlems.io.util.FileUtil;
-import org.lemsml.jlems.io.xmlio.XMLSerializer;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
@@ -197,7 +195,14 @@ public class JNeuroML {
 						System.exit(1);
 					}
 					NeuroML2Validator nmlv =  new NeuroML2Validator();
-					nmlv.validateWithTests(xmlFile);
+					String res = nmlv.validateWithTests(xmlFile);
+					if (res.equals(NeuroML2Validator.VALID_AGAINST_SCHEMA_AND_TESTS)) {
+				        System.out.println(res);
+					} else {
+						System.err.println(res);
+					}
+						
+					
 				} else if (args[0].equals(VALIDATE_V1_FLAG)) {
 					File xmlFile = new File(args[1]);
 					if (!xmlFile.exists()) {
