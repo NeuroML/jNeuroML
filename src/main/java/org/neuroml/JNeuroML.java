@@ -28,9 +28,12 @@ import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.sbml.SBMLWriter;
+import org.neuroml.export.svg.SVGWriter;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.importer.sbml.SBMLImporter;
+import org.neuroml.model.NeuroMLDocument;
 import org.neuroml.model.util.NeuroML2Validator;
+import org.neuroml.model.util.NeuroMLConverter;
 import org.neuroml1.model.util.NeuroML1Validator;
 import org.sbml.jsbml.SBMLException;
 import org.xml.sax.SAXException;
@@ -40,7 +43,7 @@ public class JNeuroML {
 
 	public static String JNML_SCRIPT = "jnml";
 
-	public static String JNML_VERSION = "0.3.1";
+	public static String JNML_VERSION = "0.3.2";
 
 	public static String HELP_FLAG = "-help";
 	public static String HELP_FLAG_SHORT = "-h";
@@ -61,6 +64,8 @@ public class JNeuroML {
 	public static String SBML_EXPORT_FLAG = "-sbml";
 
 	public static String GRAPH_FLAG = "-graph";
+	
+	public static String SVG_FLAG = "-svg";
 
 	static String usage = "Usage: \n\n" +
             "    "+JNML_SCRIPT+" LEMSFile.xml\n" +
@@ -79,6 +84,8 @@ public class JNeuroML {
             "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" "+SBML_IMPORT_FLAG+" SBMLFile.sbml duration dt\n" +
             "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (**EXPERIMENTAL**)\n\n"+
+            "    "+JNML_SCRIPT+" NMLFile.nml "+SVG_FLAG+"\n" +
+            "           Load NMLFile.nml and convert cell(s) to SVG image format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_FLAG+" NMLFile.nml\n" +
             "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_V1_FLAG+" NMLFile.nml\n" +
@@ -195,11 +202,13 @@ public class JNeuroML {
 						System.exit(1);
 					}
 					NeuroML2Validator nmlv =  new NeuroML2Validator();
-					String res = nmlv.validateWithTests(xmlFile);
-					if (res.equals(NeuroML2Validator.VALID_AGAINST_SCHEMA_AND_TESTS)) {
-				        System.out.println(res);
+					nmlv.validateWithTests(xmlFile);
+					if (nmlv.isValid() && !nmlv.hasWarnings()) {
+				        System.out.println(nmlv.getValidity());
+				        System.out.println(nmlv.getWarnings());
 					} else {
-						System.err.println(res);
+				        System.err.println(nmlv.getValidity());
+				        System.err.println(nmlv.getWarnings());
 					}
 						
 					
@@ -305,9 +314,27 @@ public class JNeuroML {
 	                    System.out.println("Error running command: " + cmd);
 						e.printStackTrace();
 					}
+				} else if (args[1].equals(SVG_FLAG)) {
+
+    					File nmlFile = new File(args[0]);
+    					
+    					NeuroMLConverter nmlc = new NeuroMLConverter();
+    			    	NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile);
+
+    			    	SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getAbsolutePath());
+    			        String svg = svgw.getMainScript();
+    			        
+    			        String newName = nmlFile.getName().replaceAll(".nml", ".svg");
+    			        newName = newName.replaceAll(".xml", ".svg");
+    			        
+    			        File svgFile = new File(nmlFile.getParentFile(),newName);
+    			        System.out.println("Writing to: "+svgFile.getAbsolutePath());
+
+    			        FileUtil.writeStringToFile(svg, svgFile);
+
 
 				} else {
-					System.err.println("Unrecognised arguments: "+args[0]+" "+args[1]);
+					System.err.println("Unrecognised 2 arguments: "+args[0]+" "+args[1]);
 					showUsage();
 					System.exit(1);
 
@@ -332,7 +359,7 @@ public class JNeuroML {
 			        System.out.println("Written to: "+lemsFile.getAbsolutePath());
 
 				} else {
-					System.err.println("Unrecognised arguments: "+args[0]+" "+args[1]+" "+args[2]+" "+args[3]);
+					System.err.println("Unrecognised 4 arguments: "+args[0]+" "+args[1]+" "+args[2]+" "+args[3]);
 					showUsage();
 					System.exit(1);
 
