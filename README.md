@@ -13,7 +13,6 @@ Binary distribution
 To get a precompiled binary for jNeuroML, type:
 
     svn checkout svn://svn.code.sf.net/p/neuroml/code/jNeuroMLJar
-    git clone git://github.com/NeuroML/NeuroML2.git
     cd jNeuroMLJar
 
 and you have everything you need.
