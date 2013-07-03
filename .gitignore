@@ -1,3 +1,5 @@
+/updateVersions.sh
+/jnml~
 /cleanMvn.sh
 /quickrelease.sh
 /release.sh
@@ -6,3 +8,4 @@ target
 src/test/resources/tmp
 src/main/java/META-INF/MANIFEST.MF
 .DS_Store
+*.*~
