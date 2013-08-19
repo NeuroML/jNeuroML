@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import org.lemsml.export.sedml.SEDMLWriter;
+import org.lemsml.export.sedml.SEDMLWriter.ModelFormat;
 import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.run.ConnectionError;
@@ -58,6 +60,8 @@ public class JNeuroML {
 
 	public static String BRIAN_EXPORT_FLAG = "-brian";
 
+	public static String SEDML_EXPORT_FLAG = "-sedml";
+
 	public static String NEURON_EXPORT_FLAG = "-neuron";
 
 	public static String SBML_IMPORT_FLAG = "-sbml-import";
@@ -75,6 +79,8 @@ public class JNeuroML {
             "    "+JNML_SCRIPT+" LEMSFile.xml "+GRAPH_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+SEDML_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+BRIAN_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL**)\n\n"+
@@ -250,6 +256,19 @@ public class JNeuroML {
 			        System.out.println("Writing to: "+odeFile.getAbsolutePath());
 
 			        FileUtil.writeStringToFile(ode, odeFile);
+
+				} else if (args[1].equals(SEDML_EXPORT_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+
+					SEDMLWriter sedw = new SEDMLWriter(lems, lemsFile.getAbsolutePath(), SEDMLWriter.ModelFormat.NEUROML2);
+			        String sed = sedw.getMainScript();
+
+			        File sedFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".sedml"));
+			        System.out.println("Writing to: "+sedFile.getAbsolutePath());
+
+			        FileUtil.writeStringToFile(sed, sedFile);
 
 				} else if (args[1].equals(NEURON_EXPORT_FLAG)) {
 
