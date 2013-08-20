@@ -78,9 +78,9 @@ public class JNeuroML {
             "           As above, parse and execute the model and save results, but don't show GUI\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+GRAPH_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"+
-            "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_EXPORT_FLAG+"\n" +
-            "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+SEDML_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+BRIAN_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL**)\n\n"+
