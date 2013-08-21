@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.lemsml.export.sedml.SEDMLWriter;
 import org.lemsml.export.sedml.SEDMLWriter.ModelFormat;
+import org.lemsml.export.som.SOMWriter;
 import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.run.ConnectionError;
@@ -59,6 +60,8 @@ public class JNeuroML {
 	public static String XPP_EXPORT_FLAG = "-xpp";
 
 	public static String BRIAN_EXPORT_FLAG = "-brian";
+	
+	public static String SOM_EXPORT_FLAG = "-som";   // Subject to change/removal without notice!!
 
 	public static String SEDML_EXPORT_FLAG = "-sedml";
 
@@ -270,6 +273,22 @@ public class JNeuroML {
 
 			        FileUtil.writeStringToFile(sed, sedFile);
 
+			       
+			    	
+
+				} else if (args[1].equals(SOM_EXPORT_FLAG)) {  // Subject to change/removal without notice!!
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+
+					SOMWriter somw = new SOMWriter(lems);
+			        String som = somw.getMainScript();
+
+			        File somFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".json"));
+			        System.out.println("Writing to: "+somFile.getAbsolutePath());
+
+			        FileUtil.writeStringToFile(som, somFile);
+			        
 				} else if (args[1].equals(NEURON_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
