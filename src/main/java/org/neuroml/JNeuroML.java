@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import org.lemsml.export.matlab.MatlabWriter;
+import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
 import org.lemsml.export.sedml.SEDMLWriter.ModelFormat;
 import org.lemsml.export.som.SOMWriter;
@@ -60,6 +62,11 @@ public class JNeuroML {
 	public static String XPP_EXPORT_FLAG = "-xpp";
 
 	public static String BRIAN_EXPORT_FLAG = "-brian";
+
+	public static String MATLAB_EXPORT_FLAG = "-matlab";
+	public static String MATLAB_EULER_EXPORT_FLAG = "-matlab-euler";
+
+	public static String MODELICA_EXPORT_FLAG = "-modelica";
 	
 	public static String SOM_EXPORT_FLAG = "-som";   // Subject to change/removal without notice!!
 
@@ -273,8 +280,49 @@ public class JNeuroML {
 
 			        FileUtil.writeStringToFile(sed, sedFile);
 
-			       
-			    	
+
+				} else if (args[1].equals(MATLAB_EXPORT_FLAG) || args[1].equals(MATLAB_EULER_EXPORT_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+
+					MatlabWriter matlabw = new MatlabWriter(lems);
+					if (args[1].equals(MATLAB_EULER_EXPORT_FLAG))
+					{
+						matlabw.setMethod(MatlabWriter.Method.EULER);
+					}
+			        String matlab = matlabw.getMainScript();
+
+			        String filename = lemsFile.getName().replaceAll("-", "_").replaceAll(".xml", ".m");
+			        
+			        if (!Character.isLetter(filename.charAt(0)))
+			        	filename = "M_"+filename;
+			        
+			        File matlabFile = new File(lemsFile.getParentFile(),filename);
+			        
+			        System.out.println("Writing to: "+matlabFile.getAbsolutePath());
+
+			        FileUtil.writeStringToFile(matlab, matlabFile);
+
+
+				} else if (args[1].equals(MODELICA_EXPORT_FLAG)) {  // Subject to change/removal without notice!!
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+
+					ModelicaWriter modw = new ModelicaWriter(lems);
+					File tgtDir = lemsFile.getAbsoluteFile().getParentFile();
+					
+			        System.out.println("Converting "+lemsFile+" to Modelica to: "+tgtDir);
+			        
+					String main = modw.generateMainScriptAndCompFiles(tgtDir);
+					
+			        System.out.println(main);
+					for (File genFile: modw.allGeneratedFiles)
+			        {
+				        System.out.println("Writing to: "+genFile.getAbsolutePath());
+			        }
+
 
 				} else if (args[1].equals(SOM_EXPORT_FLAG)) {  // Subject to change/removal without notice!!
 
