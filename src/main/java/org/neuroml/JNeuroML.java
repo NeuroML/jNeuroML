@@ -11,10 +11,10 @@ import javax.xml.stream.XMLStreamException;
 import org.lemsml.export.matlab.MatlabWriter;
 import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
-import org.lemsml.export.sedml.SEDMLWriter.ModelFormat;
 import org.lemsml.export.som.SOMWriter;
 import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
+import org.lemsml.jlems.core.logging.MinimalMessageHandler;
 import org.lemsml.jlems.core.run.ConnectionError;
 import org.lemsml.jlems.core.run.RuntimeError;
 import org.lemsml.jlems.core.sim.ContentError;
@@ -55,6 +55,8 @@ public class JNeuroML {
 	public static String HELP_FLAG_SHORT_Q = "-?";
 
 	public static String NO_GUI_FLAG = "-nogui";
+	
+	public static String NO_RUN_FLAG = "-norun";
 
 	public static String VALIDATE_FLAG = "-validate";
 	public static String VALIDATE_V1_FLAG = "-validatev1";
@@ -86,6 +88,8 @@ public class JNeuroML {
             "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+NO_GUI_FLAG+"\n" +
             "           As above, parse and execute the model and save results, but don't show GUI\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+NO_RUN_FLAG+"\n" +
+            "           Parse the LEMS file, but don't run the simulation\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+GRAPH_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+SEDML_EXPORT_FLAG+"\n" +
@@ -133,21 +137,11 @@ public class JNeuroML {
 	}
 
 	public static void main(String[] args) throws SBMLException, org.sbml.jsbml.text.parser.ParseException, RuntimeError {
-		System.out.println(" jNeuroML v"+JNML_VERSION);
-		
-		
 
-		//System.out.println("File: "+JUtil.getRelativeResource("/NeuroML2CoreTypes/Cells.xml"));
+		MinimalMessageHandler.setVeryMinimal(true);
+		E.setDebug(false);
 		
-		/*
-		String jnmlHome = System.getenv("JNML_HOME");
-        if (jnmlHome!=null) {
-			File nmlCoreTypesDir = new File(jnmlHome+"/../NeuroML2/NeuroML2CoreTypes");
-			FileInclusionReader.addSearchPath(nmlCoreTypesDir);
-        } else {
-			File nmlCoreTypesDir = new File(System.getenv("HOME")+"/NeuroML2/NeuroML2CoreTypes");
-			FileInclusionReader.addSearchPath(nmlCoreTypesDir);
-        }*/
+		System.out.println(" jNeuroML v"+JNML_VERSION);
 
 		try {
 			if (args.length == 0) {
@@ -182,7 +176,6 @@ public class JNeuroML {
 					DefaultLogger.initialize();
 
 					runLemsFile(lemsFile);
-					//Main.main(args);
 
 				}
 
@@ -190,7 +183,7 @@ public class JNeuroML {
 
 			} else if (args.length == 2) {
 
-			    ///  Run LEMS with no gui
+			///  Run LEMS with no gui
 
 				if  (args[1].equals(NO_GUI_FLAG)) {
 
@@ -206,9 +199,22 @@ public class JNeuroML {
 					DefaultLogger.initialize();
 
 					runLemsFile(lemsFile);
-					//Main.main(args);
+				}
 
-			    ///  Validation
+			///  Parse LEMS & exit
+
+				else if  (args[1].equals(NO_RUN_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					if (!lemsFile.exists()) {
+						System.err.println("File does not exist: "+args[0]);
+						showUsage();
+						System.exit(1);
+					}
+
+					System.out.println("Loading: "+lemsFile.getAbsolutePath()+" with jLEMS, NO RUN mode...");
+
+					loadLemsFile(lemsFile, false);
 
 				} else if  (args[0].equals(VALIDATE_FLAG)) {
 					File xmlFile = new File(args[1]);
@@ -225,6 +231,7 @@ public class JNeuroML {
 					} else {
 				        System.err.println(nmlv.getValidity());
 				        System.err.println(nmlv.getWarnings());
+						System.exit(1);
 					}
 						
 					
@@ -399,6 +406,7 @@ public class JNeuroML {
 
 	                    System.out.println("Error running command: " + cmd);
 						e.printStackTrace();
+						System.exit(1);
 					}
 				} else if (args[1].equals(SVG_FLAG)) {
 
@@ -459,52 +467,59 @@ public class JNeuroML {
 			}
 
 		} catch (ConnectionError e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (ContentError e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (ParseError e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (BuildException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (XMLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
 
-	
-	public static void runLemsFile(File f) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
 
-		
+	public static void runLemsFile(File f) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
+		loadLemsFile(f, true);
+	}
+
+
+	public static void loadLemsFile(File f, boolean run) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
+
         Sim sim = Utils.readLemsNeuroMLFile(f);
         sim.build();
-    	sim.run();
-    	E.info("Finished reading, building, running and displaying LEMS model");
-
-        IOUtil.saveReportAndTimesFile(sim);
+        
+    	if (run) {
+    		sim.run();
+    		IOUtil.saveReportAndTimesFile(sim);
+    		E.info("Finished reading, building, running and displaying LEMS model");
+    	} else {
+    		E.info("Finished reading and building LEMS model");
+    	}
 		
 	}
 	
