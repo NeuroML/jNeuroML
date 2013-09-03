@@ -48,7 +48,7 @@ public class JNeuroML {
 
 	public static String JNML_SCRIPT = "jnml";
 
-	public static String JNML_VERSION = "0.3.5";
+	public static String JNML_VERSION = "0.4.0";
 
 	public static String HELP_FLAG = "-help";
 	public static String HELP_FLAG_SHORT = "-h";
