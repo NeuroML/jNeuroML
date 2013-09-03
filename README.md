@@ -52,7 +52,7 @@ the Java based ones using Maven. The full process may take 5-10 mins on first in
     git pull
     python getNeuroML.py
 
-in the jNeuroML folder will get the latest code for each repo & compile using Maven if necessary.
+in the jNeuroML folder will get the latest code for each repo & compile using Maven if necessary.  
 
 Use of Maven is a great way to manage versions of applications being developed in distributed repositories, 
 and will make it easy to use selected parts of this for different Java applications. For example, these packages 
