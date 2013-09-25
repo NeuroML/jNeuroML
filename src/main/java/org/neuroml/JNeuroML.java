@@ -11,7 +11,7 @@ import javax.xml.stream.XMLStreamException;
 import org.lemsml.export.matlab.MatlabWriter;
 import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
-import org.lemsml.export.som.SOMWriter;
+import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.logging.MinimalMessageHandler;
@@ -66,11 +66,11 @@ public class JNeuroML {
 	public static String BRIAN_EXPORT_FLAG = "-brian";
 
 	public static String MATLAB_EXPORT_FLAG = "-matlab";
-	public static String MATLAB_EULER_EXPORT_FLAG = "-matlab-euler";
+	//public static String MATLAB_EULER_EXPORT_FLAG = "-matlab-euler";
 
 	public static String MODELICA_EXPORT_FLAG = "-modelica";
 	
-	public static String SOM_EXPORT_FLAG = "-som";   // Subject to change/removal without notice!!
+	public static String DLEMS_EXPORT_FLAG = "-dlems";   // Subject to change/removal without notice!!
 
 	public static String SEDML_EXPORT_FLAG = "-sedml";
 
@@ -102,6 +102,8 @@ public class JNeuroML {
             "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+NEURON_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format (**EXPERIMENTAL**)\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+DLEMS_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" "+SBML_IMPORT_FLAG+" SBMLFile.sbml duration dt\n" +
             "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" NMLFile.nml "+SVG_FLAG+"\n" +
@@ -288,16 +290,16 @@ public class JNeuroML {
 			        FileUtil.writeStringToFile(sed, sedFile);
 
 
-				} else if (args[1].equals(MATLAB_EXPORT_FLAG) || args[1].equals(MATLAB_EULER_EXPORT_FLAG)) {
+				} else if (args[1].equals(MATLAB_EXPORT_FLAG)/* || args[1].equals(MATLAB_EULER_EXPORT_FLAG)*/) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
 					MatlabWriter matlabw = new MatlabWriter(lems);
-					if (args[1].equals(MATLAB_EULER_EXPORT_FLAG))
+					/*if (args[1].equals(MATLAB_EULER_EXPORT_FLAG))
 					{
 						matlabw.setMethod(MatlabWriter.Method.EULER);
-					}
+					}*/
 			        String matlab = matlabw.getMainScript();
 
 			        String filename = lemsFile.getName().replaceAll("-", "_").replaceAll(".xml", ".m");
@@ -331,18 +333,18 @@ public class JNeuroML {
 			        }
 
 
-				} else if (args[1].equals(SOM_EXPORT_FLAG)) {  // Subject to change/removal without notice!!
+				} else if (args[1].equals(DLEMS_EXPORT_FLAG)) {  // Subject to change/removal without notice!!
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					SOMWriter somw = new SOMWriter(lems);
-			        String som = somw.getMainScript();
+					DLemsWriter dlemsw = new DLemsWriter(lems);
+			        String dlems = dlemsw.getMainScript();
 
-			        File somFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".json"));
-			        System.out.println("Writing to: "+somFile.getAbsolutePath());
+			        File dlemsFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", ".json"));
+			        System.out.println("Writing to: "+dlemsFile.getAbsolutePath());
 
-			        FileUtil.writeStringToFile(som, somFile);
+			        FileUtil.writeStringToFile(dlems, dlemsFile);
 			        
 				} else if (args[1].equals(NEURON_EXPORT_FLAG)) {
 
