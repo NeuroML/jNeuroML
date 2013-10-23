@@ -31,6 +31,7 @@ import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.graph.GraphWriter;
+import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.svg.SVGWriter;
@@ -42,46 +43,49 @@ import org.neuroml.model.util.NeuroMLConverter;
 import org.neuroml1.model.util.NeuroML1Validator;
 import org.sbml.jsbml.SBMLException;
 import org.xml.sax.SAXException;
+import sun.awt.X11.InfoWindow;
 
 
 public class JNeuroML {
 
-	public static String JNML_SCRIPT = "jnml";
+	public static final String JNML_SCRIPT = "jnml";
 
-	public static String JNML_VERSION = "0.4.0";
+	public static final String JNML_VERSION = "0.4.0";
 
-	public static String HELP_FLAG = "-help";
-	public static String HELP_FLAG_SHORT = "-h";
-	public static String HELP_FLAG_SHORT_Q = "-?";
+	public static final String HELP_FLAG = "-help";
+	public static final String HELP_FLAG_SHORT = "-h";
+	public static final String HELP_FLAG_SHORT_Q = "-?";
 
-	public static String NO_GUI_FLAG = "-nogui";
+	public static final String NO_GUI_FLAG = "-nogui";
 	
-	public static String NO_RUN_FLAG = "-norun";
+	public static final String NO_RUN_FLAG = "-norun";
 
-	public static String VALIDATE_FLAG = "-validate";
-	public static String VALIDATE_V1_FLAG = "-validatev1";
+	public static final String VALIDATE_FLAG = "-validate";
+	public static final String VALIDATE_V1_FLAG = "-validatev1";
 
-	public static String XPP_EXPORT_FLAG = "-xpp";
+	public static final String INFO_EXPORT_FLAG = "-info";
+    
+	public static final String XPP_EXPORT_FLAG = "-xpp";
 
-	public static String BRIAN_EXPORT_FLAG = "-brian";
+	public static final String BRIAN_EXPORT_FLAG = "-brian";
 
-	public static String MATLAB_EXPORT_FLAG = "-matlab";
+	public static final String MATLAB_EXPORT_FLAG = "-matlab";
 	//public static String MATLAB_EULER_EXPORT_FLAG = "-matlab-euler";
 
-	public static String MODELICA_EXPORT_FLAG = "-modelica";
+	public static final String MODELICA_EXPORT_FLAG = "-modelica";
 	
-	public static String DLEMS_EXPORT_FLAG = "-dlems";   // Subject to change/removal without notice!!
+	public static final String DLEMS_EXPORT_FLAG = "-dlems";   // Subject to change/removal without notice!!
 
-	public static String SEDML_EXPORT_FLAG = "-sedml";
+	public static final String SEDML_EXPORT_FLAG = "-sedml";
 
-	public static String NEURON_EXPORT_FLAG = "-neuron";
+	public static final String NEURON_EXPORT_FLAG = "-neuron";
 
-	public static String SBML_IMPORT_FLAG = "-sbml-import";
-	public static String SBML_EXPORT_FLAG = "-sbml";
+	public static final String SBML_IMPORT_FLAG = "-sbml-import";
+	public static final String SBML_EXPORT_FLAG = "-sbml";
 
-	public static String GRAPH_FLAG = "-graph";
+	public static final String GRAPH_FLAG = "-graph";
 	
-	public static String SVG_FLAG = "-svg";
+	public static final String SVG_FLAG = "-svg";
 
 	static String usage = "Usage: \n\n" +
             "    "+JNML_SCRIPT+" LEMSFile.xml\n" +
@@ -180,6 +184,52 @@ public class JNeuroML {
 					runLemsFile(lemsFile);
 
 				}
+                
+		// Multiple arguments, starting with a validate flag
+                
+            } else if  (args[0].equals(VALIDATE_FLAG)) {
+                boolean fail = false;
+                for (int i=1;i<args.length;i++) {
+                    
+                    File xmlFile = new File(args[i]);
+                    System.out.println("Validating: "+xmlFile.getAbsolutePath());
+                    if (!xmlFile.exists()) {
+                        System.err.println("File does not exist: "+args[i]);
+                        showUsage();
+                        System.exit(1);
+                    }
+                    NeuroML2Validator nmlv =  new NeuroML2Validator();
+                    nmlv.validateWithTests(xmlFile);
+                    if (nmlv.isValid() && !nmlv.hasWarnings()) {
+                        System.out.println(nmlv.getValidity());
+                        System.out.println(nmlv.getWarnings());
+                    } else {
+                        System.err.println(nmlv.getValidity());
+                        System.err.println(nmlv.getWarnings());
+                        fail = true;
+                    }
+                }
+                if (fail)
+                    System.exit(1);
+
+            } else if (args[0].equals(VALIDATE_V1_FLAG)) {
+                
+                boolean fail = false;
+                for (int i=1;i<args.length;i++) {
+                    
+                    File xmlFile = new File(args[i]);
+                    //System.out.println("Validating: "+xmlFile.getAbsolutePath());
+
+                    if (!xmlFile.exists()) {
+                        System.err.println("File does not exist: "+args[i]);
+                        showUsage();
+                        System.exit(1);
+                    }
+                    NeuroML1Validator nmlv =  new NeuroML1Validator();
+                    nmlv.validateWithTests(xmlFile);
+                }
+                if (fail)
+                    System.exit(1);
 
 		// Two arguments
 
@@ -218,37 +268,20 @@ public class JNeuroML {
 
 					loadLemsFile(lemsFile, false);
 
-				} else if  (args[0].equals(VALIDATE_FLAG)) {
-					File xmlFile = new File(args[1]);
-					if (!xmlFile.exists()) {
-						System.err.println("File does not exist: "+args[1]);
-						showUsage();
-						System.exit(1);
-					}
-					NeuroML2Validator nmlv =  new NeuroML2Validator();
-					nmlv.validateWithTests(xmlFile);
-					if (nmlv.isValid() && !nmlv.hasWarnings()) {
-				        System.out.println(nmlv.getValidity());
-				        System.out.println(nmlv.getWarnings());
-					} else {
-				        System.err.println(nmlv.getValidity());
-				        System.err.println(nmlv.getWarnings());
-						System.exit(1);
-					}
-						
-					
-				} else if (args[0].equals(VALIDATE_V1_FLAG)) {
-					File xmlFile = new File(args[1]);
-					if (!xmlFile.exists()) {
-						System.err.println("File does not exist: "+args[1]);
-						showUsage();
-						System.exit(1);
-					}
-					NeuroML1Validator nmlv =  new NeuroML1Validator();
-					nmlv.validateWithTests(xmlFile);
-
 
 			///  exporting formats
+                    
+				} else if (args[1].equals(INFO_EXPORT_FLAG)) {
+                    
+                        File nmlFile = new File(args[0]);
+    					
+    					NeuroMLConverter nmlc = new NeuroMLConverter();
+    			    	NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile);
+
+    			    	InfoWriter infow = new InfoWriter(nmlDocument);
+    			        String info = infow.getMainScript();
+    			        
+    			        System.out.println("\n"+info);
 
 				} else if (args[1].equals(SBML_EXPORT_FLAG)) {
 
