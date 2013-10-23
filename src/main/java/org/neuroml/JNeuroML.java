@@ -43,7 +43,6 @@ import org.neuroml.model.util.NeuroMLConverter;
 import org.neuroml1.model.util.NeuroML1Validator;
 import org.sbml.jsbml.SBMLException;
 import org.xml.sax.SAXException;
-import sun.awt.X11.InfoWindow;
 
 
 public class JNeuroML {
