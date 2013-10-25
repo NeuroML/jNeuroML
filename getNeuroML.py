@@ -5,15 +5,22 @@ import subprocess
 
 
 mode = "update"
-if len(sys.argv) == 2 and sys.argv[1]=="clean":
-    print "Cleaning repos"
-    mode = "clean"
-
 switch_to_branch=None
-if len(sys.argv) == 2 and sys.argv[1]=="development":
-    switch_to_branch="development"
-if len(sys.argv) == 2 and sys.argv[1]=="master":
-    switch_to_branch="master"
+
+if len(sys.argv) == 2:
+    if sys.argv[1]=="clean":
+        print "Cleaning repos"
+        mode = "clean"
+    elif sys.argv[1]=="development":
+        switch_to_branch="development"
+    elif sys.argv[1]=="master":
+        switch_to_branch="master"
+    else:
+        print "\nUsage:\n\n    python getNeuroML.py\n        Pull (or clone) the latest version of all NeuroML 2 repos & compile/install with Maven if applicable\n\n"+\
+            "    python getNeuroML.py clean\n        Run 'mvn clean' on all Java repos\n\n"+\
+            "    python getNeuroML.py master\n       Switch all repos to master branch\n\n"+\
+            "    python getNeuroML.py development\n       Switch relevant repos to development branch\n"
+        exit()
 
 neuroml2_spec_repo = ['NeuroML/NeuroML2']
 libneuroml_repo = ['NeuralEnsemble/libNeuroML']
@@ -88,9 +95,10 @@ for repo in all_repos:
                 command = "git checkout %s"%(switch_to_branch)
                 print "Switching to branch: %s"%(switch_to_branch)
                 execute_command_in_dir(command, local_dir)
+                runMvnInstall = True
                 
         info = execute_command_in_dir("git branch", local_dir)
-        print info
+        print info.strip()
 
         return_string = execute_command_in_dir("git pull", local_dir)
 
