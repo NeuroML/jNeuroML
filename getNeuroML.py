@@ -12,6 +12,8 @@ if len(sys.argv) == 2 and sys.argv[1]=="clean":
 switch_to_branch=None
 if len(sys.argv) == 2 and sys.argv[1]=="development":
     switch_to_branch="development"
+if len(sys.argv) == 2 and sys.argv[1]=="master":
+    switch_to_branch="master"
 
 neuroml2_spec_repo = ['NeuroML/NeuroML2']
 libneuroml_repo = ['NeuralEnsemble/libNeuroML']
@@ -86,6 +88,9 @@ for repo in all_repos:
                 command = "git checkout %s"%(switch_to_branch)
                 print "Switching to branch: %s"%(switch_to_branch)
                 execute_command_in_dir(command, local_dir)
+                
+        info = execute_command_in_dir("git branch", local_dir)
+        print info
 
         return_string = execute_command_in_dir("git pull", local_dir)
 
