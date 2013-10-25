@@ -9,6 +9,10 @@ if len(sys.argv) == 2 and sys.argv[1]=="clean":
     print "Cleaning repos"
     mode = "clean"
 
+switch_to_branch=None
+if len(sys.argv) == 2 and sys.argv[1]=="development":
+    switch_to_branch="development"
+
 neuroml2_spec_repo = ['NeuroML/NeuroML2']
 libneuroml_repo = ['NeuralEnsemble/libNeuroML']
 
@@ -27,6 +31,9 @@ pylems_repos = ['LEMS/pylems']
 
 java_repos = jlems_repo + java_neuroml_repos
 lems_repos = jlems_repo + lems_spec_repos + pylems_repos
+
+# Which repos use a development branch?
+dev_branch_repos = neuroml_repos
 
 all_repos =  lems_repos + neuroml_repos
 
@@ -62,6 +69,7 @@ for repo in all_repos:
             info = execute_command_in_dir(command, local_dir)
 
     if mode is "update":
+            
         print
         print "------ Updating: %s -------"%repo
 
@@ -72,6 +80,12 @@ for repo in all_repos:
             print "Creating a new directory: %s by cloning from GitHub"%(local_dir)
             execute_command_in_dir(command, "..")
             runMvnInstall = True
+            
+        if switch_to_branch:
+            if (switch_to_branch is not "development") or (repo in dev_branch_repos):
+                command = "git checkout %s"%(switch_to_branch)
+                print "Switching to branch: %s"%(switch_to_branch)
+                execute_command_in_dir(command, local_dir)
 
         return_string = execute_command_in_dir("git pull", local_dir)
 
