@@ -52,8 +52,9 @@ the Java based ones using Maven. The full process may take 5-10 mins on first in
     git pull
     python getNeuroML.py
 
-in the jNeuroML folder will get the stable version of each repo & compile using Maven if necessary. To access the very latest 
-versions (the development branch of the GitHub repos) use:
+in the jNeuroML folder will get the stable version of each repo & compile using Maven if necessary. 
+
+*To access the very latest version* (the development branches of the GitHub repos) use:
 
     python getNeuroML.py development
 
