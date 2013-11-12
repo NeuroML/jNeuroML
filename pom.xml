@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.neuroml1.model</groupId>
             <artifactId>org.neuroml1.model</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.neuroml.import</groupId>
