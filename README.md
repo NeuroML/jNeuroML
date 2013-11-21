@@ -60,8 +60,8 @@ in the jNeuroML folder will get the stable version of each repo & compile using 
 
 Use of Maven is a great way to manage versions of applications being developed in distributed repositories, 
 and will make it easy to use selected parts of this for different Java applications. For example, these packages 
-will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct](www.neuroConstruct.org) and for handling NeuroML on the 
-[Open Source Brain website](www.OpenSourceBrain.org).
+will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct](http://www.neuroConstruct.org) and for handling NeuroML on the 
+[Open Source Brain website](http://www.OpenSourceBrain.org).
 
 
 
