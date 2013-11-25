@@ -35,6 +35,7 @@ import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.svg.SVGWriter;
+import org.neuroml.export.xineml.XineMLWriter;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.importer.sbml.SBMLImporter;
 import org.neuroml.model.NeuroMLDocument;
@@ -79,6 +80,9 @@ public class JNeuroML {
 
 	public static final String NEURON_EXPORT_FLAG = "-neuron";
 
+    public static String NINEML_EXPORT_FLAG = "-nineml";
+	public static String SPINEML_EXPORT_FLAG = "-spineml";
+
 	public static final String SBML_IMPORT_FLAG = "-sbml-import";
 	public static final String SBML_EXPORT_FLAG = "-sbml";
 
@@ -97,20 +101,24 @@ public class JNeuroML {
             "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+SEDML_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n"+
-            "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_EXPORT_FLAG+"\n" +
-            "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (**EXPERIMENTAL**)\n\n"+
-            "    "+JNML_SCRIPT+" LEMSFile.xml "+BRIAN_EXPORT_FLAG+"\n" +
-            "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL**)\n\n"+
-            "    "+JNML_SCRIPT+" LEMSFile.xml "+SBML_EXPORT_FLAG+"\n" +
-            "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+NEURON_EXPORT_FLAG+"\n" +
-            "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format (**EXPERIMENTAL**)\n\n"+
+            "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format (*EXPERIMENTAL*)\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+DLEMS_EXPORT_FLAG+"\n" +
-            "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL**)\n\n"+
+            "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL - single components only**)\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+XPP_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (*EXPERIMENTAL - single components only*)\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+BRIAN_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL - single components only**)\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+SBML_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL - single components only**)\n\n"+
+            /*"    "+JNML_SCRIPT+" LEMSFile.xml "+NINEML_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to NineML format (*EXPERIMENTAL*)\n\n"+
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+SPINEML_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to SpineML format (*EXPERIMENTAL*)\n\n"+*/
             "    "+JNML_SCRIPT+" "+SBML_IMPORT_FLAG+" SBMLFile.sbml duration dt\n" +
-            "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (**EXPERIMENTAL**)\n\n"+
+            "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (*EXPERIMENTAL*)\n\n"+
             "    "+JNML_SCRIPT+" NMLFile.nml "+SVG_FLAG+"\n" +
-            "           Load NMLFile.nml and convert cell(s) to SVG image format (**EXPERIMENTAL**)\n\n"+
+            "           Load NMLFile.nml and convert cell(s) to SVG image format (*EXPERIMENTAL*)\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_FLAG+" NMLFile.nml\n" +
             "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n"+
             "    "+JNML_SCRIPT+" "+VALIDATE_V1_FLAG+" NMLFile.nml\n" +
@@ -267,7 +275,7 @@ public class JNeuroML {
 
 					loadLemsFile(lemsFile, false);
 
-
+						
 			///  exporting formats
                     
 				} else if (args[1].equals(INFO_EXPORT_FLAG)) {
@@ -321,9 +329,24 @@ public class JNeuroML {
 
 			        FileUtil.writeStringToFile(sed, sedFile);
 
+				} else if (args[1].equals(NINEML_EXPORT_FLAG) || args[1].equals(SPINEML_EXPORT_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+					
+					XineMLWriter.Variant v = args[1].equals(SPINEML_EXPORT_FLAG) ? XineMLWriter.Variant.SpineML : XineMLWriter.Variant.NineML;
+
+					XineMLWriter xw = new XineMLWriter(lems, v);
+			        String sed = xw.getMainScript();
+			        
+			        String suffix = args[1].equals(SPINEML_EXPORT_FLAG) ? ".spineml" : ".9ml";
+
+			        File xFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", suffix));
+			        System.out.println("Writing to: "+xFile.getAbsolutePath());
+
+			        FileUtil.writeStringToFile(sed, xFile);
 
 				} else if (args[1].equals(MATLAB_EXPORT_FLAG)/* || args[1].equals(MATLAB_EULER_EXPORT_FLAG)*/) {
-
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
