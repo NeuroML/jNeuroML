@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-
+//vhdl
+import org.lemsml.export.vhdl.VHDLWriter;
+//vhdl
 import org.lemsml.export.matlab.MatlabWriter;
 import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
@@ -64,7 +67,11 @@ public class JNeuroML {
 	public static String XPP_EXPORT_FLAG = "-xpp";
 
 	public static String BRIAN_EXPORT_FLAG = "-brian";
-
+	
+	//vhdl
+	public static String VHDL_EXPORT_FLAG = "-vhdl";
+	//end vhdl
+	
 	public static String MATLAB_EXPORT_FLAG = "-matlab";
 	public static String MATLAB_EULER_EXPORT_FLAG = "-matlab-euler";
 
@@ -98,6 +105,11 @@ public class JNeuroML {
             "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+BRIAN_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL**)\n\n"+
+			//vhdl
+            "    "+JNML_SCRIPT+" LEMSFile.xml "+VHDL_EXPORT_FLAG+"\n" +
+            "           Load LEMSFile.xml using jLEMS, and convert it to VHDL format (**EXPERIMENTAL**)\n\n"+
+			//vhdl
+			//vhdl
             "    "+JNML_SCRIPT+" LEMSFile.xml "+SBML_EXPORT_FLAG+"\n" +
             "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL**)\n\n"+
             "    "+JNML_SCRIPT+" LEMSFile.xml "+NEURON_EXPORT_FLAG+"\n" +
@@ -357,20 +369,31 @@ public class JNeuroML {
 
 			        FileUtil.writeStringToFile(nrn, nrnFile);
 
-				} else if (args[1].equals(BRIAN_EXPORT_FLAG)) {
+				}
+				//vhdl
+				else if (args[1].equals(VHDL_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					BrianWriter bw = new BrianWriter(lems);
-			        String br = bw.getMainScript();
+					VHDLWriter vw = new VHDLWriter(lems);
+			        Map<String,String> componentScripts = vw.getComponentScripts();
+					String testbenchScript = vw.getMainScript();
+					for (Map.Entry<String, String> entry : componentScripts.entrySet()) {
+						String key = entry.getKey();
+						String val = entry.getValue();
+						File vwFile = new File(lemsFile.getParentFile(),  "/" + key + ".vhdl");
+						FileUtil.writeStringToFile(val, vwFile);
+						System.out.println("Writing to: "+vwFile.getAbsolutePath());
+					}
+					File vwFile = new File(lemsFile.getParentFile(),  "/testbench.vhdl");
+					FileUtil.writeStringToFile(testbenchScript, vwFile);
+					System.out.println("Writing to: "+vwFile.getAbsolutePath());
+					System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"); 
 
-			        File brFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", "_brian.py"));
-			        System.out.println("Writing to: "+brFile.getAbsolutePath());
-
-			        FileUtil.writeStringToFile(br, brFile);
-
-				} else if (args[1].equals(GRAPH_FLAG)) {
+				} 
+				//end vhdl
+				else if (args[1].equals(GRAPH_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
