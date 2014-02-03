@@ -389,7 +389,6 @@ public class JNeuroML {
 					File vwFile = new File(lemsFile.getParentFile(),  "/testbench.vhdl");
 					FileUtil.writeStringToFile(testbenchScript, vwFile);
 					System.out.println("Writing to: "+vwFile.getAbsolutePath());
-					System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"); 
 
 				} 
 				//end vhdl
