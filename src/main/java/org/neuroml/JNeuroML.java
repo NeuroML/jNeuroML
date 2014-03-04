@@ -370,15 +370,31 @@ public class JNeuroML {
 			        FileUtil.writeStringToFile(nrn, nrnFile);
 
 				}
+				else if (args[1].equals(BRIAN_EXPORT_FLAG))
+				{
+
+				File lemsFile = new File(args[0]);
+				Lems lems = loadLemsFile(lemsFile);
+				
+				BrianWriter bw = new BrianWriter(lems);
+				String br = bw.getMainScript();
+				
+				File brFile = new File(lemsFile.getParentFile(),lemsFile.getName().replaceAll(".xml", "_brian.py"));
+				System.out.println("Writing to: "+brFile.getAbsolutePath());
+				
+				FileUtil.writeStringToFile(br, brFile);
+				
+				}
 				//vhdl
 				else if (args[1].equals(VHDL_EXPORT_FLAG)) {
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
-
+ 
 					VHDLWriter vw = new VHDLWriter(lems);
 			        Map<String,String> componentScripts = vw.getComponentScripts();
 					String testbenchScript = vw.getMainScript();
+					String prjScript = vw.getPrjFile();
 					for (Map.Entry<String, String> entry : componentScripts.entrySet()) {
 						String key = entry.getKey();
 						String val = entry.getValue();
@@ -388,6 +404,9 @@ public class JNeuroML {
 					}
 					File vwFile = new File(lemsFile.getParentFile(),  "/testbench.vhdl");
 					FileUtil.writeStringToFile(testbenchScript, vwFile);
+					System.out.println("Writing to: "+vwFile.getAbsolutePath());
+					vwFile = new File(lemsFile.getParentFile(),  "/testbench.prj");
+					FileUtil.writeStringToFile(prjScript, vwFile);
 					System.out.println("Writing to: "+vwFile.getAbsolutePath());
 
 				} 
