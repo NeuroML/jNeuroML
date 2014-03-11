@@ -63,6 +63,8 @@ and will make it easy to use selected parts of this for different Java applicati
 will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct](http://www.neuroConstruct.org) and for handling NeuroML on the 
 [Open Source Brain website](http://www.OpenSourceBrain.org).
 
+[![Build Status](https://travis-ci.org/NeuroML/jNeuroML.png?branch=master)](https://travis-ci.org/NeuroML/jNeuroML)
+
 
 
 
