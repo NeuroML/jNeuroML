@@ -29,6 +29,7 @@ import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.util.FileUtil;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
+
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.graph.GraphWriter;
@@ -42,6 +43,7 @@ import org.neuroml.importer.sbml.SBMLImporter;
 import org.neuroml.model.NeuroMLDocument;
 import org.neuroml.model.util.NeuroML2Validator;
 import org.neuroml.model.util.NeuroMLConverter;
+import org.neuroml.model.util.NeuroMLElements;
 import org.neuroml1.model.util.NeuroML1Validator;
 import org.sbml.jsbml.SBMLException;
 import org.xml.sax.SAXException;
@@ -55,6 +57,9 @@ public class JNeuroML {
     public static final String HELP_FLAG = "-help";
     public static final String HELP_FLAG_SHORT = "-h";
     public static final String HELP_FLAG_SHORT_Q = "-?";
+    
+    public static final String VERSION_FLAG = "-v";
+    public static final String VERSION_FLAG_LONG = "-version";
 
     public static final String NO_GUI_FLAG = "-nogui";
 
@@ -171,6 +176,15 @@ public class JNeuroML {
                 if (args[0].startsWith("-")) {
                     if (args[0].equals(HELP_FLAG) || args[0].equals(HELP_FLAG_SHORT) || args[0].equals(HELP_FLAG_SHORT_Q)) {
                         showUsage();
+                        System.exit(0);
+                    } 
+                    else if (args[0].equals(VERSION_FLAG) || args[0].equals(VERSION_FLAG_LONG)) {
+                        // Version has just been displayed...
+                        String jars = "    org.neuroml.import  v"+org.neuroml.importer.Main.ORG_NEUROML_IMPORT_VERSION+"\n" +
+                                      "    org.neuroml.export  v"+org.neuroml.export.Main.ORG_NEUROML_EXPORT_VERSION+"\n" +
+                                      "    org.neuroml.model   v"+NeuroMLElements.ORG_NEUROML_MODEL_VERSION+"\n" +
+                                      "    jLEMS               v"+org.lemsml.jlems.io.Main.VERSION;
+                        System.out.println(jars);
                         System.exit(0);
                     } else {
                         System.err.println("Unrecognised argument: " + args[0]);
