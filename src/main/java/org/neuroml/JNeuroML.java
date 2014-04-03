@@ -52,7 +52,7 @@ public class JNeuroML {
 
     public static final String JNML_SCRIPT = "jnml";
 
-    public static final String JNML_VERSION = "0.5.0";
+    public static final String JNML_VERSION = "0.5.1";
 
     public static final String HELP_FLAG = "-help";
     public static final String HELP_FLAG_SHORT = "-h";
@@ -87,8 +87,8 @@ public class JNeuroML {
 
     public static final String NEURON_EXPORT_FLAG = "-neuron";
 
-    public static String NINEML_EXPORT_FLAG = "-nineml";
-    public static String SPINEML_EXPORT_FLAG = "-spineml";
+    public static final String NINEML_EXPORT_FLAG = "-nineml";
+    public static final String SPINEML_EXPORT_FLAG = "-spineml";
 
     public static final String SBML_IMPORT_FLAG = "-sbml-import";
     public static final String SBML_IMPORT_UNITS_FLAG = "-sbml-import-units";
@@ -123,10 +123,10 @@ public class JNeuroML {
         + "           Load LEMSFile.xml using jLEMS, and convert it to MATLAB format (**EXPERIMENTAL - single components only**)\n\n"
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + CVODE_EXPORT_FLAG + "\n"
         + "           Load LEMSFile.xml using jLEMS, and convert it to C format using CVODE package (**EXPERIMENTAL - single components only**)\n\n"
-         /*"    "+JNML_SCRIPT+" LEMSFile.xml "+NINEML_EXPORT_FLAG+"\n" +
-         "           Load LEMSFile.xml using jLEMS, and convert it to NineML format (*EXPERIMENTAL*)\n\n"+
-         "    "+JNML_SCRIPT+" LEMSFile.xml "+SPINEML_EXPORT_FLAG+"\n" +
-         "           Load LEMSFile.xml using jLEMS, and convert it to SpineML format (*EXPERIMENTAL*)\n\n"+*/ 
+        + "    "+JNML_SCRIPT+" LEMSFile.xml "+NINEML_EXPORT_FLAG+"\n" 
+        + "           Load LEMSFile.xml using jLEMS, and convert it to NineML format (*EXPERIMENTAL - single components only*)\n\n"
+        + "    "+JNML_SCRIPT+" LEMSFile.xml "+SPINEML_EXPORT_FLAG+"\n" 
+        + "           Load LEMSFile.xml using jLEMS, and convert it to SpineML format (*EXPERIMENTAL - single components only*)\n\n"
         + "    " + JNML_SCRIPT + " " + SBML_IMPORT_FLAG + " SBMLFile.sbml duration dt\n"
         + "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (ignoring SBML units)\n\n"
         + "    " + JNML_SCRIPT + " " + SBML_IMPORT_UNITS_FLAG + " SBMLFile.sbml duration dt\n"
