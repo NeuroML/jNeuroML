@@ -131,13 +131,13 @@ def main():
                 "-validate ../NeuroML2/examples/NML2_FullNeuroML.nml"
             print
             print "  ./jnml " \
-                "../NeuroML2/NeuroML2CoreTypes/LEMS_NML2_Ex8_AdEx.xml"
+                "../NeuroML2/NeuroML2CoreTypes/LEMS_NML2_Ex2_Izh.xml"
         else:
             print "  jnml -validate " \
                 "..\\NeuroML2\\examples\\NML2_FullNeuroML.nml"
             print
             print "  jnml " \
-                "..\\NeuroML2\\NeuroML2CoreTypes\\LEMS_NML2_Ex8_AdEx.xml"
+                "..\\NeuroML2\\NeuroML2CoreTypes\\LEMS_NML2_Ex2_Izh.xml"
         print
 
     if mode is "clean":
