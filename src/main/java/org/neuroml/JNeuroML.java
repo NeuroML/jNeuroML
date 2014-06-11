@@ -258,7 +258,8 @@ public class JNeuroML {
             } else if (args[1].equals(NEURON_EXPORT_FLAG)) {
                 
                 File lemsFile = new File(args[0]);
-                boolean nogui = args[1].equals(NO_GUI_FLAG) || args[2].equals(NO_GUI_FLAG);
+                boolean nogui = (args.length>=2 && args[1].equals(NO_GUI_FLAG)) || 
+                                (args.length>=3 && args[2].equals(NO_GUI_FLAG));
                 NeuronWriter.exportToNeuron(lemsFile, nogui, true);
 		// Two arguments
             } else if (args.length == 2) {
