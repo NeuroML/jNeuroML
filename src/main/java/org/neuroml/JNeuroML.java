@@ -204,7 +204,7 @@ public class JNeuroML {
                     SwingDataViewerFactory.initialize();
                     DefaultLogger.initialize();
 
-                    runLemsFile(lemsFile);
+                    Utils.runLemsFile(lemsFile);
 
                 }
 
@@ -254,7 +254,12 @@ public class JNeuroML {
                 if (fail) {
                     System.exit(1);
                 }
-
+        // Lots of options for Neuron
+            } else if (args[1].equals(NEURON_EXPORT_FLAG)) {
+                
+                File lemsFile = new File(args[0]);
+                boolean nogui = args[1].equals(NO_GUI_FLAG) || args[2].equals(NO_GUI_FLAG);
+                NeuronWriter.exportToNeuron(lemsFile, nogui, true);
 		// Two arguments
             } else if (args.length == 2) {
 
@@ -272,7 +277,7 @@ public class JNeuroML {
                     FileResultWriterFactory.initialize();
                     DefaultLogger.initialize();
 
-                    runLemsFile(lemsFile);
+                    Utils.runLemsFile(lemsFile);
                 } ///  Parse LEMS & exit
                 else if (args[1].equals(NO_RUN_FLAG)) {
 
@@ -285,7 +290,7 @@ public class JNeuroML {
 
                     System.out.println("Loading: " + lemsFile.getAbsolutePath() + " with jLEMS, NO RUN mode...");
 
-                    loadLemsFile(lemsFile, false);
+                    Utils.loadLemsFile(lemsFile, false);
 
 			///  exporting formats
                 } else if (args[1].equals(INFO_EXPORT_FLAG)) {
@@ -425,19 +430,6 @@ public class JNeuroML {
                     System.out.println("Writing to: " + dlemsFile.getAbsolutePath());
 
                     FileUtil.writeStringToFile(dlems, dlemsFile);
-
-                } else if (args[1].equals(NEURON_EXPORT_FLAG)) {
-
-                    File lemsFile = new File(args[0]);
-                    Lems lems = loadLemsFile(lemsFile);
-
-                    NeuronWriter nw = new NeuronWriter(lems);
-                    String nrn = nw.getMainScript();
-
-                    File nrnFile = new File(lemsFile.getParentFile(), lemsFile.getName().replaceAll(".xml", "_nrn.py"));
-                    System.out.println("Writing to: " + nrnFile.getAbsolutePath());
-
-                    FileUtil.writeStringToFile(nrn, nrnFile);
 
                 } else if (args[1].equals(BRIAN_EXPORT_FLAG)) {
 
@@ -585,23 +577,6 @@ public class JNeuroML {
         }
     }
 
-    public static void runLemsFile(File f) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
-        loadLemsFile(f, true);
-    }
 
-    public static void loadLemsFile(File f, boolean run) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
-
-        Sim sim = Utils.readLemsNeuroMLFile(f);
-        sim.build();
-
-        if (run) {
-            sim.run();
-            IOUtil.saveReportAndTimesFile(sim);
-            E.info("Finished reading, building, running and displaying LEMS model");
-        } else {
-            E.info("Finished reading and building LEMS model");
-        }
-
-    }
 
 }
