@@ -7,28 +7,23 @@ import java.io.InputStreamReader;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
+import org.lemsml.export.base.GenerationException;
 
 import org.lemsml.export.matlab.MatlabWriter;
 import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
 import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.export.c.CWriter;
-import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.logging.MinimalMessageHandler;
-import org.lemsml.jlems.core.run.ConnectionError;
 import org.lemsml.jlems.core.run.RuntimeError;
-import org.lemsml.jlems.core.sim.ContentError;
-import org.lemsml.jlems.core.sim.ParseException;
-import org.lemsml.jlems.core.sim.Sim;
-import org.lemsml.jlems.core.type.BuildException;
+import org.lemsml.jlems.core.sim.LEMSException;
 import org.lemsml.jlems.core.type.Lems;
-import org.lemsml.jlems.core.xml.XMLException;
-import org.lemsml.jlems.io.IOUtil;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.util.FileUtil;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
+import org.neuroml.export.ModelFeatureSupportException;
 
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
@@ -40,10 +35,12 @@ import org.neuroml.export.svg.SVGWriter;
 import org.neuroml.export.xineml.XineMLWriter;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.importer.sbml.SBMLImporter;
+import org.neuroml.importer.sbml.UnsupportedSBMLFeature;
 import org.neuroml.model.NeuroMLDocument;
 import org.neuroml.model.util.NeuroML2Validator;
 import org.neuroml.model.util.NeuroMLConverter;
 import org.neuroml.model.util.NeuroMLElements;
+import org.neuroml.model.util.NeuroMLException;
 import org.neuroml1.model.util.NeuroML1Validator;
 import org.sbml.jsbml.SBMLException;
 import org.xml.sax.SAXException;
@@ -147,7 +144,7 @@ public class JNeuroML {
     }
 
 
-    private static Lems loadLemsFile(File lemsFile) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
+    private static Lems loadLemsFile(File lemsFile) throws LEMSException {
 
         if (!lemsFile.exists()) {
             System.err.println("File does not exist: " + lemsFile.getAbsolutePath());
@@ -542,21 +539,13 @@ public class JNeuroML {
 
             }
 
-        } catch (ConnectionError e) {
+        } catch (LEMSException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (ContentError e) {
+        } catch (NeuroMLException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (ParseError e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (BuildException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (XMLException e) {
+        } catch (GenerationException e) {
             e.printStackTrace();
             System.exit(1);
         } catch (JAXBException e) {
@@ -571,10 +560,13 @@ public class JNeuroML {
         } catch (XMLStreamException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (Exception e) {
+        } catch (UnsupportedSBMLFeature e) {
             e.printStackTrace();
             System.exit(1);
-        }
+        } catch (ModelFeatureSupportException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } 
     }
 
 
