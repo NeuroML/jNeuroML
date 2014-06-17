@@ -14,28 +14,26 @@ def main():
     switch_to_branch = None
     install_osb_visualiser = False
     install_server = False
-
     if len(sys.argv) < 5:
     	for arg in sys.argv[1:]:
             if arg == "clean":
     	    	print "Cleaning repos"
     	    	mode = "clean"
     	    elif arg == "development":
-    		switch_to_branch = "development"
+                switch_to_branch = "development"
     	    elif arg == "master":
-    		switch_to_branch = "master"
+                switch_to_branch = "master"
     	    elif arg == "-osb_visualiser":
-    		install_osb_visualiser = True
+                install_osb_visualiser = True
     	    elif arg == "-install_server":
-    		install_server = True
+                install_server = True
                 install_osb_visualiser = True
             else:
     	        help_info()
     	        exit()
     else:
         help_info()
-	exit()
-
+        exit()
 
     neuroml2_spec_repo = ['NeuroML/NeuroML2']
     libneuroml_repo = ['NeuralEnsemble/libNeuroML']
@@ -78,8 +76,6 @@ def main():
     pre_gh["HTTP"] = "https://github.com/"
     pre_gh["SSH"] = "git@github.com:"
     pre_gh["Git Read-Only"] = "git://github.com/"
-
-#     all_repos = []
 
     for repo in all_repos:
 
@@ -176,24 +172,23 @@ def main():
         
         os.environ['SERVER_HOME'] = virgo_server_path
 
-	if not os.path.isdir(virgo_server_path):
-
-	    # download and unpack all packages into a temp directory
-	    for u in urls:
-		print "Downloading: %s and unzipping into %s..." % (u, virgo_server_path)
-		(zFile, x) = urllib.urlretrieve(u)
-		vz = zipfile.ZipFile(zFile)
-		vz.extractall(virgo_server_path)
-		os.remove(zFile)
+    if not os.path.isdir(virgo_server_path):
+        # download and unpack all packages into a temp directory
+        for u in urls:
+            print "Downloading: %s and unzipping into %s..."%(u, virgo_server_path)
+            (zFile, x) = urllib.urlretrieve(u)
+            vz = zipfile.ZipFile(zFile)
+            vz.extractall(virgo_server_path)
+            os.remove(zFile)
 		    
 	    #make an osbexplorer directory and move the contents of virgo into it
 	    #so the final package has a nice name
-	    with lcd(virgo_server_path):
-		print local("mv virgo-tomcat-server-%s/* ."%(virgo_version), capture=True)
-		print local("rm -rf virgo-tomcat-server-%s "%(virgo_version), capture=True)
+        with lcd(virgo_server_path):
+            print local("mv virgo-tomcat-server-%s/* ."%(virgo_version), capture=True)
+            print local("rm -rf virgo-tomcat-server-%s "%(virgo_version), capture=True)
 
-	else:
-	    print local('rm -rf $SERVER_HOME/repository/usr/*', capture=True)
+    else:
+        print local('rm -rf $SERVER_HOME/repository/usr/*', capture=True)
 # 	    print local('rm -rf $SERVER_HOME/pickup/osbexplorer.plan', capture=True)
 
         #use Maven to build all the osbexplorer code bundles 
@@ -201,20 +196,12 @@ def main():
         osbpackages = ['org.geppetto.core', 'org.neuroml.model.injectingplugin',
                        'org.neuroml.model', 'jLEMS', 'org.neuroml.export','org.neuroml.visualiser']
         for p in osbpackages:
-            
-#             package_branch = branch if p is not 'jLEMS' else 'master'
-#             if p == 'org.geppetto.core': package_branch = geppetto_tag
-#             
-#             with lcd(tempdir):
-#                 print local('mv %s-%s %s'%(p, package_branch, p), capture=True)
-                
             dirp = op.join(dir_path, p)
             print '**************************'
             print 'BUILDING ' + dirp
             print '**************************'
             with lcd(dirp):
                 with settings(hide('everything'), warn_only=True):
-#                     print local('mvn install', capture=True)
                     print local('cp target/classes/lib/* $SERVER_HOME/repository/usr/', capture=True)
                     print local('cp target/* $SERVER_HOME/repository/usr/', capture=True)
                     
