@@ -4,32 +4,38 @@ import os
 import sys
 import os.path as op
 import subprocess
-
+import urllib
+import zipfile
+from fabric.api import local, lcd, hide, settings
 
 def main():
     """Main"""
     mode = "update"
     switch_to_branch = None
+    install_osb_visualiser = False
+    install_server = False
 
-    if len(sys.argv) == 2:
-        if sys.argv[1] == "clean":
-            print "Cleaning repos"
-            mode = "clean"
-        elif sys.argv[1] == "development":
-            switch_to_branch = "development"
-        elif sys.argv[1] == "master":
-            switch_to_branch = "master"
-        else:
-            print "\nUsage:\n\n    python getNeuroML.py\n        " \
-                "Pull (or clone) the latest version of all NeuroML 2 repos & " \
-                "compile/install with Maven if applicable\n\n" \
-                "    python getNeuroML.py clean\n        " \
-                "Run 'mvn clean' on all Java repos\n\n" \
-                "    python getNeuroML.py master\n       " \
-                "Switch all repos to master branch\n\n" \
-                "    python getNeuroML.py development\n       " \
-                "Switch relevant repos to development branch\n"
-            exit()
+    if len(sys.argv) < 5:
+    	for arg in sys.argv[1:]:
+            if arg == "clean":
+    	    	print "Cleaning repos"
+    	    	mode = "clean"
+    	    elif arg == "development":
+    		switch_to_branch = "development"
+    	    elif arg == "master":
+    		switch_to_branch = "master"
+    	    elif arg == "-osb_visualiser":
+    		install_osb_visualiser = True
+    	    elif arg == "-install_server":
+    		install_server = True
+                install_osb_visualiser = True
+            else:
+    	        help_info()
+    	        exit()
+    else:
+        help_info()
+	exit()
+
 
     neuroml2_spec_repo = ['NeuroML/NeuroML2']
     libneuroml_repo = ['NeuralEnsemble/libNeuroML']
@@ -40,6 +46,11 @@ def main():
                           'NeuroML/org.neuroml.export',
                           'NeuroML/org.neuroml.import',
                           'NeuroML/jNeuroML']
+    if install_osb_visualiser:
+        java_neuroml_repos += ['NeuroML/org.neuroml.visualiser']
+        geppetto_repos = ['openworm/org.geppetto.core']
+    else:
+        geppetto_repos = []
 
     neuroml_repos = neuroml2_spec_repo + libneuroml_repo + java_neuroml_repos
 
@@ -47,13 +58,16 @@ def main():
     lems_spec_repos = ['LEMS/LEMS']
     pylems_repos = ['LEMS/pylems']
 
-    java_repos = jlems_repo + java_neuroml_repos
+    java_repos = jlems_repo + java_neuroml_repos + geppetto_repos
     lems_repos = jlems_repo + lems_spec_repos + pylems_repos
 
     # Which repos use a development branch?
     dev_branch_repos = neuroml_repos
 
-    all_repos = lems_repos + neuroml_repos
+    v0_0_9_branch_repos = geppetto_repos
+
+    all_repos = lems_repos + geppetto_repos + neuroml_repos 
+    
 
     # Set the preferred method for cloning from GitHub
     github_pref = "HTTP"
@@ -65,9 +79,11 @@ def main():
     pre_gh["SSH"] = "git@github.com:"
     pre_gh["Git Read-Only"] = "git://github.com/"
 
+#     all_repos = []
+
     for repo in all_repos:
 
-        local_dir = ".."+os.sep+repo.split("/")[1]
+        local_dir = ".." + os.sep + repo.split("/")[1]
 
         if mode is "clean":
             print "------ Cleaning: %s -------" % repo
@@ -88,11 +104,16 @@ def main():
                 print "Creating a new directory: %s by cloning from GitHub" % \
                     (local_dir)
                 execute_command_in_dir(command, "..")
+                if (repo in v0_0_9_branch_repos):
+                    command = "git checkout tags/v0.0.9-alpha"
+                    print "Switching to tag: v0.0.9-alpha"
+                    execute_command_in_dir(command, local_dir)
                 runMvnInstall = True
 
             if switch_to_branch:
-                if (switch_to_branch is not "development") \
-                        or (repo in dev_branch_repos):
+                if ((switch_to_branch is not "development") \
+                        or (repo in dev_branch_repos)) \
+                        and (repo not in v0_0_9_branch_repos):
                     command = "git checkout %s" % (switch_to_branch)
                     print "Switching to branch: %s" % (switch_to_branch)
                     execute_command_in_dir(command, local_dir)
@@ -105,7 +126,7 @@ def main():
 
             runMvnInstall = runMvnInstall \
                 or ("Already up-to-date" not in return_string) \
-                or not op.isdir(local_dir+os.sep+"target") \
+                or not op.isdir(local_dir + os.sep + "target") \
                 or ("jNeuroML" in repo)
 
             if repo in java_repos and runMvnInstall:
@@ -145,6 +166,68 @@ def main():
         print "All repositories successfully cleaned!"
         print
 
+    if install_server:
+        virgo_version = "3.6.2.RELEASE"
+        urls = ["http://www.eclipse.org/downloads/download.php?file=/virgo/release/VP/%s/virgo-tomcat-server-%s.zip&r=1" % (virgo_version, virgo_version)]
+        
+        file_path = os.path.realpath(__file__)
+        dir_path = os.path.dirname(os.path.dirname(file_path))
+        virgo_server_path = os.path.join(dir_path, 'osb-explorer')
+        
+        os.environ['SERVER_HOME'] = virgo_server_path
+
+	if not os.path.isdir(virgo_server_path):
+
+	    # download and unpack all packages into a temp directory
+	    for u in urls:
+		print "Downloading: %s and unzipping into %s..." % (u, virgo_server_path)
+		(zFile, x) = urllib.urlretrieve(u)
+		vz = zipfile.ZipFile(zFile)
+		vz.extractall(virgo_server_path)
+		os.remove(zFile)
+		    
+	    #make an osbexplorer directory and move the contents of virgo into it
+	    #so the final package has a nice name
+	    with lcd(virgo_server_path):
+		print local("mv virgo-tomcat-server-%s/* ."%(virgo_version), capture=True)
+		print local("rm -rf virgo-tomcat-server-%s "%(virgo_version), capture=True)
+
+	else:
+	    print local('rm -rf $SERVER_HOME/repository/usr/*', capture=True)
+# 	    print local('rm -rf $SERVER_HOME/pickup/osbexplorer.plan', capture=True)
+
+        #use Maven to build all the osbexplorer code bundles 
+        #and place the contents in the Virgo installation
+        osbpackages = ['org.geppetto.core', 'org.neuroml.model.injectingplugin',
+                       'org.neuroml.model', 'jLEMS', 'org.neuroml.export','org.neuroml.visualiser']
+        for p in osbpackages:
+            
+#             package_branch = branch if p is not 'jLEMS' else 'master'
+#             if p == 'org.geppetto.core': package_branch = geppetto_tag
+#             
+#             with lcd(tempdir):
+#                 print local('mv %s-%s %s'%(p, package_branch, p), capture=True)
+                
+            dirp = op.join(dir_path, p)
+            print '**************************'
+            print 'BUILDING ' + dirp
+            print '**************************'
+            with lcd(dirp):
+                with settings(hide('everything'), warn_only=True):
+#                     print local('mvn install', capture=True)
+                    print local('cp target/classes/lib/* $SERVER_HOME/repository/usr/', capture=True)
+                    print local('cp target/* $SERVER_HOME/repository/usr/', capture=True)
+                    
+        #put the .plan file in the pickup folder      
+        with lcd(op.join(dir_path, 'org.neuroml.visualiser')):
+            print local('cp -fr osbexplorer.plan $SERVER_HOME/pickup/', capture=True)
+            
+        #set permissions on the bin directory
+        #these do carry over into the archive
+        with lcd(virgo_server_path):
+            print local('chmod -R +x ./bin', capture=True)
+
+	print "Virgo Server successfully configured. To start the server go to %s and run startup.sh" % (op.join(virgo_server_path, 'bin'))
 
 def execute_command_in_dir(command, directory):
     """Execute a command in specific working directory"""
@@ -155,6 +238,18 @@ def execute_command_in_dir(command, directory):
                                      stdout=subprocess.PIPE).communicate()[0]
     return return_string
 
+def help_info():
+    print "\nUsage:\n\n    python getNeuroML.py\n        " \
+	"Pull (or clone) the latest version of all NeuroML 2 repos & " \
+	"compile/install with Maven if applicable\n\n" \
+	"    python getNeuroML.py clean\n        " \
+	"Run 'mvn clean' on all Java repos\n\n" \
+	"    python getNeuroML.py master\n       " \
+	"Switch all repos to master branch\n\n" \
+	"    python getNeuroML.py development\n       " \
+    	"Switch relevant repos to development branch\n\n" \
+	"    Add -osb_visualiser to download and configure the projects required for the OSB visualiser\n\n" \
+	"    Add -install_server to download and configure the virgo server and the OSB explorer bundles\n"
 
 if __name__ == "__main__":
     main()
