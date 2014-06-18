@@ -172,49 +172,49 @@ def main():
         
         os.environ['SERVER_HOME'] = virgo_server_path
 
-    if not os.path.isdir(virgo_server_path):
-        # download and unpack all packages into a temp directory
-        for u in urls:
-            print "Downloading: %s and unzipping into %s..."%(u, virgo_server_path)
-            (zFile, x) = urllib.urlretrieve(u)
-            vz = zipfile.ZipFile(zFile)
-            vz.extractall(virgo_server_path)
-            os.remove(zFile)
-		    
-	    #make an osbexplorer directory and move the contents of virgo into it
-	    #so the final package has a nice name
-        with lcd(virgo_server_path):
-            print local("mv virgo-tomcat-server-%s/* ."%(virgo_version), capture=True)
-            print local("rm -rf virgo-tomcat-server-%s "%(virgo_version), capture=True)
+        if not os.path.isdir(virgo_server_path):
+            # download and unpack all packages into a temp directory
+            for u in urls:
+                print "Downloading: %s and unzipping into %s..."%(u, virgo_server_path)
+                (zFile, x) = urllib.urlretrieve(u)
+                vz = zipfile.ZipFile(zFile)
+                vz.extractall(virgo_server_path)
+                os.remove(zFile)
 
-    else:
-        print local('rm -rf $SERVER_HOME/repository/usr/*', capture=True)
-# 	    print local('rm -rf $SERVER_HOME/pickup/osbexplorer.plan', capture=True)
+            #make an osbexplorer directory and move the contents of virgo into it
+            #so the final package has a nice name
+            with lcd(virgo_server_path):
+                print local("mv virgo-tomcat-server-%s/* ."%(virgo_version), capture=True)
+                print local("rm -rf virgo-tomcat-server-%s "%(virgo_version), capture=True)
 
-        #use Maven to build all the osbexplorer code bundles 
-        #and place the contents in the Virgo installation
-        osbpackages = ['org.geppetto.core', 'org.neuroml.model.injectingplugin',
-                       'org.neuroml.model', 'jLEMS', 'org.neuroml.export','org.neuroml.visualiser']
-        for p in osbpackages:
-            dirp = op.join(dir_path, p)
-            print '**************************'
-            print 'BUILDING ' + dirp
-            print '**************************'
-            with lcd(dirp):
-                with settings(hide('everything'), warn_only=True):
-                    print local('cp target/classes/lib/* $SERVER_HOME/repository/usr/', capture=True)
-                    print local('cp target/* $SERVER_HOME/repository/usr/', capture=True)
-                    
-        #put the .plan file in the pickup folder      
-        with lcd(op.join(dir_path, 'org.neuroml.visualiser')):
-            print local('cp -fr osbexplorer.plan $SERVER_HOME/pickup/', capture=True)
-            
-        #set permissions on the bin directory
-        #these do carry over into the archive
-        with lcd(virgo_server_path):
-            print local('chmod -R +x ./bin', capture=True)
+        else:
+            print local('rm -rf $SERVER_HOME/repository/usr/*', capture=True)
+    # 	    print local('rm -rf $SERVER_HOME/pickup/osbexplorer.plan', capture=True)
 
-	print "Virgo Server successfully configured. To start the server go to %s and run startup.sh" % (op.join(virgo_server_path, 'bin'))
+            #use Maven to build all the osbexplorer code bundles 
+            #and place the contents in the Virgo installation
+            osbpackages = ['org.geppetto.core', 'org.neuroml.model.injectingplugin',
+                           'org.neuroml.model', 'jLEMS', 'org.neuroml.export','org.neuroml.visualiser']
+            for p in osbpackages:
+                dirp = op.join(dir_path, p)
+                print '**************************'
+                print 'BUILDING ' + dirp
+                print '**************************'
+                with lcd(dirp):
+                    with settings(hide('everything'), warn_only=True):
+                        print local('cp target/classes/lib/* $SERVER_HOME/repository/usr/', capture=True)
+                        print local('cp target/* $SERVER_HOME/repository/usr/', capture=True)
+
+            #put the .plan file in the pickup folder      
+            with lcd(op.join(dir_path, 'org.neuroml.visualiser')):
+                print local('cp -fr osbexplorer.plan $SERVER_HOME/pickup/', capture=True)
+
+            #set permissions on the bin directory
+            #these do carry over into the archive
+            with lcd(virgo_server_path):
+                print local('chmod -R +x ./bin', capture=True)
+
+        print "Virgo Server successfully configured. To start the server go to %s and run startup.sh" % (op.join(virgo_server_path, 'bin'))
 
 def execute_command_in_dir(command, directory):
     """Execute a command in specific working directory"""
