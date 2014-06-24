@@ -60,6 +60,8 @@ public class JNeuroML {
 
     public static final String NO_GUI_FLAG = "-nogui";
 
+    public static final String RUN_FLAG = "-run";
+    
     public static final String NO_RUN_FLAG = "-norun";
 
     public static final String VALIDATE_FLAG = "-validate";
@@ -254,10 +256,12 @@ public class JNeuroML {
         // Lots of options for Neuron
             } else if (args[1].equals(NEURON_EXPORT_FLAG)) {
                 
-                File lemsFile = new File(args[0]);
-                boolean nogui = (args.length>=2 && args[1].equals(NO_GUI_FLAG)) || 
-                                (args.length>=3 && args[2].equals(NO_GUI_FLAG));
-                NeuronWriter.exportToNeuron(lemsFile, nogui, true);
+                File lemsFile = (new File(args[0])).getCanonicalFile();
+                boolean nogui = (args.length>=3 && args[2].equals(NO_GUI_FLAG)) || 
+                                (args.length>=4 && args[3].equals(NO_GUI_FLAG));
+                boolean run = (args.length>=3 && args[2].equals(RUN_FLAG)) || 
+                                (args.length>=4 && args[3].equals(RUN_FLAG));
+                NeuronWriter.exportToNeuron(lemsFile, nogui, run);
 		// Two arguments
             } else if (args.length == 2) {
 
