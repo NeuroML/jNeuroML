@@ -7,28 +7,24 @@ import java.io.InputStreamReader;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
+import org.lemsml.export.base.GenerationException;
 
 import org.lemsml.export.matlab.MatlabWriter;
 import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
 import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.export.c.CWriter;
-import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.logging.MinimalMessageHandler;
-import org.lemsml.jlems.core.run.ConnectionError;
 import org.lemsml.jlems.core.run.RuntimeError;
-import org.lemsml.jlems.core.sim.ContentError;
-import org.lemsml.jlems.core.sim.ParseException;
-import org.lemsml.jlems.core.sim.Sim;
-import org.lemsml.jlems.core.type.BuildException;
+import org.lemsml.jlems.core.sim.LEMSException;
 import org.lemsml.jlems.core.type.Lems;
-import org.lemsml.jlems.core.xml.XMLException;
-import org.lemsml.jlems.io.IOUtil;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.util.FileUtil;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
+import org.neuroml.export.ModelFeatureSupportException;
+
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.graph.GraphWriter;
@@ -39,9 +35,12 @@ import org.neuroml.export.svg.SVGWriter;
 import org.neuroml.export.xineml.XineMLWriter;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.importer.sbml.SBMLImporter;
+import org.neuroml.importer.sbml.UnsupportedSBMLFeature;
 import org.neuroml.model.NeuroMLDocument;
 import org.neuroml.model.util.NeuroML2Validator;
 import org.neuroml.model.util.NeuroMLConverter;
+import org.neuroml.model.util.NeuroMLElements;
+import org.neuroml.model.util.NeuroMLException;
 import org.neuroml1.model.util.NeuroML1Validator;
 import org.sbml.jsbml.SBMLException;
 import org.xml.sax.SAXException;
@@ -50,14 +49,19 @@ public class JNeuroML {
 
     public static final String JNML_SCRIPT = "jnml";
 
-    public static final String JNML_VERSION = "0.4.0";
+    public static final String JNML_VERSION = "0.5.2";
 
     public static final String HELP_FLAG = "-help";
     public static final String HELP_FLAG_SHORT = "-h";
     public static final String HELP_FLAG_SHORT_Q = "-?";
+    
+    public static final String VERSION_FLAG = "-v";
+    public static final String VERSION_FLAG_LONG = "-version";
 
     public static final String NO_GUI_FLAG = "-nogui";
 
+    public static final String RUN_FLAG = "-run";
+    
     public static final String NO_RUN_FLAG = "-norun";
 
     public static final String VALIDATE_FLAG = "-validate";
@@ -82,8 +86,8 @@ public class JNeuroML {
 
     public static final String NEURON_EXPORT_FLAG = "-neuron";
 
-    public static String NINEML_EXPORT_FLAG = "-nineml";
-    public static String SPINEML_EXPORT_FLAG = "-spineml";
+    public static final String NINEML_EXPORT_FLAG = "-nineml";
+    public static final String SPINEML_EXPORT_FLAG = "-spineml";
 
     public static final String SBML_IMPORT_FLAG = "-sbml-import";
     public static final String SBML_IMPORT_UNITS_FLAG = "-sbml-import-units";
@@ -104,8 +108,10 @@ public class JNeuroML {
         + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + SEDML_EXPORT_FLAG + "\n"
         + "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n"
-        + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + "\n"
-        + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format (*EXPERIMENTAL*)\n\n"
+        + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG + "]\n"
+        + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format (*EXPERIMENTAL*)\n"
+        + "             " + NO_GUI_FLAG + "     Do not generate graphical elements in NEURON, just run, save data and quit\n"
+        + "             " + RUN_FLAG + "       Compile NMODL files and run the main NEURON hoc file (Linux only currently)\n\n"
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + DLEMS_EXPORT_FLAG + "\n"
         + "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL - single components only**)\n\n"
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + XPP_EXPORT_FLAG + "\n"
@@ -118,10 +124,10 @@ public class JNeuroML {
         + "           Load LEMSFile.xml using jLEMS, and convert it to MATLAB format (**EXPERIMENTAL - single components only**)\n\n"
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + CVODE_EXPORT_FLAG + "\n"
         + "           Load LEMSFile.xml using jLEMS, and convert it to C format using CVODE package (**EXPERIMENTAL - single components only**)\n\n"
-         /*"    "+JNML_SCRIPT+" LEMSFile.xml "+NINEML_EXPORT_FLAG+"\n" +
-         "           Load LEMSFile.xml using jLEMS, and convert it to NineML format (*EXPERIMENTAL*)\n\n"+
-         "    "+JNML_SCRIPT+" LEMSFile.xml "+SPINEML_EXPORT_FLAG+"\n" +
-         "           Load LEMSFile.xml using jLEMS, and convert it to SpineML format (*EXPERIMENTAL*)\n\n"+*/ 
+        + "    "+JNML_SCRIPT+" LEMSFile.xml "+NINEML_EXPORT_FLAG+"\n" 
+        + "           Load LEMSFile.xml using jLEMS, and convert it to NineML format (*EXPERIMENTAL - single components only*)\n\n"
+        + "    "+JNML_SCRIPT+" LEMSFile.xml "+SPINEML_EXPORT_FLAG+"\n" 
+        + "           Load LEMSFile.xml using jLEMS, and convert it to SpineML format (*EXPERIMENTAL - single components only*)\n\n"
         + "    " + JNML_SCRIPT + " " + SBML_IMPORT_FLAG + " SBMLFile.sbml duration dt\n"
         + "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (ignoring SBML units)\n\n"
         + "    " + JNML_SCRIPT + " " + SBML_IMPORT_UNITS_FLAG + " SBMLFile.sbml duration dt\n"
@@ -142,7 +148,7 @@ public class JNeuroML {
     }
 
 
-    private static Lems loadLemsFile(File lemsFile) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
+    private static Lems loadLemsFile(File lemsFile) throws LEMSException {
 
         if (!lemsFile.exists()) {
             System.err.println("File does not exist: " + lemsFile.getAbsolutePath());
@@ -172,6 +178,15 @@ public class JNeuroML {
                     if (args[0].equals(HELP_FLAG) || args[0].equals(HELP_FLAG_SHORT) || args[0].equals(HELP_FLAG_SHORT_Q)) {
                         showUsage();
                         System.exit(0);
+                    } 
+                    else if (args[0].equals(VERSION_FLAG) || args[0].equals(VERSION_FLAG_LONG)) {
+                        // Version has just been displayed...
+                        String jars = "    org.neuroml.import  v"+org.neuroml.importer.Main.ORG_NEUROML_IMPORT_VERSION+"\n" +
+                                      "    org.neuroml.export  v"+org.neuroml.export.Main.ORG_NEUROML_EXPORT_VERSION+"\n" +
+                                      "    org.neuroml.model   v"+NeuroMLElements.ORG_NEUROML_MODEL_VERSION+"\n" +
+                                      "    jLEMS               v"+org.lemsml.jlems.io.Main.VERSION;
+                        System.out.println(jars);
+                        System.exit(0);
                     } else {
                         System.err.println("Unrecognised argument: " + args[0]);
                         showUsage();
@@ -190,7 +205,7 @@ public class JNeuroML {
                     SwingDataViewerFactory.initialize();
                     DefaultLogger.initialize();
 
-                    runLemsFile(lemsFile);
+                    Utils.runLemsFile(lemsFile);
 
                 }
 
@@ -240,7 +255,15 @@ public class JNeuroML {
                 if (fail) {
                     System.exit(1);
                 }
-
+        // Lots of options for Neuron
+            } else if (args[1].equals(NEURON_EXPORT_FLAG)) {
+                
+                File lemsFile = (new File(args[0])).getCanonicalFile();
+                boolean nogui = (args.length>=3 && args[2].equals(NO_GUI_FLAG)) || 
+                                (args.length>=4 && args[3].equals(NO_GUI_FLAG));
+                boolean run = (args.length>=3 && args[2].equals(RUN_FLAG)) || 
+                                (args.length>=4 && args[3].equals(RUN_FLAG));
+                NeuronWriter.exportToNeuron(lemsFile, nogui, run);
 		// Two arguments
             } else if (args.length == 2) {
 
@@ -258,7 +281,7 @@ public class JNeuroML {
                     FileResultWriterFactory.initialize();
                     DefaultLogger.initialize();
 
-                    runLemsFile(lemsFile);
+                    Utils.runLemsFile(lemsFile);
                 } ///  Parse LEMS & exit
                 else if (args[1].equals(NO_RUN_FLAG)) {
 
@@ -271,7 +294,7 @@ public class JNeuroML {
 
                     System.out.println("Loading: " + lemsFile.getAbsolutePath() + " with jLEMS, NO RUN mode...");
 
-                    loadLemsFile(lemsFile, false);
+                    Utils.loadLemsFile(lemsFile, false);
 
 			///  exporting formats
                 } else if (args[1].equals(INFO_EXPORT_FLAG)) {
@@ -412,19 +435,6 @@ public class JNeuroML {
 
                     FileUtil.writeStringToFile(dlems, dlemsFile);
 
-                } else if (args[1].equals(NEURON_EXPORT_FLAG)) {
-
-                    File lemsFile = new File(args[0]);
-                    Lems lems = loadLemsFile(lemsFile);
-
-                    NeuronWriter nw = new NeuronWriter(lems);
-                    String nrn = nw.getMainScript();
-
-                    File nrnFile = new File(lemsFile.getParentFile(), lemsFile.getName().replaceAll(".xml", "_nrn.py"));
-                    System.out.println("Writing to: " + nrnFile.getAbsolutePath());
-
-                    FileUtil.writeStringToFile(nrn, nrnFile);
-
                 } else if (args[1].equals(BRIAN_EXPORT_FLAG)) {
 
                     File lemsFile = new File(args[0]);
@@ -536,21 +546,13 @@ public class JNeuroML {
 
             }
 
-        } catch (ConnectionError e) {
+        } catch (LEMSException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (ContentError e) {
+        } catch (NeuroMLException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (ParseError e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (BuildException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (XMLException e) {
+        } catch (GenerationException e) {
             e.printStackTrace();
             System.exit(1);
         } catch (JAXBException e) {
@@ -565,29 +567,15 @@ public class JNeuroML {
         } catch (XMLStreamException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (Exception e) {
+        } catch (UnsupportedSBMLFeature e) {
             e.printStackTrace();
             System.exit(1);
-        }
+        } catch (ModelFeatureSupportException e) {
+            System.out.println("\n"+e.getMessage()+"\n");
+            System.exit(1);
+        } 
     }
 
-    public static void runLemsFile(File f) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
-        loadLemsFile(f, true);
-    }
 
-    public static void loadLemsFile(File f, boolean run) throws ContentError, ParseError, ParseException, BuildException, XMLException, ConnectionError, RuntimeError {
-
-        Sim sim = Utils.readLemsNeuroMLFile(f);
-        sim.build();
-
-        if (run) {
-            sim.run();
-            IOUtil.saveReportAndTimesFile(sim);
-            E.info("Finished reading, building, running and displaying LEMS model");
-        } else {
-            E.info("Finished reading and building LEMS model");
-        }
-
-    }
 
 }
