@@ -65,7 +65,7 @@ will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct]
 
 [![Build Status](https://travis-ci.org/NeuroML/jNeuroML.png?branch=master)](https://travis-ci.org/NeuroML/jNeuroML)
 
-
+This code is distributed under the terms of the GNU Lesser General Public License.
 
 
 
