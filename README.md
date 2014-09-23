@@ -9,7 +9,7 @@ JNeuroML can:
 - **Validate** NeuroML v1.8.1 and v2.x files
 - **Simulate** most NeuroML 2 models (simulation should be specificed in [Simulation element in LEMS file](https://github.com/NeuroML/NeuroML2/blob/master/LEMSexamples/LEMS_NML2_Ex5_DetCell.xml))
 - **Export** NeuroML 2 and LEMS to many formats such as Neuron, Brian, Matlab, etc.
-- **Import** other langauges into LEMS (e.g. SBML)
+- **Import** other languages into LEMS (e.g. SBML)
 
 Binary distribution
 -------------------
