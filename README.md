@@ -2,10 +2,14 @@ jNeuroML
 ========
 
 There are a number of repositories in active development under GitHub for handling [NeuroML](https://github.com/NeuroML) 
-and [LEMS](https://github.com/LEMS) with Java. 
+and [LEMS](https://github.com/LEMS) with Java. To make it easier to access all of this functionality, we've created a single package, jNeuroML, which allows access to most of this functionality through a simple command line interface and requires minimal installation. 
 
-To make it easier to access all of this functionality, we've created a single package, jNeuroML, which allows access 
-to most of this functionality through a simple command line interface and requires minimal installation. 
+JNeuroML can:
+
+- **Validate** NeuroML v1.8.1 and v2.x files
+- **Execute** most NeuroML 2 models (simulation should be specificed in [Simulation element in LEMS file](https://github.com/NeuroML/NeuroML2/blob/master/LEMSexamples/LEMS_NML2_Ex5_DetCell.xml))
+- **Export** NeuroML 2 and LEMS to many formats such as Neuron, Brian, Matlab, etc.
+- **Import** other langauges into LEMS (e.g. SBML)
 
 Binary distribution
 -------------------
