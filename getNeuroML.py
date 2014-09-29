@@ -21,6 +21,8 @@ def main():
     	    	mode = "clean"
     	    elif arg == "development":
                 switch_to_branch = "development"
+    	    elif arg == "experimental":
+                switch_to_branch = "experimental"
     	    elif arg == "master":
                 switch_to_branch = "master"
     	    elif arg == "-osb_visualiser":
