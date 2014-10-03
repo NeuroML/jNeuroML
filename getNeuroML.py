@@ -21,6 +21,8 @@ def main():
     	    	mode = "clean"
     	    elif arg == "development":
                 switch_to_branch = "development"
+    	    elif arg == "experimental":
+                switch_to_branch = "experimental"
     	    elif arg == "master":
                 switch_to_branch = "master"
     	    elif arg == "-osb_visualiser":
@@ -60,7 +62,7 @@ def main():
     lems_repos = jlems_repo + lems_spec_repos + pylems_repos
 
     # Which repos use a development branch?
-    dev_branch_repos = neuroml_repos
+    dev_branch_repos = neuroml_repos + jlems_repo + neuroml2_spec_repo
 
     v0_0_9_branch_repos = geppetto_repos
 
