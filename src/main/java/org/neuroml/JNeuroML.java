@@ -212,6 +212,8 @@ public class JNeuroML {
 		// Multiple arguments, starting with a validate flag
             } else if (args[0].equals(VALIDATE_FLAG)) {
                 boolean fail = false;
+                int passedNoWarnings = 0;
+                int warnings = 0;
                 for (int i = 1; i < args.length; i++) {
 
                     File xmlFile = new File(args[i]);
@@ -223,15 +225,28 @@ public class JNeuroML {
                     }
                     NeuroML2Validator nmlv = new NeuroML2Validator();
                     nmlv.validateWithTests(xmlFile);
-                    if (nmlv.isValid() && !nmlv.hasWarnings()) {
-                        System.out.println(nmlv.getValidity());
-                        System.out.println(nmlv.getWarnings());
+                    
+                    if (nmlv.isValid()) {
+                         if (nmlv.hasWarnings()) {
+                             warnings++;
+                         } else {
+                             passedNoWarnings++;
+                         }
+                         
                     } else {
-                        System.err.println(nmlv.getValidity());
-                        System.err.println(nmlv.getWarnings());
                         fail = true;
                     }
+                    
+                    System.out.println(nmlv.getValidity());
+                    System.out.println(nmlv.getWarnings());
                 }
+                String passed = (passedNoWarnings == args.length-1) ? "All valid and no warnings" : passedNoWarnings+ " passed, ";
+                String warn = (warnings==0) ? "" : warnings+ " passed with warnings, ";
+                int failed = args.length-1 - passedNoWarnings - warnings;
+                String failure = (failed==0) ? "" : failed+ " failed";
+                   
+                System.out.println("\nValidated "+(args.length-1)+" files: "+passed+warn+failure+"\n");
+                
                 if (fail) {
                     System.exit(1);
                 }
