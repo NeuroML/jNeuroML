@@ -62,7 +62,7 @@ def main():
     lems_repos = jlems_repo + lems_spec_repos + pylems_repos
 
     # Which repos use a development branch?
-    dev_branch_repos = neuroml_repos + jlems_repo
+    dev_branch_repos = neuroml_repos + jlems_repo + neuroml2_spec_repo
 
     v0_0_9_branch_repos = geppetto_repos
 
