@@ -109,12 +109,12 @@ def main():
                 runMvnInstall = True
 
             if switch_to_branch:
-                if ((switch_to_branch is not "development") \
-                        or (repo in dev_branch_repos)) \
-                        and (repo not in v0_0_9_branch_repos):
+                if (repo in dev_branch_repos) \
+                   and (repo not in v0_0_9_branch_repos):
                     command = "git checkout %s" % (switch_to_branch)
                     print "Switching to branch: %s" % (switch_to_branch)
-                    execute_command_in_dir(command, local_dir)
+                    exit_on_fail = switch_to_branch is not "experimental"
+                    execute_command_in_dir(command, local_dir, exit_on_fail)
                     runMvnInstall = True
 
             info = execute_command_in_dir("git branch", local_dir)
@@ -214,7 +214,7 @@ def main():
         print "Virgo Server successfully configured. To start the server go to %s and run startup.sh" % (op.join(virgo_server_path, 'bin'))
 
 
-def execute_command_in_dir(command, directory):
+def execute_command_in_dir(command, directory, exit_on_fail=True):
     """Execute a command in specific working directory"""
     if os.name == 'nt':
         directory = os.path.normpath(directory)
@@ -224,7 +224,8 @@ def execute_command_in_dir(command, directory):
      
     if p.returncode != 0:                           
         print "Error: %s" % p.returncode
-        exit(p.returncode)
+        if exit_on_fail: 
+            exit(p.returncode)
     return return_str[0]
 
 
