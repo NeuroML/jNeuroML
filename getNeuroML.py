@@ -213,14 +213,20 @@ def main():
 
         print "Virgo Server successfully configured. To start the server go to %s and run startup.sh" % (op.join(virgo_server_path, 'bin'))
 
+
 def execute_command_in_dir(command, directory):
     """Execute a command in specific working directory"""
     if os.name == 'nt':
         directory = os.path.normpath(directory)
     print ">>>  Executing: (%s) in dir: %s" % (command, directory)
-    return_string = subprocess.Popen(command, cwd=directory, shell=True,
-                                     stdout=subprocess.PIPE).communicate()[0]
-    return return_string
+    p = subprocess.Popen(command, cwd=directory, shell=True, stdout=subprocess.PIPE)
+    return_str = p.communicate()
+     
+    if p.returncode != 0:                           
+        print "Error: %s" % p.returncode
+        exit(p.returncode)
+    return return_str[0]
+
 
 def help_info():
     print "\nUsage:\n\n    python getNeuroML.py\n        " \
@@ -234,6 +240,7 @@ def help_info():
     	"Switch relevant repos to development branch\n\n" \
 	"    Add -osb_visualiser to download and configure the projects required for the OSB visualiser\n\n" \
 	"    Add -install_server to download and configure the virgo server and the OSB explorer bundles\n"
+
 
 if __name__ == "__main__":
     main()
