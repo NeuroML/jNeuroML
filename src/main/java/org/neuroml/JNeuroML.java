@@ -73,6 +73,7 @@ public class JNeuroML {
     public static final String XPP_EXPORT_FLAG = "-xpp";
 
     public static final String BRIAN_EXPORT_FLAG = "-brian";
+    public static final String BRIAN2_EXPORT_FLAG = "-brian2";
 
     public static final String MATLAB_EXPORT_FLAG = "-matlab";
 	//public static String MATLAB_EULER_EXPORT_FLAG = "-matlab-euler";
@@ -467,15 +468,20 @@ public class JNeuroML {
 
                     FileUtil.writeStringToFile(dlems, dlemsFile);
 
-                } else if (args[1].equals(BRIAN_EXPORT_FLAG)) {
+                } else if (args[1].equals(BRIAN_EXPORT_FLAG) || args[1].equals(BRIAN2_EXPORT_FLAG)) {
 
                     File lemsFile = new File(args[0]);
                     Lems lems = loadLemsFile(lemsFile);
 
                     BrianWriter bw = new BrianWriter(lems);
+                    String suffix = "_brian";
+                    if (args[1].equals(BRIAN2_EXPORT_FLAG)) {
+                        bw.setBrian2(true);
+                        suffix = "_brian2";
+                    }
                     String br = bw.getMainScript();
 
-                    File brFile = new File(lemsFile.getParentFile(), lemsFile.getName().replaceAll(".xml", "_brian.py"));
+                    File brFile = new File(lemsFile.getParentFile(), lemsFile.getName().replaceAll(".xml", suffix+".py"));
                     System.out.println("Writing to: " + brFile.getAbsolutePath());
 
                     FileUtil.writeStringToFile(br, brFile);
