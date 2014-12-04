@@ -27,6 +27,7 @@ import org.neuroml.export.ModelFeatureSupportException;
 
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
+import org.neuroml.export.dnsim.DNSimWriter;
 import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.neuron.NeuronWriter;
@@ -75,6 +76,8 @@ public class JNeuroML {
 
     public static final String MATLAB_EXPORT_FLAG = "-matlab";
 	//public static String MATLAB_EULER_EXPORT_FLAG = "-matlab-euler";
+    
+    public static final String DNSIM_EXPORT_FLAG = "-dnsim";
 
     public static final String CVODE_EXPORT_FLAG = "-cvode";
 
@@ -115,7 +118,9 @@ public class JNeuroML {
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + DLEMS_EXPORT_FLAG + "\n"
         + "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL - single components only**)\n\n"
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + XPP_EXPORT_FLAG + "\n"
-        + "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (*EXPERIMENTAL - single components only*)\n\n"
+        + "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (*EXPERIMENTAL - single components only*)\n\n"        
+        + "    " + JNML_SCRIPT + " LEMSFile.xml " + DNSIM_EXPORT_FLAG + "\n"
+        + "           Load LEMSFile.xml using jLEMS, and convert it to DNsim format (*EXPERIMENTAL - single components only*)\n\n"
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + BRIAN_EXPORT_FLAG + "\n"
         + "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL - single components only**)\n\n"
         + "    " + JNML_SCRIPT + " LEMSFile.xml " + SBML_EXPORT_FLAG + "\n"
@@ -281,7 +286,7 @@ public class JNeuroML {
                                 (args.length>=4 && args[3].equals(NO_GUI_FLAG));
                 boolean run = (args.length>=3 && args[2].equals(RUN_FLAG)) || 
                                 (args.length>=4 && args[3].equals(RUN_FLAG));
-                NeuronWriter.exportToNeuron(lemsFile, nogui, run);
+                NeuronWriter.export(lemsFile, nogui, run);
 		// Two arguments
             } else if (args.length == 2) {
 
@@ -352,6 +357,15 @@ public class JNeuroML {
                     System.out.println("Writing to: " + odeFile.getAbsolutePath());
 
                     FileUtil.writeStringToFile(ode, odeFile);
+
+                } else if (args[1].equals(DNSIM_EXPORT_FLAG)) {
+
+                    File lemsFile = (new File(args[0])).getAbsoluteFile();
+                    Lems lems = loadLemsFile(lemsFile);
+
+                    DNSimWriter dnsimw = new DNSimWriter(lems);
+                    dnsimw.generateMainScriptAndModules(lemsFile.getParentFile());
+
 
                 } else if (args[1].equals(SEDML_EXPORT_FLAG)) {
 
