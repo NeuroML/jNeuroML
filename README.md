@@ -50,7 +50,7 @@ use the [getNeuroML.py](https://github.com/NeuroML/jNeuroML/blob/master/getNeuro
     python getNeuroML.py
 
 This will clone ~11 repos for NML2 & LEMS (including Python based libraries) into neuroml_dev/ and compile 
-the Java based ones using Maven. The full process may take 5-10 mins on first installation, but subsequently running:
+the Java based ones using Maven (download [here](http://maven.apache.org/) or use package managers for Linux (e.g. apt-get install maven) or Mac (brew install maven)). The full process may take 5-10 mins on first installation, but subsequently running:
 
     git pull
     python getNeuroML.py
