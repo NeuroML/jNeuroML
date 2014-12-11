@@ -4,16 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.lemsml.export.base.GenerationException;
-
+import org.lemsml.export.c.CWriter;
+import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.export.matlab.MatlabWriter;
 import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
-import org.lemsml.export.dlems.DLemsWriter;
-import org.lemsml.export.c.CWriter;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.logging.MinimalMessageHandler;
 import org.lemsml.jlems.core.run.RuntimeError;
@@ -24,12 +22,12 @@ import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.util.FileUtil;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.neuroml.export.ModelFeatureSupportException;
-
 import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.dnsim.DNSimWriter;
 import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.info.InfoWriter;
+import org.neuroml.export.nest.NestWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.svg.SVGWriter;
@@ -92,6 +90,8 @@ public class JNeuroML {
 
     public static final String NINEML_EXPORT_FLAG = "-nineml";
     public static final String SPINEML_EXPORT_FLAG = "-spineml";
+    
+    public static final String NEST_EXPORT_FLAG = "-nest";
 
     public static final String SBML_IMPORT_FLAG = "-sbml-import";
     public static final String SBML_IMPORT_UNITS_FLAG = "-sbml-import-units";
@@ -366,6 +366,14 @@ public class JNeuroML {
 
                     DNSimWriter dnsimw = new DNSimWriter(lems);
                     dnsimw.generateMainScriptAndModules(lemsFile.getParentFile());
+
+                } else if (args[1].equals(NEST_EXPORT_FLAG)) {
+
+                    File lemsFile = (new File(args[0])).getAbsoluteFile();
+                    Lems lems = loadLemsFile(lemsFile);
+
+                    NestWriter nw = new NestWriter(lems);
+                    nw.generateMainScriptAndCellFiles(lemsFile.getParentFile());
 
 
                 } else if (args[1].equals(SEDML_EXPORT_FLAG)) {
