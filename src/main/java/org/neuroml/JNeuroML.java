@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-import org.lemsml.export.base.GenerationException;
 import org.lemsml.export.c.CWriter;
 import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.export.matlab.MatlabWriter;
@@ -21,16 +20,17 @@ import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.util.FileUtil;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
-import org.neuroml.export.ModelFeatureSupportException;
-import org.neuroml.export.Utils;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.dnsim.DNSimWriter;
+import org.neuroml.export.exceptions.GenerationException;
+import org.neuroml.export.exceptions.ModelFeatureSupportException;
 import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.nest.NestWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.svg.SVGWriter;
+import org.neuroml.export.utils.Utils;
 import org.neuroml.export.xineml.XineMLWriter;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.importer.sbml.SBMLImporter;
@@ -191,7 +191,7 @@ public class JNeuroML {
                     else if (args[0].equals(VERSION_FLAG) || args[0].equals(VERSION_FLAG_LONG)) {
                         // Version has just been displayed...
                         String jars = "    org.neuroml.import  v"+org.neuroml.importer.Main.ORG_NEUROML_IMPORT_VERSION+"\n" +
-                                      "    org.neuroml.export  v"+org.neuroml.export.Main.ORG_NEUROML_EXPORT_VERSION+"\n" +
+                                      "    org.neuroml.export  v"+Utils.ORG_NEUROML_EXPORT_VERSION+"\n" +
                                       "    org.neuroml.model   v"+NeuroMLElements.ORG_NEUROML_MODEL_VERSION+"\n" +
                                       "    jLEMS               v"+org.lemsml.jlems.io.Main.VERSION;
                         System.out.println(jars);
