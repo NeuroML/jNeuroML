@@ -22,7 +22,6 @@ import org.lemsml.jlems.core.type.Lems;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
-import org.neuroml.export.AppTest;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.dnsim.DNSimWriter;
 import org.neuroml.export.exceptions.GenerationException;
@@ -472,7 +471,7 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					ModelicaWriter modw = new ModelicaWriter(lems, AppTest.getTempDir());
+					ModelicaWriter modw = new ModelicaWriter(lems, lemsFile.getParentFile());
 					for(File genFile : modw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
