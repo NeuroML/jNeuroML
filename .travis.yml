@@ -16,6 +16,20 @@ script:
     # Test validate
     - ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml
     
+    # Test running with jLEMS
+    - ./jnml LEMS_NML2_Ex9_FN.xml -nogui
+    - ./jnml LEMS_NML2_Ex5_DetCell.xml -nogui
+    
+    # Test generating NEURON
+    - ./jnml LEMS_NML2_Ex9_FN.xml -neuron -nogui
+    
+    # Test generating Brian
+    - ./jnml LEMS_NML2_Ex9_FN.xml -brian
+    
+    # Test generating SED-ML
+    - ./jnml LEMS_NML2_Ex9_FN.xml -sedml
+    
+    
     # Print version info
     - ./jnml -h
 
