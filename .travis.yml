@@ -17,14 +17,14 @@ script:
     - ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml
     
     # Test running with jLEMS
-    - ./jnml ../NeuroML2/examples/LEMS_NML2_Ex9_FN.xml -nogui
-    - ./jnml ../NeuroML2/examples/LEMS_NML2_Ex5_DetCell.xml -nogui
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -nogui
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex5_DetCell.xml -nogui
     
     # Test generating NEURON
-    - ./jnml ../NeuroML2/examples/LEMS_NML2_Ex9_FN.xml -neuron -nogui
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -neuron
     
     # Test generating Brian
-    - ./jnml ../NeuroML2/examples/LEMS_NML2_Ex9_FN.xml -brian
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -brian
     
     # Test generating SED-ML
     - ./jnml ../NeuroML2/examples/LEMS_NML2_Ex9_FN.xml -sedml
