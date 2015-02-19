@@ -52,7 +52,7 @@ public class JNeuroML
 
 	public static final String JNML_SCRIPT = "jnml";
 
-	public static final String JNML_VERSION = "0.7.0";
+	public static final String JNML_VERSION = "0.7.1";
 
 	public static final String HELP_FLAG = "-help";
 	public static final String HELP_FLAG_SHORT = "-h";
