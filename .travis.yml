@@ -27,7 +27,7 @@ script:
     - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -brian
     
     # Test generating SED-ML
-    - ./jnml ../NeuroML2/examples/LEMS_NML2_Ex9_FN.xml -sedml
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -sedml
     
     
     # Print version info
