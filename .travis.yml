@@ -11,10 +11,10 @@ install:
     - python getNeuroML.py $main_repo_branch  # will call mvn install on this & other repos
     
 script:
-    - cd ../NeuroML2/examples
+    - mkdir results 
     
     # Test validate
-    - jnml -validate NML2_FullNeuroML.nml
+    - ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml
     
     # Print version info
     - ./jnml -h
