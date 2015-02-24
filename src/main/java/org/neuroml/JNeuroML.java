@@ -32,7 +32,7 @@ import org.neuroml.export.nest.NestWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.svg.SVGWriter;
-import org.neuroml.export.utils.Formats;
+import org.neuroml.export.utils.Format;
 import org.neuroml.export.utils.Utils;
 import org.neuroml.export.xineml.XineMLWriter;
 import org.neuroml.export.xpp.XppWriter;
@@ -299,7 +299,7 @@ public class JNeuroML
                 Lems lems = loadLemsFile(lemsFile);
                 boolean nogui = (args.length >= 3 && args[2].equals(NO_GUI_FLAG)) || (args.length >= 4 && args[3].equals(NO_GUI_FLAG));
                 boolean run = (args.length >= 3 && args[2].equals(RUN_FLAG)) || (args.length >= 4 && args[3].equals(RUN_FLAG));
-                String mainNrnFilename = lemsFile.getName().replaceAll("." + Formats.LEMS.getExtension(), "_nrn.py");
+                String mainNrnFilename = lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "_nrn.py");
                 NeuronWriter nw = new NeuronWriter(lems, lemsFile.getParentFile(), mainNrnFilename);
                 nw.generateAndRun(nogui, run);
                 // Two arguments
@@ -362,7 +362,7 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					SBMLWriter sbmlw = new SBMLWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Formats.LEMS.getExtension(), "." + Formats.SBML.getExtension()));
+					SBMLWriter sbmlw = new SBMLWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.SBML.getExtension()));
 					for(File genFile : sbmlw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
@@ -375,7 +375,7 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					XppWriter xppw = new XppWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Formats.LEMS.getExtension(), "." + Formats.XPP.getExtension()));
+					XppWriter xppw = new XppWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.XPP.getExtension()));
 					for(File genFile : xppw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
@@ -388,7 +388,7 @@ public class JNeuroML
 					File lemsFile = (new File(args[0])).getAbsoluteFile();
 					Lems lems = loadLemsFile(lemsFile);
 
-					DNSimWriter dnsimw = new DNSimWriter(lems, lemsFile.getParentFile());
+					DNSimWriter dnsimw = new DNSimWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.DN_SIM.getExtension()));
 					for(File genFile : dnsimw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
@@ -400,8 +400,11 @@ public class JNeuroML
 
 					File lemsFile = (new File(args[0])).getAbsoluteFile();
 					Lems lems = loadLemsFile(lemsFile);
+                    
+					String suffix = "_nest";
+                    String nFile = lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), suffix+"." + Format.NEST.getExtension());
 
-					NestWriter nw = new NestWriter(lems, lemsFile.getParentFile());
+					NestWriter nw = new NestWriter(lems, lemsFile.getParentFile(), nFile);
 					for(File genFile : nw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
@@ -413,7 +416,7 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					SEDMLWriter sedw = new SEDMLWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Formats.LEMS.getExtension(), "." + Formats.SEDML.getExtension()), lemsFile.getName(), Formats.NEUROML2);
+					SEDMLWriter sedw = new SEDMLWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.SEDML.getExtension()), lemsFile.getName(), Format.NEUROML2);
 					for(File genFile : sedw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
@@ -426,9 +429,9 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					Formats v = args[1].equals(SPINEML_EXPORT_FLAG) ? Formats.SPINEML : Formats.NINEML;
-					String suffix = args[1].equals(SPINEML_EXPORT_FLAG) ? ("." + Formats.SPINEML.getExtension()) : ("." + Formats.NINEML.getExtension());
-					XineMLWriter xw = new XineMLWriter(lems, v, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Formats.LEMS.getExtension(), suffix));
+					Format v = args[1].equals(SPINEML_EXPORT_FLAG) ? Format.SPINEML : Format.NINEML;
+					String suffix = args[1].equals(SPINEML_EXPORT_FLAG) ? ("." + Format.SPINEML.getExtension()) : ("." + Format.NINEML.getExtension());
+					XineMLWriter xw = new XineMLWriter(lems, v, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), suffix));
 					for(File genFile : xw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
@@ -440,7 +443,7 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					String filename = lemsFile.getName().replaceAll("-", "_").replaceAll("." + Formats.LEMS.getExtension(), "." + Formats.MATLAB.getExtension());
+					String filename = lemsFile.getName().replaceAll("-", "_").replaceAll("." + Format.LEMS.getExtension(), "." + Format.MATLAB.getExtension());
 					if(!Character.isLetter(filename.charAt(0)))
 					{
 						filename = "M_" + filename;
@@ -457,7 +460,7 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					String filename = lemsFile.getName().replaceAll("-", "_").replaceAll("." + Formats.LEMS.getExtension(), "." + Formats.C.getExtension());
+					String filename = lemsFile.getName().replaceAll("-", "_").replaceAll("." + Format.LEMS.getExtension(), "." + Format.C.getExtension());
 					CWriter cw = new CWriter(lems, lemsFile.getParentFile(), filename);
 					cw.setSolver(CWriter.Solver.CVODE);
 					for(File genFile : cw.convert())
@@ -471,8 +474,10 @@ public class JNeuroML
 
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
+                    
+                    String mFile = lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.MODELICA.getExtension());
 
-					ModelicaWriter modw = new ModelicaWriter(lems, lemsFile.getParentFile());
+					ModelicaWriter modw = new ModelicaWriter(lems, lemsFile.getParentFile(), mFile);
 					for(File genFile : modw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
@@ -485,7 +490,7 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					DLemsWriter dlemsw = new DLemsWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Formats.LEMS.getExtension(), "." + Formats.DLEMS.getExtension()), null);
+					DLemsWriter dlemsw = new DLemsWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.DLEMS.getExtension()), null);
 					for(File genFile : dlemsw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
@@ -505,7 +510,7 @@ public class JNeuroML
                         brain2 = true;
 						suffix = "_brian2";
 					}
-                    String bFile = lemsFile.getName().replaceAll("." + Formats.LEMS.getExtension(), suffix+"." + Formats.BRIAN.getExtension());
+                    String bFile = lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), suffix+"." + Format.BRIAN.getExtension());
   
                     BrianWriter bw = new BrianWriter(lems, lemsFile.getParentFile(), bFile);
 					bw.setBrian2(brain2);
@@ -522,12 +527,12 @@ public class JNeuroML
 					File lemsFile = new File(args[0]);
 					Lems lems = loadLemsFile(lemsFile);
 
-					GraphWriter gw = new GraphWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Formats.LEMS.getExtension(), "." + Formats.GRAPH_VIZ.getExtension()));
+					GraphWriter gw = new GraphWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.GRAPH_VIZ.getExtension()));
 					List<File> outputFiles = gw.convert();
 					File gvFile = outputFiles.get(0);
 					System.out.println("Writing to: " + gvFile.getAbsolutePath());
 
-					String imgFile = gvFile.getAbsolutePath().replace("." + Formats.GRAPH_VIZ.getExtension(), "." + Formats.PNG.getExtension());
+					String imgFile = gvFile.getAbsolutePath().replace("." + Format.GRAPH_VIZ.getExtension(), "." + Format.PNG.getExtension());
 					String cmd = "dot -Tpng  " + gvFile.getAbsolutePath() + " -o " + imgFile;
 					String[] env = new String[] {};
 					Runtime run = Runtime.getRuntime();
@@ -562,7 +567,7 @@ public class JNeuroML
 					NeuroMLConverter nmlc = new NeuroMLConverter();
 					NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile);
 
-					SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), nmlFile.getName().replaceAll("." + Formats.NEUROML2.getExtension(), "." + Formats.SVG.getExtension()).replaceAll("." + Formats.LEMS.getExtension(), "." + Formats.SVG.getExtension()));
+					SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), nmlFile.getName().replaceAll("." + Format.NEUROML2.getExtension(), "." + Format.SVG.getExtension()).replaceAll("." + Format.LEMS.getExtension(), "." + Format.SVG.getExtension()));
 					for(File genFile : svgw.convert())
 					{
 						System.out.println("Writing to: " + genFile.getAbsolutePath());
