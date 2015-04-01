@@ -1,5 +1,17 @@
-export JNML_VERSION=0.4.0
+#!/bin/bash
+
+#   Use an altered value below to run the application with extra memory
+#   **OR** set JNML_MAX_MEMORY_LOCAL in your .bashrc file
+#   Type java -X for more info
+export JNML_MAX_MEMORY=400M
+
+export JNML_VERSION=0.7.1
+
 
 export CLASSPATH=.:./target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar:$JNML_HOME/target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar
 
-java -Xmx400M -classpath $CLASSPATH org.neuroml.JNeuroML $*
+if [ -n "$JNML_MAX_MEMORY_LOCAL" ]; then
+    export JNML_MAX_MEMORY=$JNML_MAX_MEMORY_LOCAL
+fi
+
+java -Xmx$JNML_MAX_MEMORY -classpath $CLASSPATH org.neuroml.JNeuroML $*
