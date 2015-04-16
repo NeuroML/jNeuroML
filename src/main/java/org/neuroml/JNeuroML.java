@@ -426,6 +426,11 @@ public class JNeuroML
                     for(File genFile : gw.convert())
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        
+                        if (genFile.getName().indexOf("geppetto") > 0) {
+                            System.out.println("\nTry running this file locally with Geppetto using:\n\n    "
+                                + "http://localhost:8080/org.geppetto.frontend/?sim=file://" + genFile + "\n");
+                        }
                     }
                 }
                 else if(args[1].equals(SEDML_EXPORT_FLAG))
