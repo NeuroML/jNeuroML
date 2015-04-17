@@ -422,7 +422,7 @@ public class JNeuroML
                     String suffix = ".geppetto";
                     String gFileName = lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), suffix+"." + Format.GEPPETTO.getExtension());
                     File gFile = new File(lemsFile.getParentFile(), gFileName);
-                    GeppettoWriter gw = new GeppettoWriter(lems, lemsFile.getParentFile(), gFileName, gFile);
+                    GeppettoWriter gw = new GeppettoWriter(lems, lemsFile.getParentFile(), gFileName, lemsFile);
                     for(File genFile : gw.convert())
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
