@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.List;
-
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-
 import org.lemsml.export.c.CWriter;
 import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.export.matlab.MatlabWriter;
@@ -30,6 +28,7 @@ import org.lemsml.jlems.io.out.FileResultWriterFactory;
 import org.lemsml.jlems.io.util.FileUtil;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.neuroml.export.brian.BrianWriter;
+import org.neuroml.export.cellml.CellMLWriter;
 import org.neuroml.export.dnsim.DNSimWriter;
 import org.neuroml.export.exceptions.GenerationException;
 import org.neuroml.export.exceptions.ModelFeatureSupportException;
@@ -98,6 +97,8 @@ public class JNeuroML
     public static final String DLEMS_EXPORT_FLAG = "-dlems"; // Subject to change/removal without notice!!
 
     public static final String SEDML_EXPORT_FLAG = "-sedml";
+
+    public static final String CELLML_EXPORT_FLAG = "-cellml";
 
     public static final String NEURON_EXPORT_FLAG = "-neuron";
 
@@ -451,6 +452,21 @@ public class JNeuroML
 
                     SEDMLWriter sedw = new SEDMLWriter(lems, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.SEDML.getExtension()), lemsFile.getName(), Format.NEUROML2);
                     for(File genFile : sedw.convert())
+                    {
+                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                    }
+
+                }
+                else if(args[1].equals(CELLML_EXPORT_FLAG))
+                {
+
+                    File lemsFile = new File(args[0]);
+                    Lems lems = loadLemsFile(lemsFile);
+
+                    CellMLWriter cellmlw = new CellMLWriter(lems, 
+                                                            lemsFile.getParentFile(), 
+                                                            lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "." + Format.CELLML.getExtension()));
+                    for(File genFile : cellmlw.convert())
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
                     }
