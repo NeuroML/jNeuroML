@@ -55,11 +55,7 @@ the Java based ones using Maven (download [here](http://maven.apache.org/) or us
     git pull
     python getNeuroML.py
 
-in the jNeuroML folder will get the stable version of each repo & compile using Maven if necessary. 
-
-*To access the very latest version* (the development branches of the GitHub repos) use:
-
-    python getNeuroML.py development
+in the jNeuroML folder will get the latest code for each repo & compile using Maven if necessary.  
 
 Use of Maven is a great way to manage versions of applications being developed in distributed repositories, 
 and will make it easy to use selected parts of this for different Java applications. For example, these packages 
@@ -69,10 +65,4 @@ will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct]
 [![Build Status](https://travis-ci.org/NeuroML/jNeuroML.png?branch=master)](https://travis-ci.org/NeuroML/jNeuroML)
 
 This code is distributed under the terms of the GNU Lesser General Public License.
-
-
-
-
-
-
 

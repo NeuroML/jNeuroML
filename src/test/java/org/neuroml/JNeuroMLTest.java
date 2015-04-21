@@ -3,8 +3,12 @@ package org.neuroml;
 import java.io.File;
 import java.io.IOException;
 
+import org.lemsml.jlems.core.run.RuntimeError;
+import org.lemsml.jlems.core.type.Lems;
 import org.lemsml.jlems.core.xml.XMLElementReader;
 import org.lemsml.jlems.io.util.FileUtil;
+import org.sbml.jsbml.SBMLException;
+import org.sbml.jsbml.text.parser.ParseException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -51,6 +55,14 @@ public class JNeuroMLTest
 
     	XMLElementReader xer = new XMLElementReader(jnmlPom);
     	assertEquals(JNeuroML.JNML_VERSION, xer.getRootElement().getElement("version").getBody());
+    	
+    }
+    
+    public void testReadingFile() throws SBMLException, RuntimeError, ParseException
+    {
+    	//File lemsFile = (new File("/home/finnk/Desktop/Sielegans/LEMS2HDL/git/jNeuroML/test/A1_iafCell.xml")).getCanonicalFile();
+        String[] args = {"/home/finnk/Desktop/Sielegans/LEMS2HDL/git/jNeuroML/test/A1_iafCell.xml","-vhdl"};
+    	JNeuroML.main(args);
     	
     }
 }

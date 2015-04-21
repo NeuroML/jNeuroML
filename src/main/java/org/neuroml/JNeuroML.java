@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -14,6 +15,11 @@ import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.export.matlab.MatlabWriter;
 import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
+import org.lemsml.export.vhdl.VHDLWriter;
+import org.lemsml.export.vhdl.VHDLWriter.ScriptType;
+import org.lemsml.export.dlems.DLemsWriter;
+import org.lemsml.export.c.CWriter;
+import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.logging.MinimalMessageHandler;
 import org.lemsml.jlems.core.run.RuntimeError;
@@ -21,6 +27,7 @@ import org.lemsml.jlems.core.sim.LEMSException;
 import org.lemsml.jlems.core.type.Lems;
 import org.lemsml.jlems.io.logging.DefaultLogger;
 import org.lemsml.jlems.io.out.FileResultWriterFactory;
+import org.lemsml.jlems.io.util.FileUtil;
 import org.lemsml.jlems.viz.datadisplay.SwingDataViewerFactory;
 import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.dnsim.DNSimWriter;
@@ -76,6 +83,7 @@ public class JNeuroML
     public static final String XPP_EXPORT_FLAG = "-xpp";
 
     public static final String BRIAN_EXPORT_FLAG = "-brian";
+    public static final String VHDL_EXPORT_FLAG = "-vhdl";
     public static final String BRIAN2_EXPORT_FLAG = "-brian2";
 
     public static final String MATLAB_EXPORT_FLAG = "-matlab";
@@ -131,7 +139,9 @@ public class JNeuroML
             + " SBMLFile.sbml duration dt\n" + "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (ignoring SBML units)\n\n" + "    "
             + JNML_SCRIPT + " " + SBML_IMPORT_UNITS_FLAG + " SBMLFile.sbml duration dt\n"
             + "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (attempt to extract SBML units; ensure units are valid in the SBML!)\n\n"
-            + "    " + JNML_SCRIPT + " NMLFile.nml " + SVG_FLAG + "\n" + "           Load NMLFile.nml and convert cell(s) to SVG image format (*EXPERIMENTAL*)\n\n" + "    " + JNML_SCRIPT + " "
+            + "    " + JNML_SCRIPT + " NMLFile.nml " + SVG_FLAG + "\n" + "           Load NMLFile.nml and convert cell(s) to SVG image format (*EXPERIMENTAL*)\n\n"
+            + "    " + JNML_SCRIPT+" LEMSFile.xml " + VHDL_EXPORT_FLAG + " neuronid \n" +
+              "           Load LEMSFile.xml using jLEMS, and convert it to VHDL format (**EXPERIMENTAL - point models only - single neurons only**)\n\n"            + "    " + JNML_SCRIPT + " "
             + VALIDATE_FLAG + " NMLFile.nml\n" + "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n" + "    " + JNML_SCRIPT + " " + VALIDATE_V1_FLAG
             + " NMLFile.nml\n" + "           Validate NMLFile.nml against NeuroML v1.8.1 Schema \n\n" + "    " + JNML_SCRIPT + " " + VERSION_FLAG + "\n" + "    " + JNML_SCRIPT + " "
             + VERSION_FLAG_LONG + "\n" + "           Print information on versions of packages used\n\n" + "    " + JNML_SCRIPT + " " + HELP_FLAG + "\n" + "    " + JNML_SCRIPT + " " + HELP_FLAG_SHORT
@@ -542,11 +552,9 @@ public class JNeuroML
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
                     }
-
-                }
+                }  
                 else if(args[1].equals(GRAPH_FLAG))
                 {
-
                     File lemsFile = new File(args[0]);
                     Lems lems = loadLemsFile(lemsFile);
 
@@ -603,6 +611,36 @@ public class JNeuroML
                     showUsage();
                     System.exit(1);
 
+                }
+            }
+            else if(args.length == 3)
+            {
+                if (args[1].equals(VHDL_EXPORT_FLAG)) {
+
+					File lemsFile = new File(args[0]);
+					Lems lems = loadLemsFile(lemsFile);
+					 
+					VHDLWriter vw = new VHDLWriter(lems);
+					
+					Map<String,String> componentScripts = vw.getNeuronModelScripts(args[2],false);
+					//String testbenchScript = vw.getSimulationScript(ScriptType.TESTBENCH, args[2], false);
+					String prjScript = vw.getPrjFile(componentScripts.keySet());
+					
+					for (Map.Entry<String, String> entry : componentScripts.entrySet()) {
+						String key = entry.getKey();
+						String val = entry.getValue();
+						File vwFile = new File(lemsFile.getParentFile(), "/" + key + ".vhdl");
+						FileUtil.writeStringToFile(val, vwFile);
+						System.out.println("Writing to: "+vwFile.getAbsolutePath());
+					}
+					
+					/*File vwFile = new File(lemsFile.getParentFile(), "/testbench.vhdl");
+					FileUtil.writeStringToFile(testbenchScript, vwFile);
+					System.out.println("Writing to: "+vwFile.getAbsolutePath());*/
+					File vwFile = new File(lemsFile.getParentFile(), "/testbench.prj");
+					FileUtil.writeStringToFile(prjScript, vwFile);
+					System.out.println("Writing to: "+vwFile.getAbsolutePath());
+				
                 }
             }
             else if(args.length == 4)
