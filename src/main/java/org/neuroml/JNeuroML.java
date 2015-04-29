@@ -8,16 +8,12 @@ import java.util.Map;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-import org.lemsml.export.c.CWriter;
-import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.export.matlab.MatlabWriter;
 import org.lemsml.export.modelica.ModelicaWriter;
 import org.lemsml.export.sedml.SEDMLWriter;
 import org.lemsml.export.vhdl.VHDLWriter;
-import org.lemsml.export.vhdl.VHDLWriter.ScriptType;
 import org.lemsml.export.dlems.DLemsWriter;
 import org.lemsml.export.c.CWriter;
-import org.lemsml.jlems.core.expression.ParseError;
 import org.lemsml.jlems.core.logging.E;
 import org.lemsml.jlems.core.logging.MinimalMessageHandler;
 import org.lemsml.jlems.core.run.RuntimeError;
@@ -612,7 +608,7 @@ public class JNeuroML
 
                     File nmlFile = new File(args[0]);
                     NeuroMLConverter nmlc = new NeuroMLConverter();
-                    NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile);
+                    NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile, true);
 
                     SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), nmlFile.getName().replaceAll("." + Format.NEUROML2.getExtension(), "." + Format.SVG.getExtension()).replaceAll("." + Format.LEMS.getExtension(), "." + Format.SVG.getExtension()));
                     for(File genFile : svgw.convert())
