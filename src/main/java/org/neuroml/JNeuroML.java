@@ -608,7 +608,8 @@ public class JNeuroML
 
                     File nmlFile = new File(args[0]);
                     NeuroMLConverter nmlc = new NeuroMLConverter();
-                    NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile, true);
+                    
+                    NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile, true, false);
 
                     SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), nmlFile.getName().replaceAll("." + Format.NEUROML2.getExtension(), "." + Format.SVG.getExtension()).replaceAll("." + Format.LEMS.getExtension(), "." + Format.SVG.getExtension()));
                     for(File genFile : svgw.convert())
