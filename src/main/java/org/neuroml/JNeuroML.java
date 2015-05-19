@@ -114,35 +114,78 @@ public class JNeuroML
     public static final String SVG_FLAG = "-svg";
 
     static String usage = "Usage: \n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml\n"
-            + "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml " + NO_GUI_FLAG + "\n"
-            + "           As above, parse and execute the model and save results, but don't show GUI\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml " + NO_RUN_FLAG + "\n"
-            + "           Parse the LEMS file, but don't run the simulation\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml " + GRAPH_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml " + SEDML_EXPORT_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG
-            + "]\n" + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format (*EXPERIMENTAL*)\n" + "             " + NO_GUI_FLAG
-            + "     Do not generate graphical elements in NEURON, just run, save data and quit\n" + "             " + RUN_FLAG
-            + "       Compile NMODL files and run the main NEURON hoc file (Linux only currently)\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml " + DLEMS_EXPORT_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL - single components only**)\n\n" + "    " + JNML_SCRIPT
-            + " LEMSFile.xml " + XPP_EXPORT_FLAG + "\n" + "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (*EXPERIMENTAL - single components only*)\n\n" + "    "
-            + JNML_SCRIPT + " LEMSFile.xml " + DNSIM_EXPORT_FLAG + "\n" + "           Load LEMSFile.xml using jLEMS, and convert it to DNsim format (*EXPERIMENTAL - single components only*)\n\n"
+            + "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + NO_GUI_FLAG + "\n"
+            + "           As above, parse and execute the model and save results, but don't show GUI\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + NO_RUN_FLAG + "\n"
+            + "           Parse the LEMS file, but don't run the simulation\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + GRAPH_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + SEDML_EXPORT_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG+ "]\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format \n" 
+            + "             " + NO_GUI_FLAG+ "     Do not generate graphical elements in NEURON, just run, save data and quit\n" 
+            + "             " + RUN_FLAG + "       Compile NMODL files and run the main NEURON hoc file (Linux only currently)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " NMLFile.nml " + SVG_FLAG + "\n" 
+            + "           Load NMLFile.nml and convert cells & networks to SVG image format \n\n"
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + DLEMS_EXPORT_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL - single components only**)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + XPP_EXPORT_FLAG + "\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (*EXPERIMENTAL - single components only*)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + DNSIM_EXPORT_FLAG + "\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to DNsim format (*EXPERIMENTAL - single components only*)\n\n"
+            
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + BRIAN_EXPORT_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL - single components only**)\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml " + SBML_EXPORT_FLAG
-            + "\n" + "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL - single components only**)\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml "
-            + MATLAB_EXPORT_FLAG + "\n" + "           Load LEMSFile.xml using jLEMS, and convert it to MATLAB format (**EXPERIMENTAL - single components only**)\n\n" + "    " + JNML_SCRIPT
-            + " LEMSFile.xml " + CVODE_EXPORT_FLAG + "\n" + "           Load LEMSFile.xml using jLEMS, and convert it to C format using CVODE package (**EXPERIMENTAL - single components only**)\n\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL - single components only**)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + SBML_EXPORT_FLAG + "\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL - single components only**)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml "+ MATLAB_EXPORT_FLAG + "\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to MATLAB format (**EXPERIMENTAL - single components only**)\n\n" 
+            
+            + "    " + JNML_SCRIPT+ " LEMSFile.xml " + CVODE_EXPORT_FLAG + "\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to C format using CVODE package (**EXPERIMENTAL - single components only**)\n\n"
+            
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + NINEML_EXPORT_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to NineML format (*EXPERIMENTAL - single components only*)\n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml " + SPINEML_EXPORT_FLAG
-            + "\n" + "           Load LEMSFile.xml using jLEMS, and convert it to SpineML format (*EXPERIMENTAL - single components only*)\n\n" + "    " + JNML_SCRIPT + " " + SBML_IMPORT_FLAG
-            + " SBMLFile.sbml duration dt\n" + "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (ignoring SBML units)\n\n" + "    "
-            + JNML_SCRIPT + " " + SBML_IMPORT_UNITS_FLAG + " SBMLFile.sbml duration dt\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to NineML format (*EXPERIMENTAL - single components only*)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + SPINEML_EXPORT_FLAG+ "\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to SpineML format (*EXPERIMENTAL - single components only*)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " " + SBML_IMPORT_FLAG+ " SBMLFile.sbml duration dt\n" 
+            + "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (ignoring SBML units)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " " + SBML_IMPORT_UNITS_FLAG + " SBMLFile.sbml duration dt\n"
             + "           Load SBMLFile.sbml using jSBML, and convert it to LEMS format using values for duration & dt in ms (attempt to extract SBML units; ensure units are valid in the SBML!)\n\n"
-            + "    " + JNML_SCRIPT + " NMLFile.nml " + SVG_FLAG + "\n" + "           Load NMLFile.nml and convert cell(s) to SVG image format (*EXPERIMENTAL*)\n\n"
+            
             + "    " + JNML_SCRIPT+" LEMSFile.xml " + VHDL_EXPORT_FLAG + " neuronid \n" +
-              "           Load LEMSFile.xml using jLEMS, and convert it to VHDL format (**EXPERIMENTAL - point models only - single neurons only**)\n\n"            + "    " + JNML_SCRIPT + " "
-            + VALIDATE_FLAG + " NMLFile.nml\n" + "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n" + "    " + JNML_SCRIPT + " " + VALIDATE_V1_FLAG
-            + " NMLFile.nml\n" + "           Validate NMLFile.nml against NeuroML v1.8.1 Schema \n\n" + "    " + JNML_SCRIPT + " " + VERSION_FLAG + "\n" + "    " + JNML_SCRIPT + " "
-            + VERSION_FLAG_LONG + "\n" + "           Print information on versions of packages used\n\n" + "    " + JNML_SCRIPT + " " + HELP_FLAG + "\n" + "    " + JNML_SCRIPT + " " + HELP_FLAG_SHORT
-            + "\n" + "    " + JNML_SCRIPT + " " + HELP_FLAG_SHORT_Q + "\n" + "           Print this help information\n\n";
+              "           Load LEMSFile.xml using jLEMS, and convert it to VHDL format (**EXPERIMENTAL - point models only - single neurons only**)\n\n"   
+            
+            + "    " + JNML_SCRIPT + " " + VALIDATE_FLAG + " NMLFile.nml\n" 
+            + "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n" 
+            
+            + "    " + JNML_SCRIPT + " " + VALIDATE_V1_FLAG + " NMLFile.nml\n" + "           Validate NMLFile.nml against NeuroML v1.8.1 Schema \n\n" 
+            
+            + "    " + JNML_SCRIPT + " " + VERSION_FLAG + "\n" 
+            
+            + "    " + JNML_SCRIPT + " " + VERSION_FLAG_LONG + "\n" + "           Print information on versions of packages used\n\n" 
+            
+            + "    " + JNML_SCRIPT + " " + HELP_FLAG + "\n" 
+            
+            + "    " + JNML_SCRIPT + " " + HELP_FLAG_SHORT + "\n" 
+            
+            + "    " + JNML_SCRIPT + " " + HELP_FLAG_SHORT_Q + "\n" + "           Print this help information\n\n";
 
     public static void showUsage()
     {
