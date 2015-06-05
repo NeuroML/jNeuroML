@@ -113,6 +113,8 @@ public class JNeuroML
 
     public static final String SVG_FLAG = "-svg";
 
+    public static final String PNG_FLAG = "-png";
+
     static String usage = "Usage: \n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml\n"
             + "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n" 
             
@@ -648,10 +650,8 @@ public class JNeuroML
                 }
                 else if(args[1].equals(SVG_FLAG))
                 {
-
                     File nmlFile = new File(args[0]);
                     NeuroMLConverter nmlc = new NeuroMLConverter();
-                    
                     NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile, true, false);
 
                     SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), nmlFile.getName().replaceAll("." + Format.NEUROML2.getExtension(), "." + Format.SVG.getExtension()).replaceAll("." + Format.LEMS.getExtension(), "." + Format.SVG.getExtension()));
@@ -659,7 +659,20 @@ public class JNeuroML
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
                     }
+                }
+                else if(args[1].equals(PNG_FLAG))
+                {
+                    File nmlFile = new File(args[0]);
+                    NeuroMLConverter nmlc = new NeuroMLConverter();
+                    NeuroMLDocument nmlDocument = nmlc.loadNeuroML(nmlFile, true, false);
 
+                    String pngFileName = nmlFile.getName().replaceAll("." + Format.NEUROML2.getExtension(), "." + Format.PNG.getExtension());
+                    File pngFile = new File(nmlFile.getParentFile(), pngFileName);
+                    SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), pngFileName);
+                    
+                    svgw.convertToPng(pngFile, 1600, 1200);
+                    System.out.println("Writing to: " + pngFile.getAbsolutePath());
+                    
                 }
                 else
                 {
