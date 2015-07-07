@@ -14,7 +14,11 @@ JNeuroML can:
 Binary distribution
 -------------------
 
-To get a precompiled binary for jNeuroML, type:
+To get a precompiled binary for jNeuroML, either:
+
+   [Download from GitHub Repository](bin/jnml-0.7.1.zip)
+
+or type:
 
     svn checkout svn://svn.code.sf.net/p/neuroml/code/jNeuroMLJar
     cd jNeuroMLJar
