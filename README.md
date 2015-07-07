@@ -16,7 +16,7 @@ Binary distribution
 
 To get a precompiled binary for jNeuroML, either:
 
-   [Download from GitHub Repository](bin/jnml-0.7.1.zip)
+   [Download .ZIP from GitHub Repository](../../raw/master/bin/jnml-0.7.1.zip). Then extract to a folder.
 
 or type:
 
