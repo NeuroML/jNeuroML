@@ -14,4 +14,4 @@ if [ -n "$JNML_MAX_MEMORY_LOCAL" ]; then
     export JNML_MAX_MEMORY=$JNML_MAX_MEMORY_LOCAL
 fi
 
-java -Xmx$JNML_MAX_MEMORY -classpath $CLASSPATH org.neuroml.JNeuroML $*
+java -Xmx$JNML_MAX_MEMORY -classpath $CLASSPATH org.neuroml.JNeuroML ${1+"$@"}
