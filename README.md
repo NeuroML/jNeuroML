@@ -19,7 +19,7 @@ To get a precompiled binary for jNeuroML, go to https://github.com/NeuroML/jNeur
 Usage
 -----
 
-Typing ./jnml (or jnml.bat on Windows) will list the options available. Some of the current options include:
+Typing *./jnml* (or *jnml.bat* on Windows) will list the options available. Some of the current options include:
 
     ./jnml -validate MyNeuroML.nml              (validate NeuroML 2 document against the current schema)
     ./jnml -validatev1 MyNeuroML1.xml           (validate NeuroML v1 document against the v1.8.1 schema)
@@ -32,7 +32,7 @@ and https://github.com/NeuroML/org.neuroml.import).
 
 **Note:**
 
-Adding the environment variable JNML_HOME, pointing to the jNeuroMLJar folder, as well as adding this path to the PATH variable will let you use the jnml utility from any folder.
+Adding the environment variable *JNML_HOME*, pointing to the *jNeuroMLJar* folder, as well as adding this path to the *PATH* variable will let you use the *jnml* utility from any folder.
 
 
 Getting the source for jNeuroML
@@ -45,7 +45,7 @@ use the [getNeuroML.py](https://github.com/NeuroML/jNeuroML/blob/master/getNeuro
     cd neuroml_dev/jNeuroML
     python getNeuroML.py
 
-This will clone ~11 repos for NML2 & LEMS (including Python based libraries) into neuroml_dev/ and compile 
+This will clone ~11 repos for NML2 & LEMS (including Python based libraries) into *neuroml_dev/* and compile 
 the Java based ones using Maven (download [here](http://maven.apache.org/) or use package managers for Linux (e.g. apt-get install maven) or Mac (brew install maven)). The full process may take 5-10 mins on first installation, but subsequently running:
 
     git pull
@@ -61,6 +61,11 @@ Use of Maven is a great way to manage versions of applications being developed i
 and will make it easy to use selected parts of this for different Java applications. For example, these packages 
 will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct](http://www.neuroConstruct.org) and for handling NeuroML on the 
 [Open Source Brain website](http://www.OpenSourceBrain.org).
+
+Prefer Python?
+--------------
+
+If you prefer using/installing/coding in Python, try out [pyNeuroML](https://github.com/NeuroML/pyNeuroML). Much of the functionality of jNeuroML is bundled inside pyNeuroML and can be accessed with a command line utility (*pynml*) with similar usage as *jnml*.
 
 [![Build Status](https://travis-ci.org/NeuroML/jNeuroML.png?branch=master)](https://travis-ci.org/NeuroML/jNeuroML)
 
