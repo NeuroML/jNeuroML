@@ -69,6 +69,8 @@ public class JNeuroML
     public static final String RUN_FLAG = "-run";
 
     public static final String NO_RUN_FLAG = "-norun";
+    
+    public static final String OUTPUT_DIR_FLAG = "-outputdir";
 
     public static final String VALIDATE_FLAG = "-validate";
     public static final String VALIDATE_V1_FLAG = "-validatev1";
@@ -130,10 +132,11 @@ public class JNeuroML
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + SEDML_EXPORT_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n" 
             
-            + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG+ "]\n" 
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG+ "] ["+OUTPUT_DIR_FLAG+" dir]\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format \n" 
-            + "             " + NO_GUI_FLAG+ "     Do not generate graphical elements in NEURON, just run, save data and quit\n" 
-            + "             " + RUN_FLAG + "       Compile NMODL files and run the main NEURON hoc file (Linux only currently)\n\n" 
+            + "             " + NO_GUI_FLAG+ "       Do not generate graphical elements in NEURON, just run, save data and quit\n" 
+            + "             " + RUN_FLAG + "         Compile NMODL files and run the main NEURON hoc file (Linux only currently)\n" 
+            + "             " + OUTPUT_DIR_FLAG + "   Generate NEURON files in another directory, dir\n\n" 
             
             + "    " + JNML_SCRIPT + " NMLFile.nml " + SVG_FLAG + "\n" 
             + "           Load NMLFile.nml and convert cells & networks to SVG image format \n\n"
@@ -352,10 +355,39 @@ public class JNeuroML
 
                 File lemsFile = (new File(args[0])).getCanonicalFile();
                 Lems lems = loadLemsFile(lemsFile);
-                boolean nogui = (args.length >= 3 && args[2].equals(NO_GUI_FLAG)) || (args.length >= 4 && args[3].equals(NO_GUI_FLAG));
-                boolean run = (args.length >= 3 && args[2].equals(RUN_FLAG)) || (args.length >= 4 && args[3].equals(RUN_FLAG));
+                
+                boolean nogui = false;
+                boolean run = false;
+                File outputDir = lemsFile.getParentFile();
+                
+                int i  = 2;
+                while (i<args.length) 
+                {
+                    if (args[i].equals(NO_GUI_FLAG))
+                        nogui = true;
+                    else if (args[i].equals(RUN_FLAG))
+                        run = true;
+                    else if (args[i].equals(OUTPUT_DIR_FLAG))
+                    {
+                        i = i+1;
+                        outputDir = (new File(args[i])).getAbsoluteFile();
+                        if (!outputDir.exists()) 
+                        {
+                            System.out.println("Cannot find dir: " + args[i] + " ("+outputDir+")");
+                            System.exit(1);
+                        }
+                    }
+                    else 
+                    {
+                        System.out.println("Unrecognised argument: " + args[i]);
+                        System.exit(1);
+                    }
+                    i = i+1;
+                }
+                
                 String mainNrnFilename = lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "_nrn.py");
-                NeuronWriter nw = new NeuronWriter(lems, lemsFile.getParentFile(), mainNrnFilename);
+                System.out.println("nogui: "+nogui+", run: "+run+", outputDir: "+outputDir);
+                NeuronWriter nw = new NeuronWriter(lems, outputDir, mainNrnFilename);
                 nw.generateAndRun(nogui, run);
                 // Two arguments
             }
