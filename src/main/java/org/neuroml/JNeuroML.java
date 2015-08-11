@@ -386,7 +386,6 @@ public class JNeuroML
                 }
                 
                 String mainNrnFilename = lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "_nrn.py");
-                System.out.println("nogui: "+nogui+", run: "+run+", outputDir: "+outputDir);
                 NeuronWriter nw = new NeuronWriter(lems, outputDir, mainNrnFilename);
                 nw.generateAndRun(nogui, run);
                 // Two arguments
