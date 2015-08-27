@@ -290,7 +290,7 @@ public class JNeuroML
                         System.exit(1);
                     }
                     NeuroML2Validator nmlv = new NeuroML2Validator();
-                    nmlv.validateWithTests(xmlFile);
+                    nmlv.validateWithTests(xmlFile.getCanonicalFile());
 
                     if(nmlv.isValid())
                     {
