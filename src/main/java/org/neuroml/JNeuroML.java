@@ -273,7 +273,7 @@ public class JNeuroML
                     SwingDataViewerFactory.initialize();
                     DefaultLogger.initialize();
 
-                    Utils.runLemsFile(lemsFile);
+                    Utils.runLemsFile(lemsFile, true);
 
                 }
 
@@ -415,7 +415,7 @@ public class JNeuroML
                     FileResultWriterFactory.initialize();
                     DefaultLogger.initialize();
 
-                    Utils.runLemsFile(lemsFile);
+                    Utils.runLemsFile(lemsFile, false);
                 } // / Parse LEMS & exit
                 else if(args[1].equals(NO_RUN_FLAG))
                 {
@@ -430,7 +430,7 @@ public class JNeuroML
 
                     System.out.println("Loading: " + lemsFile.getAbsolutePath() + " with jLEMS, NO RUN mode...");
 
-                    Utils.loadLemsFile(lemsFile, false);
+                    Utils.loadLemsFile(lemsFile, false, false);
 
                     // / exporting formats
                 }
