@@ -37,6 +37,7 @@ import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.svg.SVGWriter;
 import org.neuroml.export.utils.Format;
 import org.neuroml.export.utils.Utils;
+import org.neuroml.export.vertex.VertexWriter;
 import org.neuroml.export.xineml.XineMLWriter;
 import org.neuroml.export.xpp.XppWriter;
 import org.neuroml.importer.sbml.SBMLImporter;
@@ -55,7 +56,7 @@ public class JNeuroML
 
     public static final String JNML_SCRIPT = "jnml";
 
-    public static final String JNML_VERSION = "0.7.2";
+    public static final String JNML_VERSION = "0.7.3";
 
     public static final String HELP_FLAG = "-help";
     public static final String HELP_FLAG_SHORT = "-h";
@@ -99,6 +100,8 @@ public class JNeuroML
     public static final String CELLML_EXPORT_FLAG = "-cellml";
 
     public static final String NEURON_EXPORT_FLAG = "-neuron";
+    
+    public static final String VERTEX_EXPORT_FLAG = "-vertex";
 
     public static final String NINEML_EXPORT_FLAG = "-nineml";
     public static final String SPINEML_EXPORT_FLAG = "-spineml";
@@ -143,6 +146,9 @@ public class JNeuroML
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + DLEMS_EXPORT_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL - single components only**)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + VERTEX_EXPORT_FLAG+ "\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to VERTEX format (*EXPERIMENTAL*)\n\n" 
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + XPP_EXPORT_FLAG + "\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to XPPAUT format (*EXPERIMENTAL - single components only*)\n\n" 
@@ -440,6 +446,21 @@ public class JNeuroML
                     String info = infow.getMainScript();
 
                     System.out.println("\n" + info);
+
+                }
+                else if(args[1].equals(VERTEX_EXPORT_FLAG))
+                {
+
+                    File lemsFile = new File(args[0]);
+                    Lems lems = loadLemsFile(lemsFile);
+
+                    VertexWriter vw = new VertexWriter(lems, 
+                                                       lemsFile.getParentFile(), 
+                                                       lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), "_run." + Format.VERTEX.getExtension()));
+                    for(File genFile : vw.convert())
+                    {
+                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                    }
 
                 }
                 else if(args[1].equals(SBML_EXPORT_FLAG))
