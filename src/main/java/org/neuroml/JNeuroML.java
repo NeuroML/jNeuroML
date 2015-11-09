@@ -853,10 +853,5 @@ public class JNeuroML
             e.printStackTrace();
             System.exit(1);
         }
-        catch(ModelFeatureSupportException e)
-        {
-            System.out.println("\n" + e.getMessage() + "\n");
-            System.exit(1);
-        }
     }
 }
