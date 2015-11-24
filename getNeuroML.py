@@ -62,7 +62,7 @@ def main():
     lems_repos = jlems_repo + lems_spec_repos + pylems_repos
 
     # Which repos use a development branch?
-    dev_branch_repos = neuroml_repos + jlems_repo + neuroml2_spec_repo
+    dev_branch_repos = neuroml2_spec_repo + neuroml_repos + jlems_repo
 
     v0_0_9_branch_repos = geppetto_repos
 
@@ -127,7 +127,7 @@ def main():
                 or not op.isdir(local_dir + os.sep + "target") \
                 or ("jNeuroML" in repo)
 
-            if repo in java_repos and runMvnInstall:
+            if (repo in java_repos or repo in neuroml2_spec_repo) and runMvnInstall:
                 command = "mvn install"
                 print "It's a Java repository, so installing using Maven..."
                 info = execute_command_in_dir(command, local_dir)
