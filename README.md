@@ -55,6 +55,7 @@ in the jNeuroML folder will get the stable version of each repo & compile using 
 
 **To access the very latest version** (the development branches of the GitHub repos) use:
 
+    python getNeuroML.py clean
     python getNeuroML.py development
 
 Use of Maven is a great way to manage versions of applications being developed in distributed repositories, 
