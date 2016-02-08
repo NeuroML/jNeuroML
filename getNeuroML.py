@@ -62,7 +62,7 @@ def main():
     lems_repos = jlems_repo + lems_spec_repos + pylems_repos
 
     # Which repos use a development branch?
-    dev_branch_repos = neuroml_repos + jlems_repo + neuroml2_spec_repo
+    dev_branch_repos = neuroml2_spec_repo + neuroml_repos + jlems_repo
 
     v0_0_9_branch_repos = geppetto_repos
 
@@ -109,12 +109,12 @@ def main():
                 runMvnInstall = True
 
             if switch_to_branch:
-                if ((switch_to_branch is not "development") \
-                        or (repo in dev_branch_repos)) \
-                        and (repo not in v0_0_9_branch_repos):
+                if (repo in dev_branch_repos) \
+                   and (repo not in v0_0_9_branch_repos):
                     command = "git checkout %s" % (switch_to_branch)
                     print "Switching to branch: %s" % (switch_to_branch)
-                    execute_command_in_dir(command, local_dir)
+                    exit_on_fail = switch_to_branch is not "experimental"
+                    execute_command_in_dir(command, local_dir, exit_on_fail)
                     runMvnInstall = True
 
             info = execute_command_in_dir("git branch", local_dir)
@@ -127,7 +127,7 @@ def main():
                 or not op.isdir(local_dir + os.sep + "target") \
                 or ("jNeuroML" in repo)
 
-            if repo in java_repos and runMvnInstall:
+            if (repo in java_repos or repo in neuroml2_spec_repo) and runMvnInstall:
                 command = "mvn install"
                 print "It's a Java repository, so installing using Maven..."
                 info = execute_command_in_dir(command, local_dir)
@@ -213,14 +213,21 @@ def main():
 
         print "Virgo Server successfully configured. To start the server go to %s and run startup.sh" % (op.join(virgo_server_path, 'bin'))
 
-def execute_command_in_dir(command, directory):
+
+def execute_command_in_dir(command, directory, exit_on_fail=True):
     """Execute a command in specific working directory"""
     if os.name == 'nt':
         directory = os.path.normpath(directory)
     print ">>>  Executing: (%s) in dir: %s" % (command, directory)
-    return_string = subprocess.Popen(command, cwd=directory, shell=True,
-                                     stdout=subprocess.PIPE).communicate()[0]
-    return return_string
+    p = subprocess.Popen(command, cwd=directory, shell=True, stdout=subprocess.PIPE)
+    return_str = p.communicate()
+     
+    if p.returncode != 0:                           
+        print "Error: %s" % p.returncode
+        if exit_on_fail: 
+            exit(p.returncode)
+    return return_str[0]
+
 
 def help_info():
     print "\nUsage:\n\n    python getNeuroML.py\n        " \
@@ -234,6 +241,7 @@ def help_info():
     	"Switch relevant repos to development branch\n\n" \
 	"    Add -osb_visualiser to download and configure the projects required for the OSB visualiser\n\n" \
 	"    Add -install_server to download and configure the virgo server and the OSB explorer bundles\n"
+
 
 if __name__ == "__main__":
     main()
