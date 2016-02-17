@@ -32,6 +32,7 @@ import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.nest.NestWriter;
 import org.neuroml.export.neuron.NeuronWriter;
+import org.neuroml.export.pynn.PyNNWriter;
 import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.svg.SVGWriter;
 import org.neuroml.export.utils.Format;
@@ -99,6 +100,8 @@ public class JNeuroML
     public static final String CELLML_EXPORT_FLAG = "-cellml";
 
     public static final String NEURON_EXPORT_FLAG = "-neuron";
+
+    public static final String PYNN_EXPORT_FLAG = "-pynn";
     
     public static final String VERTEX_EXPORT_FLAG = "-vertex";
 
@@ -535,6 +538,19 @@ public class JNeuroML
 
                     NestWriter nw = new NestWriter(lems, lemsFile.getParentFile(), nFile);
                     for(File genFile : nw.convert())
+                    {
+                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                    }
+                }
+                else if(args[1].equals(PYNN_EXPORT_FLAG))
+                {
+                    File lemsFile = (new File(args[0])).getAbsoluteFile();
+                    Lems lems = loadLemsFile(lemsFile);
+
+                    String nFile = generateFormatFilename(lemsFile, Format.PYNN, null);
+
+                    PyNNWriter pw = new PyNNWriter(lems, lemsFile.getParentFile(), nFile);
+                    for(File genFile : pw.convert())
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
                     }
