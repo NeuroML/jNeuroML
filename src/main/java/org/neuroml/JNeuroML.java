@@ -102,6 +102,7 @@ public class JNeuroML
     public static final String NEURON_EXPORT_FLAG = "-neuron";
 
     public static final String PYNN_EXPORT_FLAG = "-pynn";
+    public static final String RUN_PYNN_NEURON_FLAG = "-run-neuron";
     
     public static final String VERTEX_EXPORT_FLAG = "-vertex";
 
@@ -386,7 +387,6 @@ public class JNeuroML
 
                 File lemsFile = (new File(args[0])).getCanonicalFile();
                 Lems lems = loadLemsFile(lemsFile);
-                
                 boolean nogui = false;
                 boolean run = false;
                 File outputDir = lemsFile.getParentFile();
@@ -415,12 +415,22 @@ public class JNeuroML
                     }
                     i = i+1;
                 }
-                
                 String mainNrnFilename = generateFormatFilename(lemsFile, Format.NEURON, "_nrn");
                 NeuronWriter nw = new NeuronWriter(lems, outputDir, mainNrnFilename);
                 nw.generateAndRun(nogui, run);
-                // Two arguments
             }
+            else if(args[1].equals(PYNN_EXPORT_FLAG))
+            {
+                File lemsFile = (new File(args[0])).getAbsoluteFile();
+                Lems lems = loadLemsFile(lemsFile);
+                String nFile = generateFormatFilename(lemsFile, Format.PYNN, null);
+                
+                boolean runNrn = (args.length==3 && args[2].equals(RUN_PYNN_NEURON_FLAG));
+
+                PyNNWriter pw = new PyNNWriter(lems, lemsFile.getParentFile(), nFile);
+                pw.generateAndRun(false, runNrn);
+            }
+                // Two arguments
             else if(args.length == 2)
             {
 
@@ -538,19 +548,6 @@ public class JNeuroML
 
                     NestWriter nw = new NestWriter(lems, lemsFile.getParentFile(), nFile);
                     for(File genFile : nw.convert())
-                    {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
-                    }
-                }
-                else if(args[1].equals(PYNN_EXPORT_FLAG))
-                {
-                    File lemsFile = (new File(args[0])).getAbsoluteFile();
-                    Lems lems = loadLemsFile(lemsFile);
-
-                    String nFile = generateFormatFilename(lemsFile, Format.PYNN, null);
-
-                    PyNNWriter pw = new PyNNWriter(lems, lemsFile.getParentFile(), nFile);
-                    for(File genFile : pw.convert())
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
                     }
