@@ -423,7 +423,7 @@ public class JNeuroML
             {
                 File lemsFile = (new File(args[0])).getAbsoluteFile();
                 Lems lems = loadLemsFile(lemsFile);
-                String nFile = generateFormatFilename(lemsFile, Format.PYNN, null);
+                String nFile = generateFormatFilename(lemsFile, Format.PYNN, "_pynn");
                 
                 boolean runNrn = (args.length==3 && args[2].equals(RUN_PYNN_NEURON_FLAG));
 
