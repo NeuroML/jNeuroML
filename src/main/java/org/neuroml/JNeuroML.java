@@ -31,6 +31,7 @@ import org.neuroml.export.geppetto.GeppettoWriter;
 import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.nest.NestWriter;
+import org.neuroml.export.netpyne.NetPyNEWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.pynn.PyNNWriter;
 import org.neuroml.export.sbml.SBMLWriter;
@@ -103,6 +104,9 @@ public class JNeuroML
 
     public static final String PYNN_EXPORT_FLAG = "-pynn";
     public static final String RUN_PYNN_NEURON_FLAG = "-run-neuron";
+    
+    public static final String NETPYNE_EXPORT_FLAG = "-netpyne";
+    public static final String RUN_NETPYNE_FLAG = "-run-neuron";
     
     public static final String VERTEX_EXPORT_FLAG = "-vertex";
 
@@ -428,6 +432,17 @@ public class JNeuroML
                 boolean runNrn = (args.length==3 && args[2].equals(RUN_PYNN_NEURON_FLAG));
 
                 PyNNWriter pw = new PyNNWriter(lems, lemsFile.getParentFile(), nFile);
+                pw.generateAndRun(false, runNrn);
+            }
+            else if(args[1].equals(NETPYNE_EXPORT_FLAG))
+            {
+                File lemsFile = (new File(args[0])).getAbsoluteFile();
+                Lems lems = loadLemsFile(lemsFile);
+                String nFile = generateFormatFilename(lemsFile, Format.NETPYNE, "_netpyne");
+                
+                boolean runNrn = (args.length==3 && args[2].equals(RUN_NETPYNE_FLAG));
+
+                NetPyNEWriter pw = new NetPyNEWriter(lems, lemsFile.getParentFile(), nFile);
                 pw.generateAndRun(false, runNrn);
             }
                 // Two arguments
