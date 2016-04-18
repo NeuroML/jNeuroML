@@ -1,6 +1,6 @@
 @echo off
 
-set JNML_VERSION=0.7.4
+set JNML_VERSION=0.7.5
 
 set CLASSPATH=target\jNeuroML-%JNML_VERSION%-jar-with-dependencies.jar;%JNML_HOME%\jNeuroML-%JNML_VERSION%-jar-with-dependencies.jar
 
