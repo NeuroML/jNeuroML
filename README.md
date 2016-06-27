@@ -14,7 +14,7 @@ jNeuroML can:
 Binary installation
 -------------------
 
-To get a precompiled binary for jNeuroML, go to https://github.com/NeuroML/jNeuroML/releases, download the latest **jNeuroML.zip** file and you have everything you need. Unzip on your local machine and go into the *jNeuroMLJar* directory.
+To get a precompiled binary for jNeuroML, go to https://github.com/NeuroML/jNeuroML/releases, download the latest **jNeuroML.zip** file and you have everything you need. Unzip on your local machine and go into the *jNeuroML* directory.
 
 Usage
 -----
@@ -32,7 +32,7 @@ and https://github.com/NeuroML/org.neuroml.import).
 
 **Note:**
 
-Adding the environment variable *JNML_HOME*, pointing to the *jNeuroMLJar* folder, as well as adding this path to the *PATH* variable will let you use the *jnml* utility from any folder.
+Adding the environment variable *JNML_HOME*, pointing to the *jNeuroML* folder, as well as adding this path to the *PATH* variable will let you use the *jnml* utility from any folder.
 
 
 Getting the source for jNeuroML
@@ -55,6 +55,7 @@ in the jNeuroML folder will get the stable version of each repo & compile using 
 
 **To access the very latest version** (the development branches of the GitHub repos) use:
 
+    python getNeuroML.py clean
     python getNeuroML.py development
 
 Use of Maven is a great way to manage versions of applications being developed in distributed repositories, 
