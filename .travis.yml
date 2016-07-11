@@ -8,6 +8,42 @@ jdk:
 install:
     - export main_repo_branch=$TRAVIS_BRANCH
     - echo $main_repo_branch
-    - python getNeuroML.py $main_repo_branch
-    - ./jnml -h
+    - if [[ ${main_repo_branch} != "master" && ${main_repo_branch} != "development" && ${main_repo_branch} != "experimental" ]]; then main_repo_branch=development ; fi
+    
+    - python getNeuroML.py $main_repo_branch  # will call mvn install on this & other repos
+    
+script:
+    - mkdir results 
+    
+    # Test validate
+    - ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml
+    
+    # Test running with jLEMS
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -nogui
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex5_DetCell.xml -nogui
+    
+    # Test generating NEURON
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -neuron
+    
+    # Test generating Brian
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -brian
+    
+    # Test generating SED-ML
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -sedml
+    
+    # Test generating CVODE
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -cvode
+    
+    # Test generating MATLAB
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -matlab
+    
+    # Test generating dLEMS
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -dlems
+    
+    # Test generating SVG
+    - ./jnml ../NeuroML2/examples/NML2_SimpleMorphology.nml  -svg
+    
+    
+    # Print version info
+    - ./jnml -v
 

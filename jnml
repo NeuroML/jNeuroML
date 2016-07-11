@@ -5,7 +5,7 @@
 #   Type java -X for more info
 export JNML_MAX_MEMORY=400M
 
-export JNML_VERSION=0.5.2
+export JNML_VERSION=0.7.7
 
 
 export CLASSPATH=.:./target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar:$JNML_HOME/target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar
@@ -14,4 +14,4 @@ if [ -n "$JNML_MAX_MEMORY_LOCAL" ]; then
     export JNML_MAX_MEMORY=$JNML_MAX_MEMORY_LOCAL
 fi
 
-java -Xmx$JNML_MAX_MEMORY -classpath $CLASSPATH org.neuroml.JNeuroML $*
+java -Xmx$JNML_MAX_MEMORY -classpath $CLASSPATH org.neuroml.JNeuroML ${1+"$@"}
