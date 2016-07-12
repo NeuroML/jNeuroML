@@ -14,7 +14,7 @@ jNeuroML can:
 Binary installation
 -------------------
 
-To get a precompiled binary for jNeuroML, go to https://github.com/NeuroML/jNeuroML/releases, download the latest **jNeuroML.zip** file and you have everything you need. Unzip on your local machine and go into the *jNeuroML* directory.
+To get a precompiled binary for jNeuroML, go to https://github.com/NeuroML/jNeuroML/releases, download the latest **jNeuroML.zip** file and you have everything you need. Unzip on your local machine and go into the *jNeuroMLJar* directory.
 
 Usage
 -----
@@ -25,6 +25,7 @@ Typing *./jnml* (or *jnml.bat* on Windows) will list the options available. Some
     ./jnml -validatev1 MyNeuroML1.xml           (validate NeuroML v1 document against the v1.8.1 schema)
     ./jnml MyLEMS.xml                           (parse & simulate a LEMS model using jLEMS)
     ./jnml MyLEMS.xml -graph                    (generate png of structure of LEMS model using GraphViz)
+    ./jnml MyLEMS.xml -neuron                   (generate code to run on the NEURON simulator)
 
 Export and import features for [NEURON](http://www.neuron.yale.edu/neuron/), [SBML](http://sbml.org), 
 [Brian](http://www.briansimulator.org/) etc. are under active development (see https://github.com/NeuroML/org.neuroml.export 
@@ -53,15 +54,14 @@ the Java based ones using Maven (download [here](http://maven.apache.org/) or us
 
 in the jNeuroML folder will get the stable version of each repo & compile using Maven if necessary. 
 
-**To access the very latest version** (the development branches of the GitHub repos) use:
+**To access the very latest version** (the [development](https://github.com/NeuroML/jNeuroML/tree/development) branches of the GitHub repos) use:
 
     python getNeuroML.py clean
     python getNeuroML.py development
 
 Use of Maven is a great way to manage versions of applications being developed in distributed repositories, 
 and will make it easy to use selected parts of this for different Java applications. For example, these packages 
-will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct](http://www.neuroConstruct.org) and for handling NeuroML on the 
-[Open Source Brain website](http://www.OpenSourceBrain.org).
+will be used in various ways to provide NeuroML/LEMS support in [neuroConstruct](http://www.neuroConstruct.org) and for handling NeuroML on the [Open Source Brain website](http://www.OpenSourceBrain.org).
 
 Prefer Python?
 --------------
