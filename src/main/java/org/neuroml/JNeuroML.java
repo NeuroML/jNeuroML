@@ -106,7 +106,6 @@ public class JNeuroML
     public static final String RUN_PYNN_NEURON_FLAG = "-run-neuron";
     
     public static final String NETPYNE_EXPORT_FLAG = "-netpyne";
-    public static final String RUN_NETPYNE_FLAG = "-run-neuron";
     
     public static final String VERTEX_EXPORT_FLAG = "-vertex";
 
@@ -438,12 +437,38 @@ public class JNeuroML
             {
                 File lemsFile = (new File(args[0])).getAbsoluteFile();
                 Lems lems = loadLemsFile(lemsFile);
-                String nFile = generateFormatFilename(lemsFile, Format.NETPYNE, "_netpyne");
+                boolean nogui = false;
+                boolean run = false;
+                File outputDir = lemsFile.getParentFile();
                 
-                boolean runNrn = (args.length==3 && args[2].equals(RUN_NETPYNE_FLAG));
-
-                NetPyNEWriter pw = new NetPyNEWriter(lems, lemsFile.getParentFile(), nFile);
-                pw.generateAndRun(false, runNrn);
+                int i  = 2;
+                while (i<args.length) 
+                {
+                    if (args[i].equals(NO_GUI_FLAG))
+                        nogui = true;
+                    else if (args[i].equals(RUN_FLAG))
+                        run = true;
+                    else if (args[i].equals(OUTPUT_DIR_FLAG))
+                    {
+                        i = i+1;
+                        outputDir = (new File(args[i])).getAbsoluteFile();
+                        if (!outputDir.exists()) 
+                        {
+                            System.out.println("Cannot find dir: " + args[i] + " ("+outputDir+")");
+                            System.exit(1);
+                        }
+                    }
+                    else 
+                    {
+                        System.out.println("Unrecognised argument: " + args[i]);
+                        System.exit(1);
+                    }
+                    i = i+1;
+                }
+                
+                String mainFilename = generateFormatFilename(lemsFile, Format.NETPYNE, "_netpyne");
+                NetPyNEWriter npw = new NetPyNEWriter(lems, outputDir, mainFilename);
+                npw.generateAndRun(nogui, run);
             }
                 // Two arguments
             else if(args.length == 2)
