@@ -16,7 +16,7 @@ def main():
     if len(sys.argv) < 5:
     	for arg in sys.argv[1:]:
             if arg == "clean":
-    	    	print "Cleaning repos"
+    	    	print("Cleaning repos")
     	    	mode = "clean"
     	    elif arg == "development":
                 switch_to_branch = "development"
@@ -72,10 +72,10 @@ def main():
         local_dir = ".." + os.sep + repo.split("/")[1]
 
         if mode is "clean":
-            print "------ Cleaning: %s -------" % repo
+            print("------ Cleaning: %s -------",%repo)
             if repo in java_repos:
                 command = "mvn clean"
-                print "It's a Java repository, so cleaning using Maven..."
+                print("It's a Java repository, so cleaning using Maven...")
                 info = execute_command_in_dir(command, local_dir)
 
         if mode is "update":
@@ -87,8 +87,8 @@ def main():
 
             if not op.isdir(local_dir):
                 command = "git clone %s%s" % (pre_gh[github_pref], repo)
-                print "Creating a new directory: %s by cloning from GitHub" % \
-                    (local_dir)
+                print ("Creating a new directory: %s by cloning from GitHub" % \
+                    (local_dir))
                 execute_command_in_dir(command, "..")
                 
                 runMvnInstall = True
@@ -96,7 +96,7 @@ def main():
             if switch_to_branch:
                 if (repo in dev_branch_repos):
                     command = "git checkout %s" % (switch_to_branch)
-                    print "Switching to branch: %s" % (switch_to_branch)
+                    print("Switching to branch: %s" % (switch_to_branch))
                     exit_on_fail = switch_to_branch is not "experimental"
                     execute_command_in_dir(command, local_dir, exit_on_fail)
                     runMvnInstall = True
