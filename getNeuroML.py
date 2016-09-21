@@ -16,7 +16,7 @@ def main():
     if len(sys.argv) < 5:
     	for arg in sys.argv[1:]:
             if arg == "clean":
-    	        print("Cleaning repos")
+    	        #print("Cleaning repos")
     	    	mode = "clean"
     	    elif arg == "development":
                 switch_to_branch = "development"
@@ -75,13 +75,13 @@ def main():
             print("------ Cleaning: %s -------",%repo)
             if repo in java_repos:
                 command = "mvn clean"
-                print("It's a Java repository, so cleaning using Maven...")
+                #print("It's a Java repository, so cleaning using Maven...")
                 info = execute_command_in_dir(command, local_dir)
 
         if mode is "update":
 
-            print
-            print "------ Updating: %s -------" % repo
+            #print
+            #print "------ Updating: %s -------" % repo
 
             runMvnInstall = False
 
@@ -123,30 +123,19 @@ def main():
                     exit(1)
 
     if mode is "update":
-        print
         print "All repositories successfully updated & Java modules built!"
-        print
         print "You should be able to run some examples straight " \
               "away using jnml: "
-        print
         if os.name is not 'nt':
             print "  ./jnml "\
                 "-validate ../NeuroML2/examples/NML2_FullNeuroML.nml"
-            print
             print "  ./jnml " \
                 "../NeuroML2/LEMSexamples/LEMS_NML2_Ex2_Izh.xml"
         else:
-            print "  jnml -validate " \
-                "..\\NeuroML2\\examples\\NML2_FullNeuroML.nml"
-            print
-            print "  jnml " \
-                "..\\NeuroML2\\LEMSexamples\\LEMS_NML2_Ex2_Izh.xml"
-        print
+     
 
     if mode is "clean":
-        print
-        print "All repositories successfully cleaned!"
-        print
+
 
 
 
