@@ -113,7 +113,7 @@ def main():
                 command = "mvn install"
                 print("It's a Java repository, so installing using Maven...")
                 info = execute_command_in_dir(command, local_dir)
-                if "BUILD SUCCESS" in info:
+                if str("BUILD SUCCESS") in info:
                     print("Successful installation using : %s!" %command)
                 else:
                     print("Problem installing using : %s!" %command)
