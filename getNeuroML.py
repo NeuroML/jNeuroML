@@ -16,7 +16,6 @@ def main():
     if len(sys.argv) < 5:
     	for arg in sys.argv[1:]:
             if arg == "clean":
-    	        #print("Cleaning repos")
     	        mode = "clean"
     	    elif arg == "development":
                 switch_to_branch = "development"
