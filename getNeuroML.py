@@ -14,7 +14,7 @@ def main():
     switch_to_branch = None
     
     if len(sys.argv) < 5:
-    	for arg in sys.argv[1:]:
+        for arg in sys.argv[1:]:
             if arg == "clean":
     	        mode = "clean"
     	    elif arg == "development":
