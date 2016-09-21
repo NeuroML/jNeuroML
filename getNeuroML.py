@@ -17,7 +17,7 @@ def main():
     	for arg in sys.argv[1:]:
             if arg == "clean":
     	        #print("Cleaning repos")
-    	    	mode = "clean"
+    	        mode = "clean"
     	    elif arg == "development":
                 switch_to_branch = "development"
     	    elif arg == "experimental":
