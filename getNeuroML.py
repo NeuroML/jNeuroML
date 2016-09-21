@@ -105,7 +105,7 @@ def main():
             return_string = execute_command_in_dir("git pull", local_dir)
 
             runMvnInstall = runMvnInstall \
-                or ("Already up-to-date" not in return_string) \
+                or ("Already up-to-date" not in str(return_string)) \
                 or not op.isdir(local_dir + os.sep + "target") \
                 or ("jNeuroML" in repo)
 
@@ -117,12 +117,12 @@ def main():
                 #The code below needs a non trivial rewrite due to python3 differences.
 
                 #                
-                #if str("BUILD SUCCESS") in info:
-                #    print("Successful installation using : %s!" %command)
-                #else:
-                #    print("Problem installing using : %s!" %command)
-                #    print(info)
-                #    exit(1)
+                if str("BUILD SUCCESS") in str(info):
+                    print("Successful installation using : %s!" %command)
+                else:
+                    print("Problem installing using : %s!" %command)
+                    print(info)
+                    exit(1)
 
     if mode is "update":
         print("All repositories successfully updated & Java modules built!")
