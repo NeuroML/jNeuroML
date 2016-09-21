@@ -16,8 +16,8 @@ def main():
     if len(sys.argv) < 5:
         for arg in sys.argv[1:]:
             if arg == "clean":
-    	        mode = "clean"
-    	    elif arg == "development":
+               mode = "clean"
+            elif arg == "development":
                 switch_to_branch = "development"
     	    elif arg == "experimental":
                 switch_to_branch = "experimental"
