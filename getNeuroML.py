@@ -14,19 +14,19 @@ def main():
     switch_to_branch = None
     
     if len(sys.argv) < 5:
-    	for arg in sys.argv[1:]:
+        for arg in sys.argv[1:]:
             if arg == "clean":
-    	    	print "Cleaning repos"
-    	    	mode = "clean"
-    	    elif arg == "development":
+                print "Cleaning repos"
+                mode = "clean"
+            elif arg == "development":
                 switch_to_branch = "development"
-    	    elif arg == "experimental":
+            elif arg == "experimental":
                 switch_to_branch = "experimental"
-    	    elif arg == "master":
+            elif arg == "master":
                 switch_to_branch = "master"
             else:
-    	        help_info()
-    	        exit()
+                help_info()
+                exit()
     else:
         help_info()
         exit()
@@ -168,14 +168,14 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
 
 def help_info():
     print "\nUsage:\n\n    python getNeuroML.py\n        " \
-	"Pull (or clone) the latest version of all NeuroML 2 repos & " \
-	"compile/install with Maven if applicable\n\n" \
-	"    python getNeuroML.py clean\n        " \
-	"Run 'mvn clean' on all Java repos\n\n" \
-	"    python getNeuroML.py master\n       " \
-	"Switch all repos to master branch\n\n" \
-	"    python getNeuroML.py development\n       " \
-    	"Switch relevant repos to development branch\n\n"
+    "Pull (or clone) the latest version of all NeuroML 2 repos & " \
+    "compile/install with Maven if applicable\n\n" \
+    "    python getNeuroML.py clean\n        " \
+    "Run 'mvn clean' on all Java repos\n\n" \
+    "    python getNeuroML.py master\n       " \
+    "Switch all repos to master branch\n\n" \
+    "    python getNeuroML.py development\n       " \
+        "Switch relevant repos to development branch\n\n"
 
 
 if __name__ == "__main__":
