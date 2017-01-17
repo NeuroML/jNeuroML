@@ -799,7 +799,7 @@ public class JNeuroML
                     File pngFile = new File(nmlFile.getParentFile(), pngFileName);
                     SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), pngFileName);
                     
-                    svgw.convertToPng(pngFile, 1600, 1200);
+                    svgw.convertToPng(pngFile);
                     System.out.println("Writing to: " + pngFile.getAbsolutePath());
                     
                 }
