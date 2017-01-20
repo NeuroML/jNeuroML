@@ -209,7 +209,7 @@ public class JNeuroML
         System.out.println(usage);
     }
 
-    private static Lems loadLemsFile(File lemsFile) throws LEMSException
+    private static Lems loadLemsFile(File lemsFile) throws LEMSException, NeuroMLException
     {
 
         if(!lemsFile.exists())
