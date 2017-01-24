@@ -107,6 +107,8 @@ public class JNeuroML
     
     public static final String NETPYNE_EXPORT_FLAG = "-netpyne";
     
+    public static final String NUMBER_PROCESSORS_FLAG = "-np";
+    
     public static final String VERTEX_EXPORT_FLAG = "-vertex";
 
     public static final String NINEML_EXPORT_FLAG = "-nineml";
@@ -211,14 +213,18 @@ public class JNeuroML
 
     private static Lems loadLemsFile(File lemsFile) throws LEMSException, NeuroMLException
     {
+        return loadLemsFile(lemsFile, true);
+    }
 
+    private static Lems loadLemsFile(File lemsFile, boolean includeConnectionsFromHDF5) throws LEMSException, NeuroMLException
+    {
         if(!lemsFile.exists())
         {
             System.err.println("File does not exist: " + lemsFile.getAbsolutePath());
             showUsage();
             System.exit(1);
         }
-        return Utils.readLemsNeuroMLFile(lemsFile).getLems();
+        return Utils.readLemsNeuroMLFile(lemsFile,includeConnectionsFromHDF5).getLems();
     }
     
     private static String generateFormatFilename(File lemsFile, Format format, String extra)
@@ -436,10 +442,11 @@ public class JNeuroML
             else if(args[1].equals(NETPYNE_EXPORT_FLAG))
             {
                 File lemsFile = (new File(args[0])).getAbsoluteFile();
-                Lems lems = loadLemsFile(lemsFile);
+                Lems lems = loadLemsFile(lemsFile, false);
                 boolean nogui = false;
                 boolean run = false;
                 File outputDir = lemsFile.getParentFile();
+                int np = 1;
                 
                 int i  = 2;
                 while (i<args.length) 
@@ -458,6 +465,11 @@ public class JNeuroML
                             System.exit(1);
                         }
                     }
+                    else if (args[i].equals(NUMBER_PROCESSORS_FLAG))
+                    {
+                        i = i+1;
+                        np = Integer.parseInt(args[i]);
+                    }
                     else 
                     {
                         System.out.println("Unrecognised argument: " + args[i]);
@@ -468,7 +480,7 @@ public class JNeuroML
                 
                 String mainFilename = generateFormatFilename(lemsFile, Format.NETPYNE, "_netpyne");
                 NetPyNEWriter npw = new NetPyNEWriter(lems, outputDir, mainFilename);
-                npw.generateAndRun(nogui, run);
+                npw.generateAndRun(nogui, run, np);
             }
                 // Two arguments
             else if(args.length == 2)
