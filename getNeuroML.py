@@ -153,7 +153,8 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
     return_str = p.communicate()
      
     if p.returncode != 0:                           
-        print("Error: %s" %p.returncode)
+        print("Error: %s" %p.returncode)          
+        print(return_str[0])
         if exit_on_fail: 
             exit(p.returncode)
     return return_str[0]
