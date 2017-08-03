@@ -116,7 +116,7 @@ public class JNeuroML
 
     public static final String NEST_EXPORT_FLAG = "-nest";
     
-    public static final String GEPPETTO_EXPORT_FLAG = "-geppetto";
+    //public static final String GEPPETTO_EXPORT_FLAG = "-geppetto";
 
     public static final String SBML_IMPORT_FLAG = "-sbml-import";
     public static final String SBML_IMPORT_UNITS_FLAG = "-sbml-import-units";
@@ -604,6 +604,9 @@ public class JNeuroML
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
                     }
                 }
+                
+                /*
+                Needs to be updated!!
                 else if(args[1].equals(GEPPETTO_EXPORT_FLAG))
                 {
 
@@ -623,7 +626,7 @@ public class JNeuroML
                                 + "http://localhost:8080/org.geppetto.frontend/?sim=file://" + genFile + "\n");
                         }
                     }
-                }
+                }*/
                 else if(args[1].equals(SEDML_EXPORT_FLAG))
                 {
 
