@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import javax.xml.bind.JAXBException;
@@ -27,7 +28,6 @@ import org.neuroml.export.brian.BrianWriter;
 import org.neuroml.export.cellml.CellMLWriter;
 import org.neuroml.export.dnsim.DNSimWriter;
 import org.neuroml.export.exceptions.GenerationException;
-import org.neuroml.export.geppetto.GeppettoWriter;
 import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.nest.NestWriter;
@@ -37,6 +37,7 @@ import org.neuroml.export.pynn.PyNNWriter;
 import org.neuroml.export.sbml.SBMLWriter;
 import org.neuroml.export.svg.SVGWriter;
 import org.neuroml.export.utils.Format;
+import org.neuroml.export.utils.NeuroMLInclusionReader;
 import org.neuroml.export.utils.Utils;
 import org.neuroml.export.vertex.VertexWriter;
 import org.neuroml.export.xineml.XineMLWriter;
@@ -65,6 +66,9 @@ public class JNeuroML
 
     public static final String VERSION_FLAG = "-v";
     public static final String VERSION_FLAG_LONG = "-version";
+    
+    public static final String SEARCH_PATH_FLAG = "-I";
+    public static final String SEARCH_PATH_JLEMSLIKE_FLAG = "-cp";
 
     public static final String NO_GUI_FLAG = "-nogui";
 
@@ -136,6 +140,9 @@ public class JNeuroML
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + NO_RUN_FLAG + "\n"
             + "           Parse the LEMS file, but don't run the simulation\n\n" 
+            
+            + "    " + JNML_SCRIPT + " " + SEARCH_PATH_FLAG + " directory1:directory2:directoryN LEMSFile.xml\n"
+            + "           Execute the LEMS file, inclusing the : separated list of direectories on the search path for includes\n\n" 
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + GRAPH_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n" 
@@ -260,6 +267,30 @@ public class JNeuroML
 
         try
         {
+            ArrayList<String> argsToUse = new ArrayList();
+            for (int i=0; i<args.length; i++)
+            {
+                if(args[i].equals(SEARCH_PATH_FLAG) || args[i].equals(SEARCH_PATH_JLEMSLIKE_FLAG))
+                {
+                    String search = args[i+1];
+                    for(String s: search.split(":"))
+                    {
+                        NeuroMLInclusionReader.addSearchPath((new File(s)).getAbsoluteFile());
+                    }
+                    i+=1;
+                }
+                else
+                {
+                    argsToUse.add(args[i]);
+                }
+            }
+            
+            args = new String[argsToUse.size()];
+            args = argsToUse.toArray(args);
+            
+            //System.out.println("args: "+args.length            );
+            //System.out.println("args: "+args[0]           );
+            
             if(args.length == 0)
             {
                 System.err.println("Error, no arguments to " + JNML_SCRIPT);
