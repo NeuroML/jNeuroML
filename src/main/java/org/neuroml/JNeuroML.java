@@ -142,7 +142,7 @@ public class JNeuroML
             + "           Parse the LEMS file, but don't run the simulation\n\n" 
             
             + "    " + JNML_SCRIPT + " " + SEARCH_PATH_FLAG + " directory1:directory2:directoryN LEMSFile.xml\n"
-            + "           Execute the LEMS file, inclusing the : separated list of direectories on the search path for includes\n\n" 
+            + "           Execute the LEMS file, inclusing the : separated list of directories on the search path for includes\n\n" 
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + GRAPH_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n" 
