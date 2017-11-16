@@ -105,6 +105,7 @@ public class JNeuroML
     public static final String CELLML_EXPORT_FLAG = "-cellml";
 
     public static final String NEURON_EXPORT_FLAG = "-neuron";
+    public static final String NEURON_COMPILE_FLAG = "-compile";
 
     public static final String PYNN_EXPORT_FLAG = "-pynn";
     public static final String RUN_PYNN_NEURON_FLAG = "-run-neuron";
@@ -151,9 +152,10 @@ public class JNeuroML
             + "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n" 
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG+ "] ["+OUTPUT_DIR_FLAG+" dir]\n" 
-            + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format \n" 
-            + "             " + NO_GUI_FLAG+ "       Do not generate graphical elements in NEURON, just run, save data and quit\n" 
-            + "             " + RUN_FLAG + "         Compile NMODL files and run the main NEURON hoc file (Linux only currently)\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format, OR load ModelFile.nml and generate hoc and mod files for cells, channels, synapses \n" 
+            + "             " + NO_GUI_FLAG+ "       Do not generate graphical elements in NEURON, just run, save data and quit (if input file is LEMS file)\n" 
+            + "             " + RUN_FLAG + "         Compile NMODL files and run the main NEURON hoc file (Linux only currently; only with LEMS file)\n" 
+            + "             " + NEURON_COMPILE_FLAG + "     Compile NMODL files, but don't run (Linux only currently)\n" 
             + "             " + OUTPUT_DIR_FLAG + "   Generate NEURON files in another directory, dir\n\n" 
             
             + "    " + JNML_SCRIPT + " NMLFile.nml " + SVG_FLAG + "\n" 
@@ -232,6 +234,17 @@ public class JNeuroML
             System.exit(1);
         }
         return Utils.readLemsNeuroMLFile(lemsFile,includeConnectionsFromHDF5).getLems();
+    }
+    
+    private static Lems loadNmlFileAsLems(File nmlFile) throws LEMSException, NeuroMLException, IOException
+    {
+        if(!nmlFile.exists())
+        {
+            System.err.println("File does not exist: " + nmlFile.getAbsolutePath());
+            showUsage();
+            System.exit(1);
+        }
+        return Utils.readNeuroMLFile(nmlFile).getLems();
     }
     
     private static String generateFormatFilename(File lemsFile, Format format, String extra)
@@ -425,19 +438,34 @@ public class JNeuroML
             else if(args[1].equals(NEURON_EXPORT_FLAG))
             {
 
-                File lemsFile = (new File(args[0])).getCanonicalFile();
-                Lems lems = loadLemsFile(lemsFile);
+                File lemsNmlFile = (new File(args[0])).getCanonicalFile();
+                Lems lems = null;
+                
+                if (lemsNmlFile.getName().endsWith("nml"))
+                {
+                    lems = loadNmlFileAsLems(lemsNmlFile);
+                }
+                else
+                {
+                    lems = loadLemsFile(lemsNmlFile);
+                }
                 boolean nogui = false;
                 boolean run = false;
-                File outputDir = lemsFile.getParentFile();
-                
+                boolean compile = false;
+                File outputDir = lemsNmlFile.getParentFile();
+
                 int i  = 2;
                 while (i<args.length) 
                 {
                     if (args[i].equals(NO_GUI_FLAG))
                         nogui = true;
                     else if (args[i].equals(RUN_FLAG))
+                    {
                         run = true;
+                        compile = true;
+                    }
+                    else if (args[i].equals(NEURON_COMPILE_FLAG))
+                        compile = true;
                     else if (args[i].equals(OUTPUT_DIR_FLAG))
                     {
                         i = i+1;
@@ -455,9 +483,18 @@ public class JNeuroML
                     }
                     i = i+1;
                 }
-                String mainNrnFilename = generateFormatFilename(lemsFile, Format.NEURON, "_nrn");
+                String mainNrnFilename = generateFormatFilename(lemsNmlFile, Format.NEURON, "_nrn");
                 NeuronWriter nw = new NeuronWriter(lems, outputDir, mainNrnFilename);
-                nw.generateAndRun(nogui, run);
+                
+                if (lemsNmlFile.getName().endsWith("nml"))
+                {
+                    nw.generateFilesForNeuroMLElements(compile);
+                }
+                else
+                {
+                    nw.generateAndRun(nogui, compile, run);
+                }
+                
             }
             else if(args[1].equals(PYNN_EXPORT_FLAG))
             {
