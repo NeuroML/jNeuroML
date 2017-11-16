@@ -4,15 +4,12 @@ import os
 import sys
 import os.path as op
 import subprocess
-import urllib
-import zipfile
-from subprocess import call
 
 def main():
     """Main"""
     mode = "update"
     switch_to_branch = None
-    
+
     if len(sys.argv) < 5:
         for arg in sys.argv[1:]:
             if arg == "clean":
@@ -55,7 +52,7 @@ def main():
 
 
     all_repos = lems_repos  + neuroml_repos 
-    
+
 
     # Set the preferred method for cloning from GitHub
     github_pref = "HTTP"
@@ -88,7 +85,7 @@ def main():
                 command = "git clone %s%s" % (pre_gh[github_pref], repo)
                 print("Creating a new directory: %s by cloning from GitHub" %(local_dir))
                 execute_command_in_dir(command, "..")
-                
+
                 runMvnInstall = True
 
             if switch_to_branch:
@@ -113,7 +110,7 @@ def main():
                 command = "mvn install"
                 print("It's a Java repository, so installing using Maven...")
                 info = execute_command_in_dir(command, local_dir)
-                
+
                 #The code below needs a non trivial rewrite due to python3 differences.
 
                 #                
@@ -151,13 +148,16 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
     print(">>>  Executing: (%s) in dir: %s" %(command, directory))
     p = subprocess.Popen(command, cwd=directory, shell=True, stdout=subprocess.PIPE)
     return_str = p.communicate()
-     
+
     if p.returncode != 0:                           
         print("Error: %s" %p.returncode)          
         print(return_str[0])
         if exit_on_fail: 
             exit(p.returncode)
-    return return_str[0]
+    if (sys.version_info > (3, 0)):
+        return return_str[0].decode("utf-8")
+    else:
+        return return_str[0]
 
 
 def help_info():
