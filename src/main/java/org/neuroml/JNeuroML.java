@@ -31,6 +31,7 @@ import org.neuroml.export.exceptions.GenerationException;
 import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.nest.NestWriter;
+import org.neuroml.export.moose.MooseWriter;
 import org.neuroml.export.netpyne.NetPyNEWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.pynn.PyNNWriter;
@@ -120,6 +121,8 @@ public class JNeuroML
     public static final String SPINEML_EXPORT_FLAG = "-spineml";
 
     public static final String NEST_EXPORT_FLAG = "-nest";
+
+    public static final String MOOSE_EXPORT_FLAG = "-moose";
     
     //public static final String GEPPETTO_EXPORT_FLAG = "-geppetto";
 
@@ -667,6 +670,21 @@ public class JNeuroML
                     String nFile = generateFormatFilename(lemsFile, Format.NEST, null);
 
                     NestWriter nw = new NestWriter(lems, lemsFile.getParentFile(), nFile);
+                    for(File genFile : nw.convert())
+                    {
+                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                    }
+                }
+                else if(args[1].equals(MOOSE_EXPORT_FLAG))
+                {
+
+                    File lemsFile = (new File(args[0])).getAbsoluteFile();
+                    Lems lems = loadLemsFile(lemsFile);
+
+                    String suffix = "_moose";
+                    String nFile = generateFormatFilename(lemsFile, Format.MOOSE, suffix);
+
+                    MooseWriter nw = new MooseWriter(lems, lemsFile.getParentFile(), nFile);
                     for(File genFile : nw.convert())
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
