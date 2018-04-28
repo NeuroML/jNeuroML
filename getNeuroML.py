@@ -14,19 +14,19 @@ def main():
     switch_to_branch = None
     
     if len(sys.argv) < 5:
-    	for arg in sys.argv[1:]:
+        for arg in sys.argv[1:]:
             if arg == "clean":
-    	    	print "Cleaning repos"
-    	    	mode = "clean"
-    	    elif arg == "development":
+                print ("Cleaning repos")
+                mode = "clean"
+            elif arg == "development":
                 switch_to_branch = "development"
-    	    elif arg == "experimental":
+            elif arg == "experimental":
                 switch_to_branch = "experimental"
-    	    elif arg == "master":
+            elif arg == "master":
                 switch_to_branch = "master"
             else:
-    	        help_info()
-    	        exit()
+                help_info()
+                exit()
     else:
         help_info()
         exit()
