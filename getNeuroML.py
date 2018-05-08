@@ -1,5 +1,5 @@
 """Script to handle the NeuroML 2 repos"""
-
+from __future__ import print_function
 import os
 import sys
 import os.path as op
@@ -83,15 +83,16 @@ def main():
 
             if not op.isdir(local_dir):
                 command = "git clone %s%s" % (pre_gh[github_pref], repo)
-                print("Creating a new directory: %s by cloning from GitHub" %(local_dir))
+                print ("Creating a new directory: %s by cloning from GitHub" % \
+                    (local_dir))
                 execute_command_in_dir(command, "..")
 
                 runMvnInstall = True
 
             if switch_to_branch:
                 if (repo in dev_branch_repos):
-                    command = "git checkout %s" %(switch_to_branch)
-                    print("Switching to branch: %s" %(switch_to_branch))
+                    command = "git checkout %s" % (switch_to_branch)
+                    print ("Switching to branch: %s" % (switch_to_branch))
                     exit_on_fail = switch_to_branch is not "experimental"
                     execute_command_in_dir(command, local_dir, exit_on_fail)
                     runMvnInstall = True
@@ -102,7 +103,7 @@ def main():
             return_string = execute_command_in_dir("git pull", local_dir)
 
             runMvnInstall = runMvnInstall \
-                or ("Already up-to-date" not in str(return_string)) \
+                or b"Already up-to-date" not in return_string \
                 or not op.isdir(local_dir + os.sep + "target") \
                 or ("jNeuroML" in repo)
 
@@ -145,12 +146,12 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
     """Execute a command in specific working directory"""
     if os.name == 'nt':
         directory = os.path.normpath(directory)
-    print(">>>  Executing: (%s) in dir: %s" %(command, directory))
+    print(">>>  Executing: (%s) in dir: %s" % (command, directory))
     p = subprocess.Popen(command, cwd=directory, shell=True, stdout=subprocess.PIPE)
     return_str = p.communicate()
 
-    if p.returncode != 0:                           
-        print("Error: %s" %p.returncode)          
+    if p.returncode != 0:       
+        print("Error: %s" % p.returncode)          
         print(return_str[0])
         if exit_on_fail: 
             exit(p.returncode)
@@ -162,13 +163,13 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
 
 def help_info():
     print("\nUsage:\n\n    python getNeuroML.py\n        " \
-    "Pull (or clone) the latest version of all NeuroML 2 repos & " \
-    "compile/install with Maven if applicable\n\n" \
-    "    python getNeuroML.py clean\n        " 
-    "Run 'mvn clean' on all Java repos\n\n" \
-    "    python getNeuroML.py master\n       " \
-    "Switch all repos to master branch\n\n" \
-    "    python getNeuroML.py development\n       " \
+        "Pull (or clone) the latest version of all NeuroML 2 repos & " \
+        "compile/install with Maven if applicable\n\n" \
+        "    python getNeuroML.py clean\n        " 
+        "Run 'mvn clean' on all Java repos\n\n" \
+        "    python getNeuroML.py master\n       " \
+        "Switch all repos to master branch\n\n" \
+        "    python getNeuroML.py development\n       " \
         "Switch relevant repos to development branch\n\n")
 
 
