@@ -14,7 +14,10 @@ install:
     - echo $main_repo_branch
     - if [[ ${main_repo_branch} != "master" && ${main_repo_branch} != "development" && ${main_repo_branch} != "experimental" ]]; then main_repo_branch=development ; fi
     
+    - pwd
+    - ls -alt
     - python getNeuroML.py $main_repo_branch  # will call mvn install on this & other repos
+    - pwd
     
 script:
     - mkdir results 
