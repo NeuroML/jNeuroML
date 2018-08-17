@@ -1,20 +1,24 @@
-dist: precise
+dist: trusty
 sudo: false
 
 language: java
 
 jdk:
-  #- openjdk7
-  #- openjdk6     jSBML 1.2 (in org.neuroml.import) is not java 6 compatible...
-  - oraclejdk7
+  - openjdk7
+  - openjdk8
   - oraclejdk8
+  # - oraclejdk9
 
 install:
     - export main_repo_branch=$TRAVIS_BRANCH
     - echo $main_repo_branch
     - if [[ ${main_repo_branch} != "master" && ${main_repo_branch} != "development" && ${main_repo_branch} != "experimental" ]]; then main_repo_branch=development ; fi
     
+    - pwd
+    - ls -alt
+    - git branch
     - python getNeuroML.py $main_repo_branch  # will call mvn install on this & other repos
+    - pwd
     
 script:
     - mkdir results 
