@@ -16,6 +16,7 @@ install:
     
     - pwd
     - ls -alt
+    - git branch
     - python getNeuroML.py $main_repo_branch  # will call mvn install on this & other repos
     - pwd
     
