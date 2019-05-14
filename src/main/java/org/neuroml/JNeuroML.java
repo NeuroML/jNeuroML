@@ -157,12 +157,25 @@ public class JNeuroML
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG+ "] ["+OUTPUT_DIR_FLAG+" dir]\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format, OR load ModelFile.nml and generate hoc and mod files for cells, channels, synapses \n" 
             + "             " + NO_GUI_FLAG+ "       Do not generate graphical elements in NEURON, just run, save data and quit (if input file is LEMS file)\n" 
-            + "             " + RUN_FLAG + "         Compile NMODL files and run the main NEURON hoc file (Linux only currently; only with LEMS file)\n" 
+            + "             " + RUN_FLAG + "         Compile NMODL files and run the main NEURON Python file (only with LEMS file)\n" 
             + "             " + NEURON_COMPILE_FLAG + "     Compile NMODL files, but don't run (Linux only currently)\n" 
             + "             " + OUTPUT_DIR_FLAG + "   Generate NEURON files in another directory, dir\n\n" 
             
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + NETPYNE_EXPORT_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to NetPyNE format\n" 
+            + "             " + RUN_FLAG + "         Compile NMODL files and run the main NEURON Python file\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + BRIAN_EXPORT_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL**)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + MOOSE_EXPORT_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to MOOSE format (**EXPERIMENTAL**)\n\n" 
+            
             + "    " + JNML_SCRIPT + " NMLFile.nml " + SVG_FLAG + "\n" 
             + "           Load NMLFile.nml and convert cells & networks to SVG image format \n\n"
+            
+            + "    " + JNML_SCRIPT + " NMLFile.nml " + PNG_FLAG + "\n" 
+            + "           Load NMLFile.nml and convert cells & networks to PNG image format \n\n"
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + DLEMS_EXPORT_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to dLEMS, a distilled form of LEMS in JSON (**EXPERIMENTAL - single components only**)\n\n" 
@@ -175,9 +188,6 @@ public class JNeuroML
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + DNSIM_EXPORT_FLAG + "\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to DNsim format (*EXPERIMENTAL - single components only*)\n\n"
-            
-            + "    " + JNML_SCRIPT + " LEMSFile.xml " + BRIAN_EXPORT_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL - single components only**)\n\n" 
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + SBML_EXPORT_FLAG + "\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL - single components only**)\n\n" 
