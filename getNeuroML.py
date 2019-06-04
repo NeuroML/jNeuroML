@@ -146,7 +146,9 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
     """Execute a command in specific working directory"""
     if os.name == 'nt':
         directory = os.path.normpath(directory)
+
     print(">>>  Executing: (%s) in dir: %s (%s)" % (command, directory, os.path.abspath(directory)))
+
     p = subprocess.Popen(command, cwd=directory, shell=True, stdout=subprocess.PIPE)
     return_str = p.communicate()
 
