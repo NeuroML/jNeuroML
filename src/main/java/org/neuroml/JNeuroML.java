@@ -505,7 +505,7 @@ public class JNeuroML
                 }
                 else
                 {
-                    nw.generateAndRun(nogui, compile, run);
+                    nw.generateAndRun(nogui, compile, run, false);
                 }
                 
             }
