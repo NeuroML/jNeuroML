@@ -59,7 +59,7 @@ public class JNeuroML
 
     public static final String JNML_SCRIPT = "jnml";
 
-    public static final String JNML_VERSION = "0.8.5";
+    public static final String JNML_VERSION = "0.9.0";
 
     public static final String HELP_FLAG = "-help";
     public static final String HELP_FLAG_SHORT = "-h";
@@ -214,7 +214,7 @@ public class JNeuroML
               "           Load LEMSFile.xml using jLEMS, and convert it to VHDL format (**EXPERIMENTAL - point models only - single neurons only**)\n\n"   
             
             + "    " + JNML_SCRIPT + " " + VALIDATE_FLAG + " NMLFile.nml\n" 
-            + "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n" 
+            + "           Validate NMLFile.nml against latest v2 Schema & perform a number of other tests\n\n" 
             
             + "    " + JNML_SCRIPT + " " + VALIDATE_V1_FLAG + " NMLFile.nml\n" + "           Validate NMLFile.nml against NeuroML v1.8.1 Schema \n\n" 
             
