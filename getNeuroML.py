@@ -103,7 +103,7 @@ def main():
             return_string = execute_command_in_dir("git pull", local_dir)
 
             runMvnInstall = runMvnInstall \
-                or b"Already up-to-date" not in return_string \
+                or "Already up-to-date" not in return_string \
                 or not op.isdir(local_dir + os.sep + "target") \
                 or ("jNeuroML" in repo)
 
