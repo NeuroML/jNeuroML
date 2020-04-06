@@ -59,7 +59,7 @@ public class JNeuroML
 
     public static final String JNML_SCRIPT = "jnml";
 
-    public static final String JNML_VERSION = "0.8.5";
+    public static final String JNML_VERSION = "0.9.1";
 
     public static final String HELP_FLAG = "-help";
     public static final String HELP_FLAG_SHORT = "-h";
@@ -102,6 +102,7 @@ public class JNeuroML
     public static final String DLEMS_EXPORT_FLAG = "-dlems"; // Subject to change/removal without notice!!
 
     public static final String SEDML_EXPORT_FLAG = "-sedml";
+    public static final String SEDML_EXPORT_FLAG2 = "-sed-ml";
 
     public static final String CELLML_EXPORT_FLAG = "-cellml";
 
@@ -129,6 +130,7 @@ public class JNeuroML
     public static final String SBML_IMPORT_FLAG = "-sbml-import";
     public static final String SBML_IMPORT_UNITS_FLAG = "-sbml-import-units";
     public static final String SBML_EXPORT_FLAG = "-sbml";
+    public static final String SBML_SEDML_EXPORT_FLAG = "-sbml-sedml";
 
     public static final String GRAPH_FLAG = "-graph";
 
@@ -151,9 +153,6 @@ public class JNeuroML
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + GRAPH_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n" 
             
-            + "    " + JNML_SCRIPT + " LEMSFile.xml " + SEDML_EXPORT_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to SED-ML format\n\n" 
-            
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG+ "] ["+OUTPUT_DIR_FLAG+" dir]\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format, OR load ModelFile.nml and generate hoc and mod files for cells, channels, synapses \n" 
             + "             " + NO_GUI_FLAG+ "       Do not generate graphical elements in NEURON, just run, save data and quit (if input file is LEMS file)\n" 
@@ -166,7 +165,10 @@ public class JNeuroML
             + "             " + RUN_FLAG + "         Compile NMODL files and run the main NEURON Python file\n\n" 
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + BRIAN_EXPORT_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to Brian format (**EXPERIMENTAL**)\n\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to Brian v1 format (*EXPERIMENTAL - single components only*)\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + BRIAN2_EXPORT_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to Brian v2 format (*EXPERIMENTAL - single components only*)\n\n" 
             
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + MOOSE_EXPORT_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to MOOSE format (**EXPERIMENTAL**)\n\n" 
@@ -192,6 +194,12 @@ public class JNeuroML
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + SBML_EXPORT_FLAG + "\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to SBML format (**EXPERIMENTAL - single components only**)\n\n" 
             
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + SEDML_EXPORT_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it (just the simulation run/display/save information) to SED-ML format\n\n" 
+            
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + SBML_SEDML_EXPORT_FLAG + "\n" 
+            + "           Load LEMSFile.xml using jLEMS, and convert it to SBML format with a SED-ML file describing the experiment to run (*EXPERIMENTAL - single components only*)\n\n" 
+            
             + "    " + JNML_SCRIPT + " LEMSFile.xml "+ MATLAB_EXPORT_FLAG + "\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to MATLAB format (**EXPERIMENTAL - single components only**)\n\n" 
             
@@ -214,7 +222,7 @@ public class JNeuroML
               "           Load LEMSFile.xml using jLEMS, and convert it to VHDL format (**EXPERIMENTAL - point models only - single neurons only**)\n\n"   
             
             + "    " + JNML_SCRIPT + " " + VALIDATE_FLAG + " NMLFile.nml\n" 
-            + "           Validate NMLFile.nml against latest v2beta Schema & perform a number of other tests\n\n" 
+            + "           Validate NMLFile.nml against latest v2 Schema & perform a number of other tests\n\n" 
             
             + "    " + JNML_SCRIPT + " " + VALIDATE_V1_FLAG + " NMLFile.nml\n" + "           Validate NMLFile.nml against NeuroML v1.8.1 Schema \n\n" 
             
@@ -644,6 +652,24 @@ public class JNeuroML
                     }
 
                 }
+                else if(args[1].equals(SBML_SEDML_EXPORT_FLAG))
+                {
+
+                    File lemsFile = new File(args[0]);
+                    Lems lems = loadLemsFile(lemsFile);
+
+                    SBMLWriter sbmlw = new SBMLWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.SBML, null));
+                    for(File genFile : sbmlw.convert())
+                    {
+                        System.out.println("Writing SBML to: " + genFile.getAbsolutePath());
+                    }
+
+                    SEDMLWriter sedw = new SEDMLWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.SEDML, null), lemsFile.getName(), Format.SBML);
+                    for(File genFile : sedw.convert())
+                    {
+                        System.out.println("Writing SED-ML to: " + genFile.getAbsolutePath());
+                    }
+                }
                 else if(args[1].equals(XPP_EXPORT_FLAG))
                 {
 
@@ -723,7 +749,7 @@ public class JNeuroML
                         }
                     }
                 }*/
-                else if(args[1].equals(SEDML_EXPORT_FLAG))
+                else if(args[1].equals(SEDML_EXPORT_FLAG) || args[1].equals(SEDML_EXPORT_FLAG2))
                 {
 
                     File lemsFile = new File(args[0]);
