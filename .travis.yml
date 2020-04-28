@@ -1,5 +1,4 @@
 dist: xenial
-sudo: false
 
 language: java
 
@@ -7,7 +6,7 @@ jdk:
   - oraclejdk11
   
   - openjdk8
-  - openjdk10
+  #- openjdk10 # Some non deterministic recurring error with jdk10...
   - openjdk11
 
 install:
