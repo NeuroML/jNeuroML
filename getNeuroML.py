@@ -106,12 +106,14 @@ def main():
                 or not op.isdir(local_dir + os.sep + "target") \
                 or ("jNeuroML" in repo)
 
-            if (repo in java_repos or repo in neuroml2_spec_repo) and runMvnInstall:
+            if (repo in java_repos or repo in neuroml2_spec_repo) \
+                    and runMvnInstall:
                 command = "mvn install"
                 print("It's a Java repository, so installing using Maven...")
                 info = execute_command_in_dir(command, local_dir)
 
-                # The code below needs a non trivial rewrite due to python3 differences.
+                # The code below needs a non trivial rewrite due to python3
+                # differences.
                 if str("BUILD SUCCESS") in str(info):
                     print("Successful installation using : %s!" % command)
                 else:
@@ -121,7 +123,7 @@ def main():
 
     if mode == "update":
         print("All repositories successfully updated & Java modules built!")
-        print("You should be able to run some examples straight away using jnml: ")
+        print("You should be able to run examples straight away using jnml: ")
         if os.name != 'nt':
             print("  ./jnml " +
                   "-validate ../NeuroML2/examples/NML2_FullNeuroML.nml")
@@ -141,9 +143,11 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
     if os.name == 'nt':
         directory = os.path.normpath(directory)
 
-    print(">>>  Executing: (%s) in dir: %s (%s)" % (command, directory, os.path.abspath(directory)))
+    print(">>>  Executing: (%s) in dir: %s (%s)" %
+          (command, directory, os.path.abspath(directory)))
 
-    p = subprocess.Popen(command, cwd=directory, shell=True, stdout=subprocess.PIPE)
+    p = subprocess.Popen(command, cwd=directory, shell=True,
+                         stdout=subprocess.PIPE)
     return_str = p.communicate()
 
     if p.returncode != 0:
@@ -159,24 +163,25 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
 
 def help_info():
     usage = (
-    """\
-    Usage: python getNeuroML.py [OPTION]
-    Script to install NeuroML libraries.
-    Note: requires internet connectivity.
+        """\
+        Usage: python getNeuroML.py [OPTION]
+        Script to install NeuroML libraries.
+        Note: requires internet connectivity.
 
-    python getNeuroML.py
-        Pull (or clone) the latest version of all NeuroML 2 repos &
-        compile/install with Maven if applicable
+        python getNeuroML.py
+            Pull (or clone) the latest version of all NeuroML 2 repos &
+            compile/install with Maven if applicable
 
-    python getNeuroML.py clean
-        Run 'mvn clean' on all Java repos
+        python getNeuroML.py clean
+            Run 'mvn clean' on all Java repos
 
-    python getNeuroML.py master
-        Switch all repos to master branch
+        python getNeuroML.py master
+            Switch all repos to master branch
 
-    python getNeuroML.py development
-        Switch relevant repos to development branch
-    """)
+        python getNeuroML.py development
+            Switch relevant repos to development branch
+        """
+    )
     print(dedent(usage))
 
 
