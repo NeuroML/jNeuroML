@@ -67,14 +67,14 @@ def main():
 
         local_dir = ".." + os.sep + repo.split("/")[1]
 
-        if mode is "clean":
+        if mode == "clean":
             print("------ Cleaning: %s -------" % repo)
             if repo in java_repos:
                 command = "mvn clean"
                 print("It's a Java repository, so cleaning using Maven...")
                 info = execute_command_in_dir(command, local_dir)
 
-        if mode is "update":
+        if mode == "update":
             print("------ Updating: %s -------" % repo)
 
             runMvnInstall = False
@@ -91,7 +91,7 @@ def main():
                 if (repo in dev_branch_repos):
                     command = "git checkout %s" % (switch_to_branch)
                     print("Switching to branch: %s" % (switch_to_branch))
-                    exit_on_fail = switch_to_branch is not "experimental"
+                    exit_on_fail = switch_to_branch != "experimental"
                     execute_command_in_dir(command, local_dir, exit_on_fail)
                     runMvnInstall = True
 
@@ -118,10 +118,10 @@ def main():
                     print(info)
                     exit(1)
 
-    if mode is "update":
+    if mode == "update":
         print("All repositories successfully updated & Java modules built!")
         print("You should be able to run some examples straight away using jnml: ")
-        if os.name is not 'nt':
+        if os.name != 'nt':
             print("  ./jnml " +
                   "-validate ../NeuroML2/examples/NML2_FullNeuroML.nml")
             print("  ./jnml " +
@@ -131,7 +131,7 @@ def main():
                   "..\\NeuroML2\\examples\\NML2_FullNeuroML.nml")
             print("  jnml " +
                   "..\\NeuroML2\\LEMSexamples\\LEMS_NML2_Ex2_Izh.xml")
-    if mode is "clean":
+    if mode == "clean":
         print("All repositories successfully cleaned!")
 
 
