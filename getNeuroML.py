@@ -4,6 +4,7 @@ import os
 import sys
 import os.path as op
 import subprocess
+from textwrap import dedent
 
 
 def main():
@@ -157,15 +158,26 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
 
 
 def help_info():
-    print("\nUsage:\n\n    python getNeuroML.py\n        " \
-        "Pull (or clone) the latest version of all NeuroML 2 repos & " \
-        "compile/install with Maven if applicable\n\n" \
-        "    python getNeuroML.py clean\n        "
-        "Run 'mvn clean' on all Java repos\n\n" \
-        "    python getNeuroML.py master\n       " \
-        "Switch all repos to master branch\n\n" \
-        "    python getNeuroML.py development\n       " \
-        "Switch relevant repos to development branch\n\n")
+    usage = (
+    """\
+    Usage: python getNeuroML.py [OPTION]
+    Script to install NeuroML libraries.
+    Note: requires internet connectivity.
+
+    python getNeuroML.py
+        Pull (or clone) the latest version of all NeuroML 2 repos &
+        compile/install with Maven if applicable
+
+    python getNeuroML.py clean
+        Run 'mvn clean' on all Java repos
+
+    python getNeuroML.py master
+        Switch all repos to master branch
+
+    python getNeuroML.py development
+        Switch relevant repos to development branch
+    """)
+    print(dedent(usage))
 
 
 if __name__ == "__main__":
