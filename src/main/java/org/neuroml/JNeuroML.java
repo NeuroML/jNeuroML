@@ -133,6 +133,7 @@ public class JNeuroML
     public static final String SBML_SEDML_EXPORT_FLAG = "-sbml-sedml";
 
     public static final String GRAPH_FLAG = "-graph";
+    public static final String LEMS_GRAPH_FLAG = "-lems-graph";
 
     public static final String SVG_FLAG = "-svg";
 
@@ -150,9 +151,13 @@ public class JNeuroML
             + "    " + JNML_SCRIPT + " " + SEARCH_PATH_FLAG + " directory1:directory2:directoryN LEMSFile.xml\n"
             + "           Execute the LEMS file, inclusing the : separated list of directories on the search path for includes\n\n" 
             
-            + "    " + JNML_SCRIPT + " LEMSFile.xml " + GRAPH_FLAG + "\n"
-            + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n" 
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + LEMS_GRAPH_FLAG + "\n"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"
             
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + GRAPH_FLAG + "\n"
+            + "           Alias for -lems-graph"
+            + "           Load LEMSFile.xml using jLEMS, and convert it to GraphViz format\n\n"
+
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + NEURON_EXPORT_FLAG + " [" + NO_GUI_FLAG + "] [" + RUN_FLAG+ "] ["+OUTPUT_DIR_FLAG+" dir]\n" 
             + "           Load LEMSFile.xml using jLEMS, and convert it to NEURON format, OR load ModelFile.nml and generate hoc and mod files for cells, channels, synapses \n" 
             + "             " + NO_GUI_FLAG+ "       Do not generate graphical elements in NEURON, just run, save data and quit (if input file is LEMS file)\n" 
@@ -876,7 +881,7 @@ public class JNeuroML
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
                     }
                 }  
-                else if(args[1].equals(GRAPH_FLAG))
+                else if(args[1].equals(GRAPH_FLAG) || args[1].equals(LEMS_GRAPH_FLAG))
                 {
                     File lemsFile = new File(args[0]);
                     Lems lems = loadLemsFile(lemsFile);
