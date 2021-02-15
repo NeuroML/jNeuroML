@@ -896,15 +896,30 @@ public class JNeuroML
                     {
                         pr.waitFor();
 
-                        BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
-                        String line;
-                        while((line = buf.readLine()) != null)
+                        /* Successful termination of command */
+                        if (pr.exitValue() == 0)
                         {
-                            System.out.println("----" + line);
+                            BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+                            String line;
+                            while((line = buf.readLine()) != null)
+                            {
+                                System.out.println("----" + line);
+                            }
+                            System.out.println("Have successfully run command: " + cmd);
+                            System.exit(0);
                         }
-
-                        System.out.println("Have successfully run command: " + cmd);
-
+                        /* Unsuccessful termination of command */
+                        else
+                        {
+                            BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+                            String line;
+                            while((line = buf.readLine()) != null)
+                            {
+                                System.out.println("----" + line);
+                            }
+                            System.out.println("Error running command: " + cmd);
+                            System.exit(1);
+                        }
                     }
                     catch(InterruptedException e)
                     {
