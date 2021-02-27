@@ -28,6 +28,18 @@ You can also check out the most recent verson of the jar file using:
     svn checkout svn://svn.code.sf.net/p/neuroml/code/jNeuroMLJar
     cd jNeuroMLJar
 
+
+### Fedora
+
+The [NeuroFedora](https://neuro.fedoraproject.org) community initiative provides jNeuroML for use on the [Fedora Linux Distribution](https://getfedora.org).
+Fedora users can install jNeuroML using the following commands:
+
+    sudo dnf copr enable @neurofedora/neurofedora-extra
+    sudo dnf install jneuroml
+
+Please see the [project documentation](https://docs.fedoraproject.org/en-US/neurofedora/copr/) for more information.
+
+
 Usage
 -----
 
@@ -83,10 +95,3 @@ If you prefer using/installing/coding in Python, try out [pyNeuroML](https://git
 [![Build Status](https://travis-ci.org/NeuroML/jNeuroML.png?branch=master)](https://travis-ci.org/NeuroML/jNeuroML)
 
 This code is distributed under the terms of the GNU Lesser General Public License.
-
-
-
-
-
-
-
