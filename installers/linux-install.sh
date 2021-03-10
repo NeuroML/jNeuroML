@@ -7,6 +7,16 @@
 # Install jNeuroML on Linux machines
 jNeuroMLJarDir="$(pwd)"
 
+if command -v java &> /dev/null
+then
+    echo "Found java installation:"
+    java -version
+else
+    echo "Could not find 'java' command."
+    echo "Please ensure that a Java Runtime Environment is installed on your system and that the 'java' command is usable in the terminal"
+    exit -1
+fi
+
 if [ -e "jnml" ] && [ -f jNeuroML*jar-with-dependencies.jar ];
 then
     echo "Found jar and jnml in current directory: $jNeuroMLJarDir"
