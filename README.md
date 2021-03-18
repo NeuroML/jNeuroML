@@ -92,6 +92,6 @@ Prefer Python?
 
 If you prefer using/installing/coding in Python, try out [pyNeuroML](https://github.com/NeuroML/pyNeuroML). Much of the functionality of jNeuroML is bundled inside pyNeuroML and can be accessed with a command line utility (*pynml*) with similar usage as *jnml*.
 
-[![Build Status](https://travis-ci.org/NeuroML/jNeuroML.png?branch=master)](https://travis-ci.org/NeuroML/jNeuroML)
+[![Build Status](https://travis-ci.com/NeuroML/jNeuroML.png?branch=master)](https://travis-ci.com/NeuroML/jNeuroML)
 
 This code is distributed under the terms of the GNU Lesser General Public License.
