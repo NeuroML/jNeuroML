@@ -1,6 +1,13 @@
 jNeuroML
 ========
 
+[![GitHub](https://img.shields.io/github/license/NeuroML/jNeuroML)](https://github.com/NeuroML/jNeuroML/blob/master/LICENSE.lesser)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/NeuroML/jNeuroML)](https://github.com/NeuroML/jNeuroML/pulls)
+[![GitHub issues](https://img.shields.io/github/issues/NeuroML/jNeuroML)](https://github.com/NeuroML/jNeuroML/issues)
+[![GitHub Org's stars](https://img.shields.io/github/stars/NeuroML?style=social)](https://github.com/NeuroML)
+[![Twitter Follow](https://img.shields.io/twitter/follow/NeuroML?style=social)](https://twitter.com/NeuroML)
+
+
 There are a number of repositories in active development under GitHub for handling [NeuroML](https://github.com/NeuroML) 
 and [LEMS](https://github.com/LEMS) with Java. To make it easier to access all of this functionality, we've created a single package, jNeuroML, which allows access to most of this functionality through a simple command line interface and requires minimal installation. 
 
@@ -20,6 +27,18 @@ You can also check out the most recent verson of the jar file using:
 
     svn checkout svn://svn.code.sf.net/p/neuroml/code/jNeuroMLJar
     cd jNeuroMLJar
+
+
+### Fedora
+
+The [NeuroFedora](https://neuro.fedoraproject.org) community initiative provides jNeuroML for use on the [Fedora Linux Distribution](https://getfedora.org).
+Fedora users can install jNeuroML using the following commands:
+
+    sudo dnf copr enable @neurofedora/neurofedora-extra
+    sudo dnf install jneuroml
+
+Please see the [project documentation](https://docs.fedoraproject.org/en-US/neurofedora/copr/) for more information.
+
 
 Usage
 -----
@@ -76,10 +95,3 @@ If you prefer using/installing/coding in Python, try out [pyNeuroML](https://git
 [![Build Status](https://travis-ci.com/NeuroML/jNeuroML.png?branch=master)](https://travis-ci.com/NeuroML/jNeuroML)
 
 This code is distributed under the terms of the GNU Lesser General Public License.
-
-
-
-
-
-
-
