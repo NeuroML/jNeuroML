@@ -151,10 +151,12 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
     return_str = p.communicate()
 
     if p.returncode != 0:
+
         print("Error: %s" % p.returncode)
-        print(return_str[0])
+        print(return_str[0].decode("utf-8") if sys.version_info[0]>=3 else return_str[0])
         if exit_on_fail:
             exit(p.returncode)
+
     if (sys.version_info > (3, 0)):
         return return_str[0].decode("utf-8")
     else:
