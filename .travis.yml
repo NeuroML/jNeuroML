@@ -51,6 +51,9 @@ script:
     
     # Test generating SVG
     - ./jnml ../NeuroML2/examples/NML2_SimpleMorphology.nml  -svg
+      #
+    # Regression test to check that unformatted files are parsed correctly
+    - ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex5_DetCell_unformatted.xml -nogui
     
     
     # Print version info
