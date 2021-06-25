@@ -48,3 +48,5 @@ jobs:
         ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -matlab
         ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -dlems
         ./jnml ../NeuroML2/examples/NML2_SimpleMorphology.nml  -svg
+        ls -alt ../NeuroML2/examples
+        ls -alt ../NeuroML2/LEMSexamples

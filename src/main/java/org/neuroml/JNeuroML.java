@@ -328,7 +328,7 @@ public class JNeuroML
 
             if(args.length == 0)
             {
-                System.err.println("Error, no arguments to " + JNML_SCRIPT);
+                System.err.println("Error, no arguments to " + JNML_SCRIPT + "...");
                 showUsage();
                 System.exit(1);
 
