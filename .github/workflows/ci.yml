@@ -29,62 +29,22 @@ jobs:
       run: |
         export main_repo_branch=${GITHUB_REF##*/}
         echo Using branch $main_repo_branch
-        git clone https://github.com/NeuroML/org.neuroml.model.injectingplugin.git
-        cd org.neuroml.model.injectingplugin
-        git checkout $main_repo_branch
-        mvn install
-        cd ..
-    - name: Install NeuroML2
-      run: |
-        export main_repo_branch=${GITHUB_REF##*/}
-        echo Using branch $main_repo_branch
-        git clone https://github.com/NeuroML/NeuroML2.git
-        cd NeuroML2
-        git checkout $main_repo_branch
-        mvn install
-        cd ..
-    - name: Install jLEMS
-      run: |
-        export main_repo_branch=${GITHUB_REF##*/}
-        echo Using branch $main_repo_branch
-        git clone https://github.com/LEMS/jLEMS.git
-        cd jLEMS
-        git checkout $main_repo_branch
-        mvn install
-        cd ..
-    - name: Install org.neuroml.model
-      run: |
-        export main_repo_branch=${GITHUB_REF##*/}
-        echo Using branch $main_repo_branch
-        git clone https://github.com/NeuroML/org.neuroml.model.git
-        cd org.neuroml.model
-        git checkout $main_repo_branch
-        mvn install
-        cd ..
-    - name: Install org.neuroml.export
-      run: |
-        export main_repo_branch=${GITHUB_REF##*/}
-        echo Using branch $main_repo_branch
-        git clone https://github.com/NeuroML/org.neuroml.export.git
-        cd org.neuroml.export
-        git checkout $main_repo_branch
-        mvn install
-        cd ..
-    - name: Install org.neuroml.import
-      run: |
-        export main_repo_branch=${GITHUB_REF##*/}
-        echo Using branch $main_repo_branch
-        git clone https://github.com/NeuroML/org.neuroml.import.git
-        cd org.neuroml.import
-        git checkout $main_repo_branch
-        mvn install
-        cd ..
-    - name: Test with Maven
-      run: |
-         pwd
-         mvn install
+        python getNeuroML.py $main_repo_branch  # will call mvn install on this & other repos
+        mvn dependency:tree
+        ./jnml -v
+
     - name: Further tests
       run: |
         pwd
         ls -alt
-        mvn dependency:tree
+        mkdir results
+        ./jnml -validate ../NeuroML2/examples/NML2_FullNeuroML.nml # Test validate
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -nogui # Test running with jLEMS
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex5_DetCell.xml -nogui
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -neuron
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -brian
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -sedml
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -cvode
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -matlab
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -dlems
+        ./jnml ../NeuroML2/examples/NML2_SimpleMorphology.nml  -svg
