@@ -1,0 +1,90 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches:  [ master, development, experimental ]
+  pull_request:
+    branches:  [ master, development, experimental ]
+
+jobs:
+  build_and_test:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '8', '10', '11', '13', '15' ]
+
+    name: Test on Java ${{ matrix.Java }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK ${{ matrix.Java }}
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{ matrix.Java }}
+        distribution: 'adopt'
+    - name: Install org.neuroml.model.injectingplugin
+      run: |
+        export main_repo_branch=${GITHUB_REF##*/}
+        echo Using branch $main_repo_branch
+        git clone https://github.com/NeuroML/org.neuroml.model.injectingplugin.git
+        cd org.neuroml.model.injectingplugin
+        git checkout $main_repo_branch
+        mvn install
+        cd ..
+    - name: Install NeuroML2
+      run: |
+        export main_repo_branch=${GITHUB_REF##*/}
+        echo Using branch $main_repo_branch
+        git clone https://github.com/NeuroML/NeuroML2.git
+        cd NeuroML2
+        git checkout $main_repo_branch
+        mvn install
+        cd ..
+    - name: Install jLEMS
+      run: |
+        export main_repo_branch=${GITHUB_REF##*/}
+        echo Using branch $main_repo_branch
+        git clone https://github.com/LEMS/jLEMS.git
+        cd jLEMS
+        git checkout $main_repo_branch
+        mvn install
+        cd ..
+    - name: Install org.neuroml.model
+      run: |
+        export main_repo_branch=${GITHUB_REF##*/}
+        echo Using branch $main_repo_branch
+        git clone https://github.com/NeuroML/org.neuroml.model.git
+        cd org.neuroml.model
+        git checkout $main_repo_branch
+        mvn install
+        cd ..
+    - name: Install org.neuroml.export
+      run: |
+        export main_repo_branch=${GITHUB_REF##*/}
+        echo Using branch $main_repo_branch
+        git clone https://github.com/NeuroML/org.neuroml.export.git
+        cd org.neuroml.export
+        git checkout $main_repo_branch
+        mvn install
+        cd ..
+    - name: Install org.neuroml.import
+      run: |
+        export main_repo_branch=${GITHUB_REF##*/}
+        echo Using branch $main_repo_branch
+        git clone https://github.com/NeuroML/org.neuroml.import.git
+        cd org.neuroml.import
+        git checkout $main_repo_branch
+        mvn install
+        cd ..
+    - name: Test with Maven
+      run: |
+         pwd
+         mvn install
+    - name: Further tests
+      run: |
+        pwd
+        ls -alt
+        mvn dependency:tree
