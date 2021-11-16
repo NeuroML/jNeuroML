@@ -23,6 +23,8 @@ def main():
                 switch_to_branch = "experimental"
             elif arg == "master":
                 switch_to_branch = "master"
+            elif "osb" in arg:
+                switch_to_branch = arg
             else:
                 help_info()
                 exit()
@@ -50,7 +52,7 @@ def main():
     lems_repos = jlems_repo + lems_spec_repos + pylems_repos
 
     # Which repos use a development branch?
-    dev_branch_repos = neuroml2_spec_repo + neuroml_repos + jlems_repo
+    dev_branch_repos = neuroml2_spec_repo + java_neuroml_repos + jlems_repo
 
     all_repos = lems_repos + neuroml_repos
 
@@ -182,6 +184,9 @@ def help_info():
 
         python getNeuroML.py development
             Switch relevant repos to development branch
+
+        python getNeuroML.py experimental
+            Switch relevant repos to experimental branch
         """
     )
     print(dedent(usage))
