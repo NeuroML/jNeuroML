@@ -42,7 +42,7 @@ jobs:
         echo Using branch $env:GITHUB_REF_NAME
         python getNeuroML.py $env:GITHUB_REF_NAME  # will call mvn install on this & other repos
         mvn dependency:tree
-        jnml.bat -v
+        .\jnml.bat -v
 
     - name: Further tests (non Win)
       if: ${{ matrix.runs-on != 'windows-latest' }}
@@ -68,13 +68,13 @@ jobs:
       run: |
         pwd
         mkdir results
-        jnml.bat -validate ..\NeuroML2\examples\NML2_FullNeuroML.nml # Test validate
-        jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -nogui # Test running with jLEMS
-        jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex5_DetCell.xml -nogui
-        jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -neuron
-        jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -brian
-        jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -sedml
-        jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -cvode
-        jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -matlab
-        jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -dlems
-        jnml.bat ..\NeuroML2\examples\NML2_SimpleMorphology.nml  -svg
+        .\jnml.bat -validate ..\NeuroML2\examples\NML2_FullNeuroML.nml # Test validate
+        .\jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -nogui # Test running with jLEMS
+        .\jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex5_DetCell.xml -nogui
+        .\jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -neuron
+        .\jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -brian
+        .\jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -sedml
+        .\jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -cvode
+        .\jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -matlab
+        .\jnml.bat ..\NeuroML2\examples\LEMS_NML2_Ex9_FN.xml -dlems
+        .\jnml.bat ..\NeuroML2\examples\NML2_SimpleMorphology.nml  -svg
