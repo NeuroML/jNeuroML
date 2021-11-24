@@ -5,19 +5,21 @@ name: Java CI with Maven
 
 on:
   push:
-    branches:  [ master, development, experimental ]
+    branches:  [ master, development, experimental, osb* ]
   pull_request:
-    branches:  [ master, development, experimental ]
+    branches:  [ master, development, experimental, osb* ]
 
 jobs:
   build_and_test:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runs-on }}
     strategy:
+      fail-fast: false
       matrix:
-        java: [ '8', '11', '13', '15' ]
+        java: [ '8', '11', '16', '17' ]
+        runs-on: [ubuntu-latest, macos-11, windows-latest ]
 
-    name: Test on Java ${{ matrix.Java }}
+    name: Test on Java ${{ matrix.Java }} on ${{ matrix.runs-on }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK ${{ matrix.Java }}
@@ -25,15 +27,26 @@ jobs:
       with:
         java-version: ${{ matrix.Java }}
         distribution: 'adopt'
-    - name: Install org.neuroml.model.injectingplugin
+        
+    - name: Install using getNeuroML.py (non Win)
+      if: ${{ matrix.runs-on != 'windows-latest' }}
       run: |
         export main_repo_branch=${GITHUB_REF##*/}
         echo Using branch $main_repo_branch
         python getNeuroML.py $main_repo_branch  # will call mvn install on this & other repos
         mvn dependency:tree
         ./jnml -v
+        
+    - name: Install using getNeuroML.py (Win)
+      if: ${{ matrix.runs-on == 'windows-latest' }}
+      run: |
+        echo Using branch $env:GITHUB_REF_NAME
+        python getNeuroML.py $env:GITHUB_REF_NAME  # will call mvn install on this & other repos
+        mvn dependency:tree
+        .\jnml.bat -v
 
-    - name: Further tests
+    - name: Further tests (non Win)
+      if: ${{ matrix.runs-on != 'windows-latest' }}
       run: |
         pwd
         ls -alt
@@ -50,3 +63,19 @@ jobs:
         ./jnml ../NeuroML2/examples/NML2_SimpleMorphology.nml  -svg
         ls -alt ../NeuroML2/examples
         ls -alt ../NeuroML2/LEMSexamples
+
+    - name: Further tests (Win)
+      if: ${{ matrix.runs-on == 'windows-latest' }}
+      run: |
+        pwd
+        mkdir results
+        .\jnml.bat -validate ..\NeuroML2\examples\NML2_FullNeuroML.nml # Test validate
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -nogui # Test running with jLEMS
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex5_DetCell.xml -nogui
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -neuron
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -brian
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -sedml
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -cvode
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -matlab
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -dlems
+        .\jnml.bat ..\NeuroML2\examples\NML2_SimpleMorphology.nml  -svg
