@@ -2,7 +2,6 @@ jNeuroML
 ========
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4627568.svg)](https://doi.org/10.5281/zenodo.4627568)
-
 [![Java CI with Maven](https://github.com/NeuroML/jNeuroML/actions/workflows/ci.yml/badge.svg)](https://github.com/NeuroML/jNeuroML/actions/workflows/ci.yml)
 [![GitHub](https://img.shields.io/github/license/NeuroML/jNeuroML)](https://github.com/NeuroML/jNeuroML/blob/master/LICENSE.lesser)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/NeuroML/jNeuroML)](https://github.com/NeuroML/jNeuroML/pulls)
