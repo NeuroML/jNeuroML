@@ -11,6 +11,7 @@ def main():
     """Main"""
     mode = "update"
     switch_to_branch = None
+    dont_switch_jneuroml_branch = False
 
     if len(sys.argv) < 5:
         for arg in sys.argv[1:]:
@@ -25,6 +26,8 @@ def main():
                 switch_to_branch = "master"
             elif "osb" in arg:
                 switch_to_branch = arg
+            elif "-dont_switch_jneuroml_branch" in arg:
+                dont_switch_jneuroml_branch = True
             else:
                 help_info()
                 exit()
@@ -92,10 +95,13 @@ def main():
 
             if switch_to_branch:
                 if (repo in dev_branch_repos):
-                    command = "git checkout %s" % (switch_to_branch)
-                    print("Switching to branch: %s" % (switch_to_branch))
-                    exit_on_fail = switch_to_branch != "experimental"
-                    execute_command_in_dir(command, local_dir, exit_on_fail)
+                    if "jNeuroML" in repo and dont_switch_jneuroml_branch:
+                        print("NOT switching repo %s to branch: %s" % (repo, switch_to_branch))
+                    else:
+                        command = "git checkout %s" % (switch_to_branch)
+                        print("Switching to branch: %s" % (switch_to_branch))
+                        exit_on_fail = switch_to_branch != "experimental"
+                        execute_command_in_dir(command, local_dir, exit_on_fail)
                     runMvnInstall = True
 
             info = execute_command_in_dir("git branch", local_dir)

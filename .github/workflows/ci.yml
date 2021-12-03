@@ -27,26 +27,27 @@ jobs:
       with:
         java-version: ${{ matrix.Java }}
         distribution: 'adopt'
-        
+
     - name: Install using getNeuroML.py (non Win)
       if: ${{ matrix.runs-on != 'windows-latest' }}
       run: |
         export main_repo_branch=${{env.main_repo_branch}}
         if [[ ${main_repo_branch} != "master" && ${main_repo_branch} != "development" && ${main_repo_branch} != "experimental" && ${main_repo_branch} != *"osb"* ]]; then main_repo_branch=development ; fi
         echo Using branch $main_repo_branch
-        
+
         python getNeuroML.py $main_repo_branch  # will call mvn install on this & other repos
         mvn dependency:tree
         ./jnml -v
-        
+
     - name: Install using getNeuroML.py (Win)
       if: ${{ matrix.runs-on == 'windows-latest' }}
       run: |
         $env:main_repo_branch=$env:GITHUB_REF_NAME
         if ( $env:main_repo_branch -ne "master" -and $env:main_repo_branch -ne "development" -and $env:main_repo_branch -ne "experimental" -and $env:main_repo_branch -notlike '*osb*' ) { $env:main_repo_branch="development" }
         echo "Using branch $env:main_repo_branch..."
-        
-        python getNeuroML.py $env:main_repo_branch  # will call mvn install on this & other repos
+
+        python getNeuroML.py $env:main_repo_branch -dont_switch_jneuroml_branch # will call mvn install on this & other repos
+
         mvn dependency:tree
         .\jnml.bat -v
 
