@@ -59,7 +59,7 @@ public class JNeuroML
 
     public static final String JNML_SCRIPT = "jnml";
 
-    public static final String JNML_VERSION = "0.10.3";
+    public static final String JNML_VERSION = "0.11.1";
 
     public static final String HELP_FLAG = "-help";
     public static final String HELP_FLAG_SHORT = "-h";
@@ -328,7 +328,7 @@ public class JNeuroML
 
             if(args.length == 0)
             {
-                System.err.println("Error, no arguments to " + JNML_SCRIPT);
+                System.err.println("Error, no arguments to " + JNML_SCRIPT + "...");
                 showUsage();
                 System.exit(1);
 

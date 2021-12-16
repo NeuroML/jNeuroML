@@ -11,3 +11,7 @@ src/main/java/META-INF/MANIFEST.MF
 .DS_Store
 *.*~
 *.log
+.classpath
+.factorypath
+.project
+.settings/
