@@ -32,6 +32,7 @@ import org.neuroml.export.graph.GraphWriter;
 import org.neuroml.export.info.InfoWriter;
 import org.neuroml.export.nest.NestWriter;
 import org.neuroml.export.moose.MooseWriter;
+import org.neuroml.export.eden.EDENWriter;
 import org.neuroml.export.netpyne.NetPyNEWriter;
 import org.neuroml.export.neuron.NeuronWriter;
 import org.neuroml.export.pynn.PyNNWriter;
@@ -125,6 +126,8 @@ public class JNeuroML
 
     public static final String MOOSE_EXPORT_FLAG = "-moose";
 
+    public static final String EDEN_EXPORT_FLAG = "-eden";
+
     //public static final String GEPPETTO_EXPORT_FLAG = "-geppetto";
 
     public static final String SBML_IMPORT_FLAG = "-sbml-import";
@@ -173,6 +176,9 @@ public class JNeuroML
 
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + MOOSE_EXPORT_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to MOOSE format (**EXPERIMENTAL**)\n\n"
+
+            + "    " + JNML_SCRIPT + " LEMSFile.xml " + EDEN_EXPORT_FLAG + "\n"
+            + "           Generate a Python script for loading LEMSFile.xml in the EDEN simulator\n\n"
 
             + "    " + JNML_SCRIPT + " NMLFile.nml " + SVG_FLAG + "\n"
             + "           Load NMLFile.nml and convert cells & networks to SVG image format \n\n"
@@ -722,6 +728,21 @@ public class JNeuroML
                     String nFile = generateFormatFilename(lemsFile, Format.MOOSE, suffix);
 
                     MooseWriter nw = new MooseWriter(lems, lemsFile.getParentFile(), nFile);
+                    for(File genFile : nw.convert())
+                    {
+                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                    }
+                }
+                else if(args[1].equals(EDEN_EXPORT_FLAG))
+                {
+
+                    File lemsFile = (new File(args[0])).getAbsoluteFile();
+                    Lems lems = loadLemsFile(lemsFile);
+
+                    String suffix = "_eden";
+                    String nFile = generateFormatFilename(lemsFile, Format.EDEN, suffix);
+
+                    EDENWriter nw = new EDENWriter(lems, lemsFile, lemsFile.getParentFile(), nFile);
                     for(File genFile : nw.convert())
                     {
                         System.out.println("Writing to: " + genFile.getAbsolutePath());
