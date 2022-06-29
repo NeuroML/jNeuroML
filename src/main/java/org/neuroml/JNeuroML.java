@@ -114,6 +114,7 @@ public class JNeuroML
     public static final String RUN_PYNN_NEURON_FLAG = "-run-neuron";
 
     public static final String NETPYNE_EXPORT_FLAG = "-netpyne";
+    public static final String NETPYNE_JSON_FLAG = "-json";
 
     public static final String NUMBER_PROCESSORS_FLAG = "-np";
 
@@ -167,6 +168,7 @@ public class JNeuroML
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + NETPYNE_EXPORT_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to NetPyNE format\n"
             + "             " + RUN_FLAG + "         Compile NMODL files and run the main NEURON Python file\n\n"
+            + "             " + NETPYNE_JSON_FLAG + "         Generate network in NetPyNE JSON format\n\n"
 
             + "    " + JNML_SCRIPT + " LEMSFile.xml " + BRIAN_EXPORT_FLAG + "\n"
             + "           Load LEMSFile.xml using jLEMS, and convert it to Brian v1 format (*EXPERIMENTAL - single components only*)\n\n"
@@ -541,6 +543,7 @@ public class JNeuroML
                 Lems lems = loadLemsFile(lemsFile, false);
                 boolean nogui = false;
                 boolean run = false;
+                boolean json = false;
                 File outputDir = lemsFile.getParentFile();
                 int np = 1;
 
@@ -551,6 +554,8 @@ public class JNeuroML
                         nogui = true;
                     else if (args[i].equals(RUN_FLAG))
                         run = true;
+                    else if (args[i].equals(NETPYNE_JSON_FLAG))
+                        json = true;
                     else if (args[i].equals(OUTPUT_DIR_FLAG))
                     {
                         i = i+1;
@@ -576,7 +581,7 @@ public class JNeuroML
 
                 String mainFilename = generateFormatFilename(lemsFile, Format.NETPYNE, "_netpyne");
                 NetPyNEWriter npw = new NetPyNEWriter(lems, outputDir, mainFilename);
-                npw.generateAndRun(nogui, run, np);
+                npw.generateAndRun(nogui, run, np, json);
             }
                 // Two arguments
             else if(args.length == 2)
