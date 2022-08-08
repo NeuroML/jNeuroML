@@ -5,7 +5,7 @@
 #   Type java -X for more info
 export JNML_MAX_MEMORY=400M
 
-export JNML_VERSION=0.10.1
+export JNML_VERSION=0.12.0
 
 
 export CLASSPATH=.:./target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar:$JNML_HOME/target/jNeuroML-$JNML_VERSION-jar-with-dependencies.jar

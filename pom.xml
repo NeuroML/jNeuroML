@@ -4,7 +4,7 @@
 
     <groupId>org.neuroml</groupId>
     <artifactId>jNeuroML</artifactId>
-    <version>0.10.1</version>
+    <version>0.12.0</version>
     <packaging>jar</packaging>
 
     <name>jNeuroML</name>
@@ -24,18 +24,46 @@
         <dependency>
             <groupId>org.neuroml1.model</groupId>
             <artifactId>org.neuroml1.model</artifactId>
-            <version>1.7.1</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.neuroml.import</groupId>
             <artifactId>org.neuroml.import</artifactId>
-            <version>1.7.1</version>
+            <version>1.9.0</version>
         </dependency>
+
+        <!-- Dependencies to force use of log4j 2.17.1 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.17.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.17.1</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
             <plugin>
-                <!-- NOTE: We don't need a groupId specification because 
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <source>8</source>
+                    <top>
+                            &lt;br /&gt;&emsp;Learn more about NeuroML at &lt;a href=&quot;http://neuroml.org&quot; target=&quot;_blank&quot;&gt;NeuroML.org&lt;/a&gt;
+                            &lt;br /&gt;
+                            &lt;br /&gt;
+                    </top>
+                    <bottom>Copyright NeuroML Contributors 2021</bottom>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- NOTE: We don't need a groupId specification because
                     the group is org.apache.maven.plugins ...which is assumed by default. -->
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4</version>
@@ -43,7 +71,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    
+
                       <archive>
                         <manifest>
                           <addClasspath>true</addClasspath>
@@ -67,15 +95,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
-            
+
         </plugins>
     </build>
 
 </project>
-
-
-
