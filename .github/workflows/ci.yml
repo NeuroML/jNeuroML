@@ -71,6 +71,7 @@ jobs:
         ./jnml ../NeuroML2/examples/NML2_SimpleMorphology.nml  -svg
         ls -alt ../NeuroML2/examples
         ls -alt ../NeuroML2/LEMSexamples
+        env
 
     - name: Further tests (Win)
       if: ${{ matrix.runs-on == 'windows-latest' }}
