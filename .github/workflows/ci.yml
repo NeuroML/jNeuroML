@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ '8', '11', '16', '17', '19']
-        runs-on: [ubuntu-latest, macos-latest, windows-latest ]
+        runs-on: [ubuntu-latest, macos-latest, windows-2019 ]
 
     name: Test on Java ${{ matrix.Java }} on ${{ matrix.runs-on }}
     steps:
@@ -29,7 +29,7 @@ jobs:
         distribution: 'adopt'
 
     - name: Install using getNeuroML.py (non Win)
-      if: ${{ matrix.runs-on != 'windows-latest' }}
+      if: ${{ matrix.runs-on != 'windows-2019' }}
       run: |
         export main_repo_branch=${{env.main_repo_branch}}
         if [[ ${main_repo_branch} != "master" && ${main_repo_branch} != "development" && ${main_repo_branch} != "experimental" && ${main_repo_branch} != *"osb"* ]]; then main_repo_branch=development ; fi
@@ -40,7 +40,7 @@ jobs:
         ./jnml -v
 
     - name: Install using getNeuroML.py (Win)
-      if: ${{ matrix.runs-on == 'windows-latest' }}
+      if: ${{ matrix.runs-on == 'windows-2019' }}
       run: |
         $env:main_repo_branch=$env:GITHUB_REF_NAME
         if ( $env:main_repo_branch -ne "master" -and $env:main_repo_branch -ne "development" -and $env:main_repo_branch -ne "experimental" -and $env:main_repo_branch -notlike '*osb*' ) { $env:main_repo_branch="development" }
@@ -52,7 +52,7 @@ jobs:
         .\jnml.bat -v
 
     - name: Further tests (non Win)
-      if: ${{ matrix.runs-on != 'windows-latest' }}
+      if: ${{ matrix.runs-on != 'windows-2019' }}
       run: |
         pwd
         ls -alt
@@ -74,7 +74,7 @@ jobs:
         env
 
     - name: Further tests (Win)
-      if: ${{ matrix.runs-on == 'windows-latest' }}
+      if: ${{ matrix.runs-on == 'windows-2019' }}
       run: |
         pwd
         mkdir results
