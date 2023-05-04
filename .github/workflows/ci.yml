@@ -29,6 +29,8 @@ jobs:
         distribution: 'adopt'
 
     - name: Install using getNeuroML.py (non Win)
+      env:
+        main_repo_branch: ${GITHUB_REF_NAME}
       if: ${{ matrix.runs-on != 'windows-2019' }}
       run: |
         export main_repo_branch=${{env.main_repo_branch}}
