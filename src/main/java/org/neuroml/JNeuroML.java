@@ -143,6 +143,8 @@ public class JNeuroML
 
     public static final String PNG_FLAG = "-png";
 
+    public static final String GENERATED_FILE = ">>> JNML generated file: ";
+
     static String usage = "Usage: \n\n" + "    " + JNML_SCRIPT + " LEMSFile.xml\n"
             + "           Load LEMSFile.xml using jLEMS, parse it and validate it as LEMS, and execute the model it contains\n\n"
 
@@ -522,7 +524,11 @@ public class JNeuroML
                 }
                 else
                 {
-                    nw.generateAndRun(nogui, compile, run, false);
+                    List<File> files = nw.generateAndRun(nogui, compile, run, false);
+                    for(File genFile : files)
+                    {
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
+                    }
                 }
 
             }
@@ -535,7 +541,12 @@ public class JNeuroML
                 boolean runNrn = (args.length==3 && args[2].equals(RUN_PYNN_NEURON_FLAG));
 
                 PyNNWriter pw = new PyNNWriter(lems, lemsFile.getParentFile(), nFile);
-                pw.generateAndRun(false, runNrn);
+
+                List<File> files = pw.generateAndRun(false, runNrn);
+                for(File genFile : files)
+                {
+                    System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
+                }
             }
             else if(args[1].equals(NETPYNE_EXPORT_FLAG))
             {
@@ -581,7 +592,12 @@ public class JNeuroML
 
                 String mainFilename = generateFormatFilename(lemsFile, Format.NETPYNE, "_netpyne");
                 NetPyNEWriter npw = new NetPyNEWriter(lems, outputDir, mainFilename);
-                npw.generateAndRun(nogui, run, np, json);
+                List<File> files = npw.generateAndRun(nogui, run, np, json);
+                
+                for(File genFile : files)
+                {
+                    System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
+                }
             }
                 // Two arguments
             else if(args.length == 2)
@@ -647,7 +663,7 @@ public class JNeuroML
                                                        generateFormatFilename(lemsFile, Format.VERTEX, "_run"));
                     for(File genFile : vw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -660,7 +676,7 @@ public class JNeuroML
                     SBMLWriter sbmlw = new SBMLWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.SBML, null));
                     for(File genFile : sbmlw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -673,13 +689,13 @@ public class JNeuroML
                     SBMLWriter sbmlw = new SBMLWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.SBML, null));
                     for(File genFile : sbmlw.convert())
                     {
-                        System.out.println("Writing SBML to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                     SEDMLWriter sedw = new SEDMLWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.SEDML, null), lemsFile.getName(), Format.SBML);
                     for(File genFile : sedw.convert())
                     {
-                        System.out.println("Writing SED-ML to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
                 }
                 else if(args[1].equals(XPP_EXPORT_FLAG))
@@ -691,7 +707,7 @@ public class JNeuroML
                     XppWriter xppw = new XppWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.XPP, null));
                     for(File genFile : xppw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -704,7 +720,7 @@ public class JNeuroML
                     DNSimWriter dnsimw = new DNSimWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.DN_SIM, null));
                     for(File genFile : dnsimw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -720,7 +736,7 @@ public class JNeuroML
                     NestWriter nw = new NestWriter(lems, lemsFile.getParentFile(), nFile);
                     for(File genFile : nw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
                 }
                 else if(args[1].equals(MOOSE_EXPORT_FLAG))
@@ -735,7 +751,7 @@ public class JNeuroML
                     MooseWriter nw = new MooseWriter(lems, lemsFile.getParentFile(), nFile);
                     for(File genFile : nw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
                 }
                 else if(args[1].equals(EDEN_EXPORT_FLAG))
@@ -750,7 +766,7 @@ public class JNeuroML
                     EDENWriter nw = new EDENWriter(lems, lemsFile, lemsFile.getParentFile(), nFile);
                     for(File genFile : nw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
                 }
 
@@ -785,7 +801,7 @@ public class JNeuroML
                     SEDMLWriter sedw = new SEDMLWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.SEDML, null), lemsFile.getName(), Format.NEUROML2);
                     for(File genFile : sedw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -800,7 +816,7 @@ public class JNeuroML
                                                             generateFormatFilename(lemsFile, Format.CELLML, null));
                     for(File genFile : cellmlw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -815,7 +831,7 @@ public class JNeuroML
                     XineMLWriter xw = new XineMLWriter(lems, v, lemsFile.getParentFile(), lemsFile.getName().replaceAll("." + Format.LEMS.getExtension(), suffix));
                     for(File genFile : xw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -833,7 +849,7 @@ public class JNeuroML
                     MatlabWriter matlabw = new MatlabWriter(lems, lemsFile.getParentFile(), filename);
                     for(File genFile : matlabw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -848,7 +864,7 @@ public class JNeuroML
                     cw.setSolver(CWriter.Solver.CVODE);
                     for(File genFile : cw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -863,7 +879,7 @@ public class JNeuroML
                     ModelicaWriter modw = new ModelicaWriter(lems, lemsFile.getParentFile(), mFile);
                     for(File genFile : modw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -876,7 +892,7 @@ public class JNeuroML
                     DLemsWriter dlemsw = new DLemsWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.DLEMS, null), null);
                     for(File genFile : dlemsw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
 
                 }
@@ -900,7 +916,7 @@ public class JNeuroML
 
                     for(File genFile : bw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
                 }
                 else if(args[1].equals(OLD_GRAPH_FLAG) || args[1].equals(LEMS_GRAPH_FLAG))
@@ -911,7 +927,7 @@ public class JNeuroML
                     GraphWriter gw = new GraphWriter(lems, lemsFile.getParentFile(), generateFormatFilename(lemsFile, Format.GRAPH_VIZ, null));
                     List<File> outputFiles = gw.convert();
                     File gvFile = outputFiles.get(0);
-                    System.out.println("Writing to: " + gvFile.getAbsolutePath());
+                    System.out.println(GENERATED_FILE + gvFile.getAbsolutePath());
 
                     String imgFile = gvFile.getAbsolutePath().replace("." + Format.GRAPH_VIZ.getExtension(), "." + Format.PNG.getExtension());
                     String cmd = "dot -Tpng  " + gvFile.getAbsolutePath() + " -o " + imgFile;
@@ -965,7 +981,7 @@ public class JNeuroML
                     SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), nmlFile.getName().replaceAll("." + Format.NEUROML2.getExtension(), "." + Format.SVG.getExtension()));
                     for(File genFile : svgw.convert())
                     {
-                        System.out.println("Writing to: " + genFile.getAbsolutePath());
+                        System.out.println(GENERATED_FILE + genFile.getAbsolutePath());
                     }
                 }
                 else if(args[1].equals(PNG_FLAG))
@@ -979,7 +995,7 @@ public class JNeuroML
                     SVGWriter svgw = new SVGWriter(nmlDocument, nmlFile.getParentFile(), pngFileName);
 
                     svgw.convertToPng(pngFile);
-                    System.out.println("Writing to: " + pngFile.getAbsolutePath());
+                    System.out.println(GENERATED_FILE + pngFile.getAbsolutePath());
 
                 }
                 else
@@ -1008,7 +1024,7 @@ public class JNeuroML
 						String val = entry.getValue();
 						File vwFile = new File(lemsFile.getParentFile(), "/" + key + ".vhdl");
 						FileUtil.writeStringToFile(val, vwFile);
-						System.out.println("Writing to: "+vwFile.getAbsolutePath());
+						System.out.println(GENERATED_FILE+vwFile.getAbsolutePath());
 					}
 
 					/*File vwFile = new File(lemsFile.getParentFile(), "/testbench.vhdl");
@@ -1016,7 +1032,7 @@ public class JNeuroML
 					System.out.println("Writing to: "+vwFile.getAbsolutePath());*/
 					File vwFile = new File(lemsFile.getParentFile(), "/testbench.prj");
 					FileUtil.writeStringToFile(prjScript, vwFile);
-					System.out.println("Writing to: "+vwFile.getAbsolutePath());
+					System.out.println(GENERATED_FILE+vwFile.getAbsolutePath());
 
                 }
             }
@@ -1048,7 +1064,7 @@ public class JNeuroML
 
                     File lemsFile = SBMLImporter.convertSBMLToLEMSFile(sbmlFile, duration, dt, true);
 
-                    System.out.println("Written to: " + lemsFile.getAbsolutePath());
+                    System.out.println(GENERATED_FILE + lemsFile.getAbsolutePath());
 
                 }
                 else
