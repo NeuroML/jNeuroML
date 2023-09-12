@@ -4,7 +4,7 @@
 
     <groupId>org.neuroml</groupId>
     <artifactId>jNeuroML</artifactId>
-    <version>0.12.2</version>
+    <version>0.12.3</version>
     <packaging>jar</packaging>
 
     <name>jNeuroML</name>
