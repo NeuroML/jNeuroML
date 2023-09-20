@@ -125,7 +125,8 @@ def main():
                 or ("jNeuroML" in repo)
             )
 
-            if (repo in java_repos or repo in neuroml2_spec_repo) and runMvnInstall:
+            if (repo in java_repos or repo in neuroml2_spec_repo) \
+                    and runMvnInstall:
                 command = "mvn install"
                 print("It's a Java repository, so installing using Maven...")
                 info = execute_command_in_dir(command, local_dir)
@@ -162,7 +163,8 @@ def execute_command_in_dir(command, directory, exit_on_fail=True):
         % (command, directory, os.path.abspath(directory))
     )
 
-    p = subprocess.Popen(command, cwd=directory, shell=True, stdout=subprocess.PIPE)
+    p = subprocess.Popen(command, cwd=directory, shell=True,
+                         stdout=subprocess.PIPE)
     return_str = p.communicate()
 
     if p.returncode != 0:

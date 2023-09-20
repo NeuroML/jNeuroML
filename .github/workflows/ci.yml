@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '8', '11', '16', '17' ]
-        runs-on: [ubuntu-latest, macos-11, windows-2019 ]
+        java: [ '8', '11', '16', '17', '19']
+        runs-on: [ubuntu-latest, macos-latest, windows-2019 ]
 
     name: Test on Java ${{ matrix.Java }} on ${{ matrix.runs-on }}
     steps:
@@ -68,10 +68,12 @@ jobs:
         ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -cvode
         ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -matlab
         ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -dlems
+        ./jnml ../NeuroML2/LEMSexamples/LEMS_NML2_Ex9_FN.xml -eden
         ./jnml ../NeuroML2/LEMSexamples/regression-tests/LEMS_NML2_Ex5_DetCell_unformatted.xml -nogui
         ./jnml ../NeuroML2/examples/NML2_SimpleMorphology.nml  -svg
         ls -alt ../NeuroML2/examples
         ls -alt ../NeuroML2/LEMSexamples
+        env
 
     - name: Further tests (Win)
       if: ${{ matrix.runs-on == 'windows-2019' }}
@@ -87,5 +89,6 @@ jobs:
         .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -cvode
         .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -matlab
         .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -dlems
+        .\jnml.bat ..\NeuroML2\LEMSexamples\LEMS_NML2_Ex9_FN.xml -eden
         .\jnml.bat ..\NeuroML2\LEMSexamples\regression-tests\LEMS_NML2_Ex5_DetCell_unformatted.xml -nogui
         .\jnml.bat ..\NeuroML2\examples\NML2_SimpleMorphology.nml  -svg
