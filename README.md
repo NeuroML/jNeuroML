@@ -69,7 +69,7 @@ Getting the source for jNeuroML
 If you prefer to clone all of the individual repositories and build the jNeuroML application yourself,
 use the [getNeuroML.py](https://github.com/NeuroML/jNeuroML/blob/master/getNeuroML.py) utility in the jNeuroML repo:
 
-    git clone git://github.com/NeuroML/jNeuroML.git neuroml_dev/jNeuroML
+    git clone https://github.com/NeuroML/jNeuroML.git neuroml_dev/jNeuroML
     cd neuroml_dev/jNeuroML
     python getNeuroML.py
 
