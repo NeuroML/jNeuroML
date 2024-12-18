@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ '8', '11', '16', '17', '19', '21' ]
-        runs-on: [ubuntu-latest, macos-12, windows-2019] # Note macos-12, not latest/14, due to hdf5 install issue
+        runs-on: [ubuntu-latest, macos-13, windows-2019] # Note macos-13, not latest/14, due to hdf5 install issue
         exclude:
           - runs-on: macos-latest
             java: "8"
