@@ -16,13 +16,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '8', '11', '16', '17', '19', '21' ]
+        java: [ '8', '11', '17', '19', '21', '25' ]
         runs-on: [ubuntu-latest, macos-15-intel, windows-latest] # Note macos-15-intel, not latest/14, due to hdf5 install issue
-        exclude:
-          - runs-on: macos-latest
-            java: "8"
-          - runs-on: macos-latest
-            java: "16"
+
 
     name: Test on Java ${{ matrix.Java }} on ${{ matrix.runs-on }}
     steps:
@@ -39,8 +35,9 @@ jobs:
       if: ${{ ! contains(matrix.runs-on, 'windows') }}
       run: |
         export main_repo_branch=${{env.main_repo_branch}}
+        if [[ ${main_repo_branch} == "osb_test_master" ]]; then main_repo_branch=master ; fi
         if [[ ${main_repo_branch} != "master" && ${main_repo_branch} != "development" && ${main_repo_branch} != "experimental" && ${main_repo_branch} != *"osb"* ]]; then main_repo_branch=development ; fi
-        echo Using branch $main_repo_branch
+        echo "Using branch $main_repo_branch, current branch is $GITHUB_REF_NAME"
 
         python getNeuroML.py $main_repo_branch  -dont_switch_jneuroml_branch # will call mvn install on this & other repos
         mvn dependency:tree
