@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ '8', '11', '16', '17', '19', '21' ]
-        runs-on: [ubuntu-latest, macos-13, windows-2019] # Note macos-13, not latest/14, due to hdf5 install issue
+        runs-on: [ubuntu-latest, macos-15-intel, windows-latest] # Note macos-15-intel, not latest/14, due to hdf5 install issue
         exclude:
           - runs-on: macos-latest
             java: "8"
@@ -26,9 +26,9 @@ jobs:
 
     name: Test on Java ${{ matrix.Java }} on ${{ matrix.runs-on }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up JDK ${{ matrix.Java }}
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: ${{ matrix.Java }}
         distribution: 'temurin'
@@ -36,7 +36,7 @@ jobs:
     - name: Install using getNeuroML.py (non Win)
       env:
         main_repo_branch: ${GITHUB_REF_NAME}
-      if: ${{ matrix.runs-on != 'windows-2019' }}
+      if: ${{ ! contains(matrix.runs-on, 'windows') }}
       run: |
         export main_repo_branch=${{env.main_repo_branch}}
         if [[ ${main_repo_branch} != "master" && ${main_repo_branch} != "development" && ${main_repo_branch} != "experimental" && ${main_repo_branch} != *"osb"* ]]; then main_repo_branch=development ; fi
@@ -47,7 +47,7 @@ jobs:
         ./jnml -v
 
     - name: Install using getNeuroML.py (Win)
-      if: ${{ matrix.runs-on == 'windows-2019' }}
+      if: ${{ contains(matrix.runs-on, 'windows') }}
       run: |
         $env:main_repo_branch=$env:GITHUB_REF_NAME
         if ( $env:main_repo_branch -ne "master" -and $env:main_repo_branch -ne "development" -and $env:main_repo_branch -ne "experimental" -and $env:main_repo_branch -notlike '*osb*' ) { $env:main_repo_branch="development" }
@@ -59,7 +59,7 @@ jobs:
         .\jnml.bat -v
 
     - name: Further tests (non Win)
-      if: ${{ matrix.runs-on != 'windows-2019' }}
+      if: ${{ ! contains(matrix.runs-on, 'windows') }}
       run: |
         pwd
         ls -alt
@@ -81,7 +81,7 @@ jobs:
         env
 
     - name: Further tests (Win)
-      if: ${{ matrix.runs-on == 'windows-2019' }}
+      if: ${{ contains(matrix.runs-on, 'windows') }}
       run: |
         pwd
         mkdir results
